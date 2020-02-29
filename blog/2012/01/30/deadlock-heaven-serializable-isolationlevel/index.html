@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:300,300italic,400,400italic,700,700italic,900,900|Montserrat:300,300italic,400,400italic,700,700italic,900,900|Fira Code:300,300italic,400,400italic,700,700italic,900,900&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tommarien.github.io","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="I recently got the opportunity to investigate deadlocks, that occurred on a production environment. I always volunteer when deadlocks are involved. Just because you get a chance to learn a lot about l">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deadlock heaven: Serializable IsolationLevel">
+<meta property="og:url" content="http://tommarien.github.io/blog/2012/01/30/deadlock-heaven-serializable-isolationlevel/index.html">
+<meta property="og:site_name" content="Hooked.io">
+<meta property="og:description" content="I recently got the opportunity to investigate deadlocks, that occurred on a production environment. I always volunteer when deadlocks are involved. Just because you get a chance to learn a lot about l">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2012-01-30T13:25:00.000Z">
+<meta property="article:modified_time" content="2012-01-30T13:25:00.000Z">
+<meta property="article:author" content="Tom Marien">
+<meta property="article:tag" content="csharp">
+<meta property="article:tag" content="database">
+<meta property="article:tag" content="performance">
+<meta property="article:tag" content="sqlserver">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tommarien.github.io/blog/2012/01/30/deadlock-heaven-serializable-isolationlevel/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Deadlock heaven: Serializable IsolationLevel | Hooked.io</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script pjax>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-50637133-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hooked.io</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tommarien" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2012/01/30/deadlock-heaven-serializable-isolationlevel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Deadlock heaven: Serializable IsolationLevel
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 30, 2012 14:25:00" itemprop="dateCreated datePublished" datetime="2012-01-30T14:25:00+01:00">Jan 30, 2012</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>I recently got the opportunity to investigate deadlocks, that occurred on a production environment. I always volunteer when deadlocks are involved. Just because you get a chance to learn a lot about locking and how it works on SqlServer. Most of the time, deadlocks can be solved by adding an index. But not this time, this time i discovered something bigger. The client was using WCF as a service tier. By default using transactions on a wcf service or with the use of a TransactionScope your transaction isolationlevel becomes <strong>Serializable</strong> by default.</p>
+<blockquote>
+<p>With a lock-based <a title="Concurrency control" href="http://en.wikipedia.org/wiki/Concurrency_control" target="_blank" rel="noopener">concurrency control</a> DBMS implementation, <a title="Serializability" href="http://en.wikipedia.org/wiki/Serializability" target="_blank" rel="noopener">serializability</a> requires read and write locks (acquired on selected data) to be released at the end of the transaction. Also <em>range-locks</em> must be acquired when a <a title="SELECT" href="http://en.wikipedia.org/wiki/SELECT" target="_blank" rel="noopener">SELECT</a> query uses a ranged <em>WHERE</em> clause, especially to avoid the <strong>phantom reads</strong> phenomenon.</p>
+</blockquote>
+<p>So by default your actions will cause Range locks<a href="[http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/](http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^1</a><a href="[http://blogs.msdn.com/b/sqlserverstorageengine/archive/2006/05/26/range-locks.aspx](http://blogs.msdn.com/b/sqlserverstorageengine/archive/2006/05/26/range-locks.aspx)">^3</a>, which under high load in parallel execution will cause deadlocks and serious scalability issues. Remember that on SqlServer your default isolationlevel is <strong>ReadCommitted</strong>, either by running statements on Management Studio or by using default ITransaction instances.</p>
+<p>I am going to try to prove that TransactionLevel serializable is <strong>unusable</strong> in any SqlServer system that has parallel execution and has a decent to high load. So remember to set it on ReadCommitted whenever you use the TransactionAttribute or use a TransactionScope. You could eventually add the snapshot option by executing following statement:</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> MyDatabase
+<span class="token keyword">SET</span> READ_COMMITTED_SNAPSHOT <span class="token keyword">ON</span></code></pre>
+<h2 id="Test-Setup-for-the-scenario"><a href="#Test-Setup-for-the-scenario" class="headerlink" title="Test Setup for the scenario"></a>Test Setup for the scenario</h2><p>Create two query windows in SqlServer Management Studio, from here indicated by spid 52 and spid 56.<br>To see which locks are issued use following statement in another query window:</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> sys<span class="token punctuation">.</span>dm_tran_locks</code></pre>
+<p>Don’t forget to rollback your transaction on any query window after each scenario:</p>
+<pre class=" language-sql"><code class="language-sql"><span class="token keyword">ROLLBACK</span> <span class="token keyword">TRAN</span></code></pre>
+<h2 id="Scenario-table-with-primary-key"><a href="#Scenario-table-with-primary-key" class="headerlink" title="Scenario: table with primary key"></a>Scenario: table with primary key</h2><h3 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">SCHEMA</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span>
+GO
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Person<span class="token punctuation">]</span>
+<span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">bigint</span><span class="token punctuation">]</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+<span class="token keyword">CONSTRAINT</span> <span class="token punctuation">[</span>PK_Person<span class="token punctuation">]</span> <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span> <span class="token keyword">CLUSTERED</span>
+<span class="token punctuation">(</span>
+  <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token keyword">ASC</span>
+<span class="token punctuation">)</span> <span class="token keyword">WITH</span> <span class="token punctuation">(</span>PAD_INDEX <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">,</span> STATISTICS_NORECOMPUTE <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">,</span> IGNORE_DUP_KEY <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">,</span> ALLOW_ROW_LOCKS <span class="token operator">=</span> <span class="token keyword">ON</span><span class="token punctuation">,</span> ALLOW_PAGE_LOCKS <span class="token operator">=</span> <span class="token keyword">ON</span><span class="token punctuation">)</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span><span class="token keyword">PRIMARY</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span> <span class="token keyword">ON</span> <span class="token punctuation">[</span><span class="token keyword">PRIMARY</span><span class="token punctuation">]</span>
+GO
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Person<span class="token punctuation">]</span> <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Person<span class="token punctuation">]</span> <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+GO</code></pre>
+<h3 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h3><h4 id="spid-52"><a href="#spid-52" class="headerlink" title="spid 52"></a>spid 52</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION LEVEL</span> <span class="token keyword">SERIALIZABLE</span>
+<span class="token keyword">BEGIN</span> <span class="token keyword">TRAN</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Scenario1<span class="token punctuation">.</span>Person <span class="token keyword">where</span> Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+GO</code></pre>
+<p>You will see a RangeS-S<a href="[http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/](http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^2</a> lock on KEY (primary) for spid 52</p>
+<h4 id="spid-56"><a href="#spid-56" class="headerlink" title="spid 56"></a>spid 56</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION LEVEL</span> <span class="token keyword">SERIALIZABLE</span>
+<span class="token keyword">BEGIN</span> <span class="token keyword">TRAN</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Scenario1<span class="token punctuation">.</span>Person <span class="token keyword">where</span> Id <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+GO</code></pre>
+<p>You will see a RangeS-S<a href="[http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/](http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^2</a> lock on the same KEY (primary) for spid 56</p>
+<h4 id="spid-52-1"><a href="#spid-52-1" class="headerlink" title="spid 52"></a>spid 52</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Scenario1<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">Values</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+GO</code></pre>
+<p>You will see a RangeI-N<a href="[http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/](http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^2</a> lock on KEY (primary) for spid 52, because spid 56 holds the range lock, also your query is blocked</p>
+<h4 id="spid-56-1"><a href="#spid-56-1" class="headerlink" title="spid 56"></a>spid 56</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Scenario1<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">Values</span> <span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<blockquote>
+<p>Msg 1205, Level 13, State 48, Line 1<br>Transaction (Process ID 56) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction.</p>
+</blockquote>
+<h3 id="Reasoning"><a href="#Reasoning" class="headerlink" title="Reasoning"></a>Reasoning</h3><p>Well besides from the obvious deadlock what did just happen?</p>
+<p><em>Step 1</em>: Places a RangeS-S lock on the primary key with the range 1-6 (inclusive), because those are the only existing values in the database, if id with value 2 existed a shared lock would have been sufficient. So remember this, if the value does not exist a range lock will be issued. When you got no values greater than the one you selected this behavior will even get worse because an infinite range lock will then be issued.</p>
+<p><em>Step 2</em>: Place exactly the same rangelock on the primary key</p>
+<p><em>Step 3</em>: Waiting on spid56 to release range lock, so that spid 52 can insert a value in the range</p>
+<p><em>Step 4</em>: OMG, what shall i do, sql server cannot guarantee any longer that the values you read are still consistent so you will be the victim.</p>
+<h2 id="Now-why-is-this-unusable-as-i-never-select-before-update"><a href="#Now-why-is-this-unusable-as-i-never-select-before-update" class="headerlink" title="Now why is this unusable, as i never select before update?"></a>Now why is this unusable, as i never select before update?</h2><p>Just be carefull when implementing a OneToMany relationship and loading it eager because it will place a range lock on your foreign key index!</p>
+<p>For instance an order with no orderlines present in the db will instance a range lock on your orderline foreign key index because you will do the following in pseudo:</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">var</span> order <span class="token operator">=</span> orderSet<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>o<span class="token operator">=</span><span class="token operator">></span> o<span class="token punctuation">.</span>Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span><span class="token string">"OrderLines"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Single</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>This would issue a rangelock (depending on the data allready present) on the orderid column index in table orderline.</p>
+<p>If you were using WCF with the TransactionAttribute, remember that wcf only commits the transaction when everything is serialized over the wire!</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>The default IsolationLevel of a <strong>TransactionScope</strong> is Serializable, make an aware choice next time you use it.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/csharp/" rel="tag"># csharp</a>
+              <a href="/tags/database/" rel="tag"># database</a>
+              <a href="/tags/performance/" rel="tag"># performance</a>
+              <a href="/tags/sqlserver/" rel="tag"># sqlserver</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2011/12/18/fluentmigrator-part-ii/" rel="prev" title="FluentMigrator Part II">
+      <i class="fa fa-chevron-left"></i> FluentMigrator Part II
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2012/04/12/take-control-of-your-configuration/" rel="next" title="Take control of your configuration">
+      Take control of your configuration <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Test-Setup-for-the-scenario"><span class="nav-number">1.</span> <span class="nav-text">Test Setup for the scenario</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scenario-table-with-primary-key"><span class="nav-number">2.</span> <span class="nav-text">Scenario: table with primary key</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prerequisites"><span class="nav-number">2.1.</span> <span class="nav-text">Prerequisites</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Steps"><span class="nav-number">2.2.</span> <span class="nav-text">Steps</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#spid-52"><span class="nav-number">2.2.1.</span> <span class="nav-text">spid 52</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spid-56"><span class="nav-number">2.2.2.</span> <span class="nav-text">spid 56</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spid-52-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">spid 52</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spid-56-1"><span class="nav-number">2.2.4.</span> <span class="nav-text">spid 56</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reasoning"><span class="nav-number">2.3.</span> <span class="nav-text">Reasoning</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Now-why-is-this-unusable-as-i-never-select-before-update"><span class="nav-number">3.</span> <span class="nav-text">Now why is this unusable, as i never select before update?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tom Marien</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="http://github.com/tommarien" title="GitHub → http:&#x2F;&#x2F;github.com&#x2F;tommarien" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://twitter.com/Tom_Marien" title="Twitter → http:&#x2F;&#x2F;twitter.com&#x2F;Tom_Marien" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://linkedin.com/in/tommarien" title="LinkedIn → http:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;tommarien" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:tommarien@gmail.com" title="E-Mail → mailto:tommarien@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2011 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Marien</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="Symbols count total">104k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">1:34</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tommarien.github.io/blog/2012/01/30/deadlock-heaven-serializable-isolationlevel/";
+    this.page.identifier = "blog/2012/01/30/deadlock-heaven-serializable-isolationlevel/";
+    this.page.title = "Deadlock heaven: Serializable IsolationLevel";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://tommariengithubio.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:300,300italic,400,400italic,700,700italic,900,900|Montserrat:300,300italic,400,400italic,700,700italic,900,900|Fira Code:300,300italic,400,400italic,700,700italic,900,900&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tommarien.github.io","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="More and more people are taking the ‘There is no database’ statement to it’s limit, i think it’s time to share some insights into how we could let SQLServer help us when investigating performance issu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hitchhiker&#39;s guide to Sql Server">
+<meta property="og:url" content="http://tommarien.github.io/blog/2014/05/19/hitchhikers-guide-to-sql-server/index.html">
+<meta property="og:site_name" content="Hooked.io">
+<meta property="og:description" content="More and more people are taking the ‘There is no database’ statement to it’s limit, i think it’s time to share some insights into how we could let SQLServer help us when investigating performance issu">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-05-19T10:40:30.000Z">
+<meta property="article:modified_time" content="2014-05-19T10:40:30.000Z">
+<meta property="article:author" content="Tom Marien">
+<meta property="article:tag" content="performance">
+<meta property="article:tag" content="sql server">
+<meta property="article:tag" content="tuning">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://tommarien.github.io/blog/2014/05/19/hitchhikers-guide-to-sql-server/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Hitchhiker's guide to Sql Server | Hooked.io</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script pjax>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-50637133-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hooked.io</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/tommarien" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/05/19/hitchhikers-guide-to-sql-server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hitchhiker's guide to Sql Server
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 19, 2014 12:40:30" itemprop="dateCreated datePublished" datetime="2014-05-19T12:40:30+02:00">May 19, 2014</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>More and more people are taking the <strong>‘There is no database’</strong> statement to it’s limit, i think it’s time to share some insights into how we could let SQLServer help us when investigating performance issues.</p>
+<h2 id="Initial-Setup"><a href="#Initial-Setup" class="headerlink" title="Initial Setup"></a>Initial Setup</h2><p>When it comes to performance on SQLServer these are the two most important factors that have a direct impact on system performance:</p>
+<ul>
+<li>Memory</li>
+<li>IO</li>
+</ul>
+<p>As we are running on a filesystem where disk fragmentation is costly and unavoidable, there are some settings to think about when creating a new database:</p>
+<ul>
+<li><strong>Initial Size (MB)</strong>: set this both for data and log to a reasonable size. Don’t start with the defaults of 3 Mb data and 1 Mb log, but instead with about 100 Mb for data and 50 Mb on logs (depending on the recovery model), as increasing the size will impact performance and has a major impact to fragmentation on your hard drive.</li>
+<li><strong>AutoGrowth</strong>: Default is to grow 1 Mb a time, set this to a percentage or at least 1/10 of the initial size.</li>
+</ul>
+<h2 id="While-running"><a href="#While-running" class="headerlink" title="While running"></a>While running</h2><p>Remember SQLServer is your friend, using Actual Query plan while executing a query can give you hints about the underlying problem. But in general if you don’t know where to start you could use built-in statistics:</p>
+<h3 id="Top-25-Missing-indexes"><a href="#Top-25-Missing-indexes" class="headerlink" title="Top 25 Missing indexes"></a>Top 25 Missing indexes</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+   <span class="token keyword">TOP</span> <span class="token number">25</span> dm_mid<span class="token punctuation">.</span>database_id <span class="token keyword">AS</span> DatabaseID<span class="token punctuation">,</span>
+   dm_migs<span class="token punctuation">.</span>avg_user_impact<span class="token operator">*</span><span class="token punctuation">(</span>dm_migs<span class="token punctuation">.</span>user_seeks <span class="token operator">+</span> dm_migs<span class="token punctuation">.</span>user_scans<span class="token punctuation">)</span> Avg_Estimated_Impact<span class="token punctuation">,</span>
+   dm_migs<span class="token punctuation">.</span>last_user_seek <span class="token keyword">AS</span> Last_User_Seek<span class="token punctuation">,</span>
+   OBJECT_NAME<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>OBJECT_ID<span class="token punctuation">,</span> dm_mid<span class="token punctuation">.</span>database_id<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>TableName<span class="token punctuation">]</span><span class="token punctuation">,</span>
+   <span class="token string">'CREATE INDEX [IX_'</span> <span class="token operator">+</span> OBJECT_NAME<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>OBJECT_ID<span class="token punctuation">,</span> dm_mid<span class="token punctuation">.</span>database_id<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'_'</span> <span class="token operator">+</span> REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>ISNULL<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">', '</span><span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+   <span class="token keyword">CASE</span>
+      <span class="token keyword">WHEN</span>
+         dm_mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+         <span class="token operator">AND</span> dm_mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+      <span class="token keyword">THEN</span>
+         <span class="token string">'_'</span>
+      <span class="token keyword">ELSE</span>
+         <span class="token string">''</span>
+   <span class="token keyword">END</span>
+   <span class="token operator">+</span> REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>ISNULL<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">', '</span><span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">']'</span> <span class="token operator">+</span> <span class="token string">' ON '</span> <span class="token operator">+</span> dm_mid<span class="token punctuation">.</span>statement <span class="token operator">+</span> <span class="token string">' ('</span> <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+   <span class="token keyword">CASE</span>
+      <span class="token keyword">WHEN</span>
+         dm_mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+         <span class="token operator">AND</span> dm_mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+      <span class="token keyword">THEN</span>
+         <span class="token string">','</span>
+      <span class="token keyword">ELSE</span>
+         <span class="token string">''</span>
+   <span class="token keyword">END</span>
+   <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">')'</span> <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span><span class="token string">' INCLUDE ('</span> <span class="token operator">+</span> dm_mid<span class="token punctuation">.</span>included_columns <span class="token operator">+</span> <span class="token string">')'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> Create_Statement
+<span class="token keyword">FROM</span>
+   sys<span class="token punctuation">.</span>dm_db_missing_index_groups dm_mig
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats dm_migs
+      <span class="token keyword">ON</span> dm_migs<span class="token punctuation">.</span>group_handle <span class="token operator">=</span> dm_mig<span class="token punctuation">.</span>index_group_handle
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>dm_db_missing_index_details dm_mid
+      <span class="token keyword">ON</span> dm_mig<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> dm_mid<span class="token punctuation">.</span>index_handle
+<span class="token keyword">WHERE</span>
+   dm_mid<span class="token punctuation">.</span>database_ID <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+   Avg_Estimated_Impact <span class="token keyword">DESC</span></code></pre>
+<blockquote>
+<p>This query will output the top 25 missing indexes ordered by estimated impact, look at indexes where the avg estimated impact is above 100000 and are frequently used (Try to avoid the INCLUDE indexes at first).</p>
+</blockquote>
+<p>If the above query does not help you in any way, it could mean that the indexes exist but have been fragmented too much.</p>
+<h3 id="Index-Fragmentation"><a href="#Index-Fragmentation" class="headerlink" title="Index Fragmentation"></a>Index Fragmentation</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+   dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Schema'</span><span class="token punctuation">,</span>
+   dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Table'</span><span class="token punctuation">,</span>
+   dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Index'</span><span class="token punctuation">,</span>
+   indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent<span class="token punctuation">,</span>
+   indexstats<span class="token punctuation">.</span>page_count
+<span class="token keyword">FROM</span>
+   sys<span class="token punctuation">.</span>dm_db_index_physical_stats <span class="token punctuation">(</span>DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> indexstats
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span><span class="token keyword">tables</span> dbtables
+      <span class="token keyword">on</span> dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span> <span class="token operator">=</span> indexstats<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span>
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>schemas dbschemas
+      <span class="token keyword">on</span> dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>schema_id<span class="token punctuation">]</span> <span class="token operator">=</span> dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>schema_id<span class="token punctuation">]</span>
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>indexes <span class="token keyword">AS</span> dbindexes
+      <span class="token keyword">ON</span> dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span> <span class="token operator">=</span> indexstats<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span>
+      <span class="token operator">AND</span> indexstats<span class="token punctuation">.</span>index_id <span class="token operator">=</span> dbindexes<span class="token punctuation">.</span>index_id
+<span class="token keyword">WHERE</span>
+   indexstats<span class="token punctuation">.</span>database_id <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+   indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent <span class="token keyword">desc</span></code></pre>
+<blockquote>
+<p>Look for indexes that have a fragmentation level higher than 30 % and a high page count (by default on sql server the page size is 8K).</p>
+</blockquote>
+<h3 id="Rebuild-Indexes"><a href="#Rebuild-Indexes" class="headerlink" title="Rebuild Indexes"></a>Rebuild Indexes</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">INDEX</span> PK_TABLE
+<span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token keyword">TABLE</span><span class="token punctuation">]</span> REBUILD <span class="token keyword">WITH</span> <span class="token punctuation">(</span><span class="token keyword">FILLFACTOR</span> <span class="token operator">=</span> <span class="token number">90</span> <span class="token punctuation">,</span> STATISTICS_NORECOMPUTE <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">)</span></code></pre>
+<h4 id="FILLFACTOR"><a href="#FILLFACTOR" class="headerlink" title="FILLFACTOR?"></a>FILLFACTOR?</h4><p>Usually, the higher the better (max is 100), but it depends on how often the table changes and what the index contains. Two examples:</p>
+<ul>
+<li>PK on a int identity key, use fill factor 100% as new records are always created at the bottom (normally index fragmentation on these should be low, or a lot of records have been deleted)</li>
+<li>PK on a guid key, use fill factor depending on how often new records are added (start by 80% or 90%) and monitor page splits to fine tune (see query below)</li>
+</ul>
+<h3 id="Monitor-Page-Splits"><a href="#Monitor-Page-Splits" class="headerlink" title="Monitor Page Splits"></a>Monitor Page Splits</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+   Operation<span class="token punctuation">,</span>
+   AllocUnitName<span class="token punctuation">,</span>
+   <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">as</span> NumberofIncidents
+<span class="token keyword">FROM</span>
+   ::fn_dblog<span class="token punctuation">(</span><span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">)</span>
+<span class="token keyword">WHERE</span>
+   Operation <span class="token operator">=</span> N<span class="token string">'LOP_DELETE_SPLIT'</span>
+<span class="token keyword">GROUP</span> <span class="token keyword">BY</span>
+   Operation<span class="token punctuation">,</span>
+   AllocUnitName</code></pre>
+<h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
+<li><a href="https://www.simple-talk.com/sql/learn-sql-server/effective-clustered-indexes" target="_blank" rel="noopener">Effective Clustered Indexes</a></li>
+<li><a href="http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes" target="_blank" rel="noopener">http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/performance/" rel="tag"># performance</a>
+              <a href="/tags/sql-server/" rel="tag"># sql server</a>
+              <a href="/tags/tuning/" rel="tag"># tuning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2014/03/17/javascript-by-convention/" rel="prev" title="Javascript by convention">
+      <i class="fa fa-chevron-left"></i> Javascript by convention
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2014/07/12/shouldly-how-assertions-should-have-been/" rel="next" title="Shouldly: how assertions should have been all along">
+      Shouldly: how assertions should have been all along <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Initial-Setup"><span class="nav-number">1.</span> <span class="nav-text">Initial Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#While-running"><span class="nav-number">2.</span> <span class="nav-text">While running</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Top-25-Missing-indexes"><span class="nav-number">2.1.</span> <span class="nav-text">Top 25 Missing indexes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index-Fragmentation"><span class="nav-number">2.2.</span> <span class="nav-text">Index Fragmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rebuild-Indexes"><span class="nav-number">2.3.</span> <span class="nav-text">Rebuild Indexes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FILLFACTOR"><span class="nav-number">2.3.1.</span> <span class="nav-text">FILLFACTOR?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Monitor-Page-Splits"><span class="nav-number">2.4.</span> <span class="nav-text">Monitor Page Splits</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Further-reading"><span class="nav-number">3.</span> <span class="nav-text">Further reading</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tom Marien</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="http://github.com/tommarien" title="GitHub → http:&#x2F;&#x2F;github.com&#x2F;tommarien" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://twitter.com/Tom_Marien" title="Twitter → http:&#x2F;&#x2F;twitter.com&#x2F;Tom_Marien" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://linkedin.com/in/tommarien" title="LinkedIn → http:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;tommarien" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>LinkedIn</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:tommarien@gmail.com" title="E-Mail → mailto:tommarien@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2011 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tom Marien</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="Symbols count total">104k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">1:34</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      script.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tommarien.github.io/blog/2014/05/19/hitchhikers-guide-to-sql-server/";
+    this.page.identifier = "blog/2014/05/19/hitchhikers-guide-to-sql-server/";
+    this.page.title = "Hitchhiker's guide to Sql Server";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://tommariengithubio.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>
