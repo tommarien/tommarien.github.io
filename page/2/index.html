@@ -165,6 +165,178 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/05/19/hitchhikers-guide-to-sql-server/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2014/05/19/hitchhikers-guide-to-sql-server/" class="post-title-link" itemprop="url">Hitchhiker's guide to Sql Server</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 19, 2014 12:40:30" itemprop="dateCreated datePublished" datetime="2014-05-19T12:40:30+02:00">May 19, 2014</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>More and more people are taking the <strong>‘There is no database’</strong> statement to it’s limit, i think it’s time to share some insights into how we could let SQLServer help us when investigating performance issues.</p>
+<h2 id="Initial-Setup"><a href="#Initial-Setup" class="headerlink" title="Initial Setup"></a>Initial Setup</h2><p>When it comes to performance on SQLServer these are the two most important factors that have a direct impact on system performance:</p>
+<ul>
+<li>Memory</li>
+<li>IO</li>
+</ul>
+<p>As we are running on a filesystem where disk fragmentation is costly and unavoidable, there are some settings to think about when creating a new database:</p>
+<ul>
+<li><strong>Initial Size (MB)</strong>: set this both for data and log to a reasonable size. Don’t start with the defaults of 3 Mb data and 1 Mb log, but instead with about 100 Mb for data and 50 Mb on logs (depending on the recovery model), as increasing the size will impact performance and has a major impact to fragmentation on your hard drive.</li>
+<li><strong>AutoGrowth</strong>: Default is to grow 1 Mb a time, set this to a percentage or at least 1/10 of the initial size.</li>
+</ul>
+<h2 id="While-running"><a href="#While-running" class="headerlink" title="While running"></a>While running</h2><p>Remember SQLServer is your friend, using Actual Query plan while executing a query can give you hints about the underlying problem. But in general if you don’t know where to start you could use built-in statistics:</p>
+<h3 id="Top-25-Missing-indexes"><a href="#Top-25-Missing-indexes" class="headerlink" title="Top 25 Missing indexes"></a>Top 25 Missing indexes</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+   <span class="token keyword">TOP</span> <span class="token number">25</span> dm_mid<span class="token punctuation">.</span>database_id <span class="token keyword">AS</span> DatabaseID<span class="token punctuation">,</span>
+   dm_migs<span class="token punctuation">.</span>avg_user_impact<span class="token operator">*</span><span class="token punctuation">(</span>dm_migs<span class="token punctuation">.</span>user_seeks <span class="token operator">+</span> dm_migs<span class="token punctuation">.</span>user_scans<span class="token punctuation">)</span> Avg_Estimated_Impact<span class="token punctuation">,</span>
+   dm_migs<span class="token punctuation">.</span>last_user_seek <span class="token keyword">AS</span> Last_User_Seek<span class="token punctuation">,</span>
+   OBJECT_NAME<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>OBJECT_ID<span class="token punctuation">,</span> dm_mid<span class="token punctuation">.</span>database_id<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>TableName<span class="token punctuation">]</span><span class="token punctuation">,</span>
+   <span class="token string">'CREATE INDEX [IX_'</span> <span class="token operator">+</span> OBJECT_NAME<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>OBJECT_ID<span class="token punctuation">,</span> dm_mid<span class="token punctuation">.</span>database_id<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'_'</span> <span class="token operator">+</span> REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>ISNULL<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">', '</span><span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+   <span class="token keyword">CASE</span>
+      <span class="token keyword">WHEN</span>
+         dm_mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+         <span class="token operator">AND</span> dm_mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+      <span class="token keyword">THEN</span>
+         <span class="token string">'_'</span>
+      <span class="token keyword">ELSE</span>
+         <span class="token string">''</span>
+   <span class="token keyword">END</span>
+   <span class="token operator">+</span> REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>REPLACE<span class="token punctuation">(</span>ISNULL<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">', '</span><span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">']'</span> <span class="token operator">+</span> <span class="token string">' ON '</span> <span class="token operator">+</span> dm_mid<span class="token punctuation">.</span>statement <span class="token operator">+</span> <span class="token string">' ('</span> <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+   <span class="token keyword">CASE</span>
+      <span class="token keyword">WHEN</span>
+         dm_mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+         <span class="token operator">AND</span> dm_mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
+      <span class="token keyword">THEN</span>
+         <span class="token string">','</span>
+      <span class="token keyword">ELSE</span>
+         <span class="token string">''</span>
+   <span class="token keyword">END</span>
+   <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">')'</span> <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span><span class="token string">' INCLUDE ('</span> <span class="token operator">+</span> dm_mid<span class="token punctuation">.</span>included_columns <span class="token operator">+</span> <span class="token string">')'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> Create_Statement
+<span class="token keyword">FROM</span>
+   sys<span class="token punctuation">.</span>dm_db_missing_index_groups dm_mig
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats dm_migs
+      <span class="token keyword">ON</span> dm_migs<span class="token punctuation">.</span>group_handle <span class="token operator">=</span> dm_mig<span class="token punctuation">.</span>index_group_handle
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>dm_db_missing_index_details dm_mid
+      <span class="token keyword">ON</span> dm_mig<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> dm_mid<span class="token punctuation">.</span>index_handle
+<span class="token keyword">WHERE</span>
+   dm_mid<span class="token punctuation">.</span>database_ID <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+   Avg_Estimated_Impact <span class="token keyword">DESC</span></code></pre>
+<blockquote>
+<p>This query will output the top 25 missing indexes ordered by estimated impact, look at indexes where the avg estimated impact is above 100000 and are frequently used (Try to avoid the INCLUDE indexes at first).</p>
+</blockquote>
+<p>If the above query does not help you in any way, it could mean that the indexes exist but have been fragmented too much.</p>
+<h3 id="Index-Fragmentation"><a href="#Index-Fragmentation" class="headerlink" title="Index Fragmentation"></a>Index Fragmentation</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+   dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Schema'</span><span class="token punctuation">,</span>
+   dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Table'</span><span class="token punctuation">,</span>
+   dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Index'</span><span class="token punctuation">,</span>
+   indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent<span class="token punctuation">,</span>
+   indexstats<span class="token punctuation">.</span>page_count
+<span class="token keyword">FROM</span>
+   sys<span class="token punctuation">.</span>dm_db_index_physical_stats <span class="token punctuation">(</span>DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> indexstats
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span><span class="token keyword">tables</span> dbtables
+      <span class="token keyword">on</span> dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span> <span class="token operator">=</span> indexstats<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span>
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>schemas dbschemas
+      <span class="token keyword">on</span> dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>schema_id<span class="token punctuation">]</span> <span class="token operator">=</span> dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>schema_id<span class="token punctuation">]</span>
+   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span>
+      sys<span class="token punctuation">.</span>indexes <span class="token keyword">AS</span> dbindexes
+      <span class="token keyword">ON</span> dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span> <span class="token operator">=</span> indexstats<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span>
+      <span class="token operator">AND</span> indexstats<span class="token punctuation">.</span>index_id <span class="token operator">=</span> dbindexes<span class="token punctuation">.</span>index_id
+<span class="token keyword">WHERE</span>
+   indexstats<span class="token punctuation">.</span>database_id <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
+   indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent <span class="token keyword">desc</span></code></pre>
+<blockquote>
+<p>Look for indexes that have a fragmentation level higher than 30 % and a high page count (by default on sql server the page size is 8K).</p>
+</blockquote>
+<h3 id="Rebuild-Indexes"><a href="#Rebuild-Indexes" class="headerlink" title="Rebuild Indexes"></a>Rebuild Indexes</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">INDEX</span> PK_TABLE
+<span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token keyword">TABLE</span><span class="token punctuation">]</span> REBUILD <span class="token keyword">WITH</span> <span class="token punctuation">(</span><span class="token keyword">FILLFACTOR</span> <span class="token operator">=</span> <span class="token number">90</span> <span class="token punctuation">,</span> STATISTICS_NORECOMPUTE <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">)</span></code></pre>
+<h4 id="FILLFACTOR"><a href="#FILLFACTOR" class="headerlink" title="FILLFACTOR?"></a>FILLFACTOR?</h4><p>Usually, the higher the better (max is 100), but it depends on how often the table changes and what the index contains. Two examples:</p>
+<ul>
+<li>PK on a int identity key, use fill factor 100% as new records are always created at the bottom (normally index fragmentation on these should be low, or a lot of records have been deleted)</li>
+<li>PK on a guid key, use fill factor depending on how often new records are added (start by 80% or 90%) and monitor page splits to fine tune (see query below)</li>
+</ul>
+<h3 id="Monitor-Page-Splits"><a href="#Monitor-Page-Splits" class="headerlink" title="Monitor Page Splits"></a>Monitor Page Splits</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+   Operation<span class="token punctuation">,</span>
+   AllocUnitName<span class="token punctuation">,</span>
+   <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">as</span> NumberofIncidents
+<span class="token keyword">FROM</span>
+   ::fn_dblog<span class="token punctuation">(</span><span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">)</span>
+<span class="token keyword">WHERE</span>
+   Operation <span class="token operator">=</span> N<span class="token string">'LOP_DELETE_SPLIT'</span>
+<span class="token keyword">GROUP</span> <span class="token keyword">BY</span>
+   Operation<span class="token punctuation">,</span>
+   AllocUnitName</code></pre>
+<h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
+<li><a href="https://www.simple-talk.com/sql/learn-sql-server/effective-clustered-indexes" target="_blank" rel="noopener">Effective Clustered Indexes</a></li>
+<li><a href="http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes" target="_blank" rel="noopener">http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/03/17/javascript-by-convention/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1605,91 +1777,6 @@ container<span class="token punctuation">.</span><span class="token generic-meth
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2012/10/05/what-does-it-mean-to-be-agile/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Tom Marien">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hooked.io">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/blog/2012/10/05/what-does-it-mean-to-be-agile/" class="post-title-link" itemprop="url">What does it mean to be agile?</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: Oct 5, 2012 22:30:00" itemprop="dateCreated datePublished" datetime="2012-10-05T22:30:00+02:00">Oct 5, 2012</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.1k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>According to the thesaurus, agile or agility, is a term to describe ease of movement. It can consist out of speed, flexibility or quick thinking.</p>
-<p>When we use the term Agile in software development, we think of all the buzzwords surrounding it: Scrum, closure, startup, iteration, standup, retrospective …</p>
-<p>But is it truly enough to know all those technical terms and iterate the same process over and over again?</p>
-<ul>
-<li>Every x week(s) (iteration), closure and startup</li>
-<li>Every day a standup</li>
-<li>Once in a month a retrospective</li>
-</ul>
-<p>Does your daily standup sounds like this: “Yesterday, i did task x, today I’ll continue on this…”</p>
-<p>Is your closure/startup taking up hours or even days and exhausting you?</p>
-<p>Does your retrospective reminds you of laying on a sofa while your shrink asks you how you feel?</p>
-<p>All of these techniques are profound and can help your team to become agile, but why is it not working or just not feeling right?<br>Because somewhere along the way, Agile lost his agility. It became a mantra we do without even thinking about the really important concepts underneath.</p>
-<p>The basic concepts are <strong>communication</strong>, <strong>collaboration</strong>, <strong>growth/evolution</strong> and the ability to <strong>adapt quickly</strong> to a situation!</p>
-<p>If Agile does not seem to fit your team, allow it to grow, evolve. So it may gain back its agility and maybe then, your team can reach his full potential.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1760,7 +1847,7 @@ container<span class="token punctuation">.</span><span class="token generic-meth
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1815,12 +1902,12 @@ container<span class="token punctuation">.</span><span class="token generic-meth
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">104k</span>
+    <span title="Symbols count total">105k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:34</span>
+    <span title="Reading time total">1:36</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
   </div>

@@ -20,15 +20,20 @@
     var CONFIG = {"hostname":"tommarien.github.io","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hooked.io">
-<meta property="og:url" content="http://tommarien.github.io/tags/career/index.html">
+  <meta name="description" content="As Javascript continues to be one of the most misunderstood languages on the planet, of which you could find evidence all over the web. One of my personal favorites is the the lightning Wat talk by Ga">
+<meta property="og:type" content="article">
+<meta property="og:title" content="From undefined to zero">
+<meta property="og:url" content="http://tommarien.github.io/blog/2020/03/02/from-undefined-to-zero/index.html">
 <meta property="og:site_name" content="Hooked.io">
+<meta property="og:description" content="As Javascript continues to be one of the most misunderstood languages on the planet, of which you could find evidence all over the web. One of my personal favorites is the the lightning Wat talk by Ga">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-03-02T13:53:15.000Z">
+<meta property="article:modified_time" content="2020-03-02T13:53:15.000Z">
 <meta property="article:author" content="Tom Marien">
+<meta property="article:tag" content="javascript">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://tommarien.github.io/tags/career/">
+<link rel="canonical" href="http://tommarien.github.io/blog/2020/03/02/from-undefined-to-zero/">
 
 
 <script id="page-configurations">
@@ -36,11 +41,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false
+    isPost: true
   };
 </script>
 
-  <title>Tag: career | Hooked.io</title>
+  <title>From undefined to zero | Hooked.io</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
     <script pjax>
@@ -160,54 +165,133 @@
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">career
-          <small>Tag</small>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2020/03/02/from-undefined-to-zero/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          From undefined to zero
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 2, 2020 14:53:15" itemprop="dateCreated datePublished" datetime="2020-03-02T14:53:15+01:00">Mar 2, 2020</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
+        <p>As <strong>Javascript</strong> continues to be one of the most misunderstood languages on the planet, of which you could find evidence all over the web. One of my personal favorites is the the <a href="https://www.destroyallsoftware.com/talks/wat" target="_blank" rel="noopener">lightning Wat talk by Gary Bernhardt</a>.</p>
+<p>Lately i’ve begun to realize the underlying beauty of the language and i felt the need to blog about it.</p>
+<p>We’ll start with two <a href="https://developer.mozilla.org/en-US/docs/Glossary/Primitive" target="_blank" rel="noopener">primitives</a>, <code>undefined</code> and <code>null</code>. Why do they exist both and what differentiates them?</p>
+<h2 id="undefined"><a href="#undefined" class="headerlink" title="undefined"></a><code>undefined</code></h2><p>The value that gets assigned to unassigned declared variables or to <code>function</code> parameters that are missing.</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 1. Unassigned variable</span>
+<span class="token keyword">let</span> variable<span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>variable<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// => undefined</span>
+
+<span class="token comment" spellcheck="true">// 2. Missing function parameter</span>
+<span class="token keyword">function</span> <span class="token function">greet</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token function">greet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// => undefined</span></code></pre>
+<h2 id="null"><a href="#null" class="headerlink" title="null"></a><code>null</code></h2><p>Represents the <strong>intentional</strong> absence of a value, it’s a semantical difference.</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> notDotted <span class="token operator">=</span> <span class="token string">'googlebe'</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>notDotted<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex">/\w+\.\w+/</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// => null</span></code></pre>
+<h2 id="Are-they-equal"><a href="#Are-they-equal" class="headerlink" title="Are they equal?"></a>Are they equal?</h2><pre class=" language-js"><code class="language-js">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>undefined <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// => false</span></code></pre>
+<p>So strictly speaking they are different, which we could have expected. But they do have <strong>the same meaning</strong> so:</p>
+<pre class=" language-js"><code class="language-js">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>undefined <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// => true</span></code></pre>
+<h2 id="Falsy"><a href="#Falsy" class="headerlink" title="Falsy"></a>Falsy</h2><p>Luckily they both evaluate to false, otherwise we would have to write the following code:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">let</span> user<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 👎 If they didn't evaluate to false</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>user <span class="token operator">!==</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> user <span class="token operator">!==</span> undefined<span class="token punctuation">)</span> user<span class="token punctuation">.</span><span class="token function">rename</span><span class="token punctuation">(</span><span class="token string">'John'</span><span class="token punctuation">,</span> <span class="token string">'Doe'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 👍 Thank god</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>user<span class="token punctuation">)</span> user<span class="token punctuation">.</span><span class="token function">rename</span><span class="token punctuation">(</span><span class="token string">'John'</span><span class="token punctuation">,</span> <span class="token string">'Doe'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Concepts like <a href="https://developer.mozilla.org/nl/docs/Glossary/Falsy" target="_blank" rel="noopener">falsy</a>, <a href="https://developer.mozilla.org/nl/docs/Glossary/Type_coercion" target="_blank" rel="noopener">type coercion</a> start to make a whole lot of sense, if you try to understand the problems they try to fix.</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-03-28T20:37:44+01:00"
-              content="Mar 28, 2019">
-          03-28
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"># javascript</a>
+          </div>
 
-      <h2 class="post-title">
-          <a class="post-title-link" href="/blog/2019/03/28/what-happened-to-me/" itemprop="url">
-            <span itemprop="name">What happened to me?</span>
-          </a>
-      </h2>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/02/10/outsource-that-data-testid/" rel="prev" title="Outsource that data-testid!">
+      <i class="fa fa-chevron-left"></i> Outsource that data-testid!
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -254,6 +338,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">undefined</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">2.</span> <span class="nav-text">null</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Are-they-equal"><span class="nav-number">3.</span> <span class="nav-text">Are they equal?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Falsy"><span class="nav-number">4.</span> <span class="nav-text">Falsy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">5.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -446,6 +531,26 @@ window.addEventListener('pjax:success', () => {
 
   
 
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://tommarien.github.io/blog/2020/03/02/from-undefined-to-zero/";
+    this.page.identifier = "blog/2020/03/02/from-undefined-to-zero/";
+    this.page.title = "From undefined to zero";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://tommariengithubio.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
 
     </div>
 </body>
