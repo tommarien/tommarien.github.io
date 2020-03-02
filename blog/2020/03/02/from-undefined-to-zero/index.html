@@ -202,7 +202,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.3k</span>
+              <span>1.4k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -244,12 +244,15 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <h2 id="Falsy"><a href="#Falsy" class="headerlink" title="Falsy"></a>Falsy</h2><p>Luckily they both evaluate to false, otherwise we would have to write the following code:</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">let</span> user<span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">// 👎 If they didn't evaluate to false</span>
+<span class="token comment" spellcheck="true">// 💩 If they didn't evaluate to false and without ==</span>
 <span class="token keyword">if</span> <span class="token punctuation">(</span>user <span class="token operator">!==</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> user <span class="token operator">!==</span> undefined<span class="token punctuation">)</span> user<span class="token punctuation">.</span><span class="token function">rename</span><span class="token punctuation">(</span><span class="token string">'John'</span><span class="token punctuation">,</span> <span class="token string">'Doe'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token comment" spellcheck="true">// 👍 Thank god</span>
+<span class="token comment" spellcheck="true">// 💪 With == (type coercion)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>user <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> user<span class="token punctuation">.</span><span class="token function">rename</span><span class="token punctuation">(</span><span class="token string">'John'</span><span class="token punctuation">,</span> <span class="token string">'Doe'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 🙏 Thanks to evaluate to false (falsy)</span>
 <span class="token keyword">if</span> <span class="token punctuation">(</span>user<span class="token punctuation">)</span> user<span class="token punctuation">.</span><span class="token function">rename</span><span class="token punctuation">(</span><span class="token string">'John'</span><span class="token punctuation">,</span> <span class="token string">'Doe'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Concepts like <a href="https://developer.mozilla.org/nl/docs/Glossary/Falsy" target="_blank" rel="noopener">falsy</a>, <a href="https://developer.mozilla.org/nl/docs/Glossary/Type_coercion" target="_blank" rel="noopener">type coercion</a> start to make a whole lot of sense, if you try to understand the problems they fix.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Concepts like <a href="https://developer.mozilla.org/nl/docs/Glossary/Type_coercion" target="_blank" rel="noopener">type coercion</a> and <a href="https://developer.mozilla.org/nl/docs/Glossary/Falsy" target="_blank" rel="noopener">falsy</a> start to make a whole lot of sense if you look at the problems they fix.</p>
 
     </div>
 
