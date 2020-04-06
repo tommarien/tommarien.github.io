@@ -240,7 +240,7 @@
 <p>Let’s make it as ‘fugly’ as we can:</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IAuthenticationService</span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">bool</span> <span class="token function">Authenticate</span><span class="token punctuation">(</span><span class="token keyword">string</span> user<span class="token punctuation">,</span> <span class="token keyword">string</span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Authenticate</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> user<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
 <p>If we start with the simplest thing we could go for a test class called AuthenticationServiceTests. But that would quickly become a big ball of mud as we start thinking about the possible tests:</p>
 <ul>
@@ -252,21 +252,21 @@
 <li>Authenticating with an unconfirmed registered user throws a business exception</li>
 <li>…</li>
 </ul>
-<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span>TestFixture<span class="token punctuation">]</span>
+<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_user_logs_on_using_username_and_password</span>
 <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span>Test<span class="token punctuation">]</span>
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">it_returns_true</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_returns_true</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
   <span class="token punctuation">}</span>
 
-  <span class="token punctuation">[</span>Test<span class="token punctuation">]</span>
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">it_resets_failed_logon_attempts</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_resets_failed_logon_attempts</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
   <span class="token punctuation">}</span>
 
-  <span class="token punctuation">[</span>Test<span class="token punctuation">]</span>
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">it_updates_last_logon</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_updates_last_logon</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
@@ -278,11 +278,11 @@
 </ul>
 <p>Now what happens if we logon with an unknown user, mmm, this seems database oriented, if the record does not exist in the database, the user can not login. But in real life it could mean that the user just did not register on our site or forgot his logon credentials!</p>
 <p>So you might go for this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span>TestFixture<span class="token punctuation">]</span>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_an_unknown_or_unregistered_user_logs_on</span>
 <span class="token punctuation">{</span>
-    <span class="token punctuation">[</span>Test<span class="token punctuation">]</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">it_indicates_failure</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_indicates_failure</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
     <span class="token punctuation">{</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>

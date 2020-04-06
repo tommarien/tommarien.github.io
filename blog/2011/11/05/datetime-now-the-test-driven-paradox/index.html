@@ -233,19 +233,19 @@
     CreatedDate <span class="token operator">=</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> DateTime CreatedDate <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> CreatedDate <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <p>So how would I be able to test the fact that when I create a new order, the <em>CreatedDate</em> is filled in with the value of <strong>DateTime.Now</strong>.</p>
 <p>The only thing i could test for is if the <em>CreatedDate</em> is not null.  But that would be a lousy test because the code in the <em>Order</em> constructor could also be setting the <em>CreatedDate</em> to a given date (01/01/1830).</p>
 <h2 id="Proposed-Solution-1"><a href="#Proposed-Solution-1" class="headerlink" title="Proposed Solution 1"></a>Proposed Solution 1</h2><p>Creating an interface (for instance ISystemClock) with off course the implementation</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ISystemClock</span>
 <span class="token punctuation">{</span>
-  DateTime <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token return-type class-name">DateTime</span> <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RealSystemClock</span> <span class="token punctuation">:</span> ISystemClock
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RealSystemClock</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ISystemClock</span></span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> DateTime <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     <span class="token keyword">return</span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
@@ -253,24 +253,24 @@
 <p>Although it allows the dependency to be  mocked in unit tests, it would make the <em>Order</em> code look like this, which feels a little strange</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Order</span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token function">Order</span><span class="token punctuation">(</span>ISystemClock clock<span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token function">Order</span><span class="token punctuation">(</span><span class="token class-name">ISystemClock</span> clock<span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     CreatedDate <span class="token operator">=</span> clock<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> DateTime CreatedDate <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">DateTime</span> CreatedDate <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <h2 id="Proposed-Solution-2"><a href="#Proposed-Solution-2" class="headerlink" title="Proposed Solution 2"></a>Proposed Solution 2</h2><p>Wrap the <em>ISystemClock</em> into a static class which allows changing the implementation:</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SystemClock</span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">private</span> <span class="token keyword">static</span> ISystemClock Clock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RealSystemClock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">ISystemClock</span> Clock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">RealSystemClock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">static</span> DateTime Now
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">DateTime</span> Now
   <span class="token punctuation">{</span>
     <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> Clock<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">Set</span><span class="token punctuation">(</span>ISystemClock clock<span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Set</span><span class="token punctuation">(</span><span class="token class-name">ISystemClock</span> clock<span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     Clock <span class="token operator">=</span> clock<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
@@ -286,21 +286,21 @@
 <h2 id="Proposed-Solution-3"><a href="#Proposed-Solution-3" class="headerlink" title="Proposed Solution 3"></a>Proposed Solution 3</h2><p>Expose <strong>DateTime.Now</strong> as an instance of  a function, that can be replaced in tests , this is <a href="http://ayende.com/blog/3408/dealing-with-time-in-tests" target="_blank" rel="noopener" title="Ayende&#39;s SystemTime">Ayende’s</a> solution:</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SystemTime</span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">static</span> Func<span class="token operator">&lt;</span>DateTime<span class="token operator">></span> Now <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token class-name">Func<span class="token punctuation">&lt;</span>DateTime<span class="token punctuation">></span></span> Now <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
 <p>Although i like the simplicity of this solution, this is just a simplification of the code in Solution 2. I think most of the remarks of solution 2 also counts for this beauty, which can also be seen in the comments on Ayende’s blog.</p>
 <h2 id="Proposed-Solution-4"><a href="#Proposed-Solution-4" class="headerlink" title="Proposed Solution 4"></a>Proposed Solution 4</h2><p>Let’s alter Ayende’s solution and tackle the first problem: Thread Safety</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SystemClock</span>
 <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span>ThreadStatic<span class="token punctuation">]</span>
-  <span class="token keyword">private</span> <span class="token keyword">static</span> Func provider<span class="token punctuation">;</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ThreadStatic</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">Func</span> provider<span class="token punctuation">;</span>
 
-  <span class="token keyword">private</span> <span class="token keyword">static</span> Func<span class="token operator">&lt;</span>DateTime<span class="token operator">></span> Provider
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name">Func<span class="token punctuation">&lt;</span>DateTime<span class="token punctuation">></span></span> Provider
   <span class="token punctuation">{</span>
-    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> provider <span class="token operator">?</span><span class="token operator">?</span> <span class="token punctuation">(</span>provider <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> provider <span class="token operator">??</span> <span class="token punctuation">(</span>provider <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">static</span> DateTime <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">DateTime</span> <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token function">Provider</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
@@ -308,53 +308,53 @@
 <p>Ok, this seems to solve the problem, but it removed the ability to mock our <strong>DateTime.Now</strong>. Let’s solve this by adding a method that returns a <a href="http://ayende.com/blog/890/the-ultimate-disposable" target="_blank" rel="noopener" title="DisposableAction">DisposableAction</a>, that could be used in our testing.</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SystemClock</span>
 <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span>ThreadStatic<span class="token punctuation">]</span>
-  <span class="token keyword">private</span> <span class="token keyword">static</span> Func provider<span class="token punctuation">;</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ThreadStatic</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">Func</span> provider<span class="token punctuation">;</span>
 
-  <span class="token keyword">private</span> <span class="token keyword">static</span> Func<span class="token operator">&lt;</span>DateTime<span class="token operator">></span> Provider
+  <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name">Func<span class="token punctuation">&lt;</span>DateTime<span class="token punctuation">></span></span> Provider
   <span class="token punctuation">{</span>
-    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> provider <span class="token operator">?</span><span class="token operator">?</span> <span class="token punctuation">(</span>provider <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> provider <span class="token operator">??</span> <span class="token punctuation">(</span>provider <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> DateTime<span class="token punctuation">.</span>Now<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">static</span> DateTime <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">DateTime</span> <span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token function">Provider</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">static</span> IDisposable <span class="token function">Frozen</span><span class="token punctuation">(</span>DateTime pointInTime<span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IDisposable</span> <span class="token function">Frozen</span><span class="token punctuation">(</span><span class="token class-name">DateTime</span> pointInTime<span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
-    <span class="token keyword">var</span> <span class="token keyword">value</span> <span class="token operator">=</span> Provider<span class="token punctuation">;</span>
-    <span class="token keyword">var</span> undo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DisposableAction</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> provider <span class="token operator">=</span> <span class="token keyword">value</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    provider <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> pointInTime<span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> <span class="token keyword">value</span> <span class="token operator">=</span> Provider<span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> undo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DisposableAction</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> provider <span class="token operator">=</span> <span class="token keyword">value</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    provider <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> pointInTime<span class="token punctuation">;</span>
     <span class="token keyword">return</span> undo<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DisposableAction</span> <span class="token punctuation">:</span> IDisposable
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DisposableAction</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IDisposable</span></span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">private</span> <span class="token keyword">readonly</span> Action action<span class="token punctuation">;</span>
-  <span class="token keyword">private</span> <span class="token keyword">bool</span> isDisposed<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">Action</span> action<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">bool</span></span> isDisposed<span class="token punctuation">;</span>
 
-  <span class="token keyword">public</span> <span class="token function">DisposableAction</span><span class="token punctuation">(</span>Action action<span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token function">DisposableAction</span><span class="token punctuation">(</span><span class="token class-name">Action</span> action<span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>action <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ArgumentNullException</span><span class="token punctuation">(</span><span class="token string">"action"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>action <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ArgumentNullException</span><span class="token punctuation">(</span><span class="token string">"action"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">this</span><span class="token punctuation">.</span>action <span class="token operator">=</span> action<span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Dispose</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Dispose</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>isDisposed<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
     <span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    isDisposed <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+    isDisposed <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <p>As the <em>SystemClock</em>.<strong>Frozen</strong> method returns a IDisposable, it would auto-cleanup during testing and allows a very discriptive way of testing</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span>Test<span class="token punctuation">]</span>
-<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">Should_set_the_createddate_to_systemclock_now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Should_set_the_createddate_to_systemclock_now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">using</span> <span class="token punctuation">(</span>SystemClock<span class="token punctuation">.</span><span class="token function">Frozen</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">2001</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">using</span> <span class="token punctuation">(</span>SystemClock<span class="token punctuation">.</span><span class="token function">Frozen</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">DateTime</span><span class="token punctuation">(</span><span class="token number">2001</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
-    <span class="token keyword">var</span> order <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Order</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name"><span class="token keyword">var</span></span> order <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Order</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     Assert<span class="token punctuation">.</span><span class="token function">AreEqual</span><span class="token punctuation">(</span>SystemClock<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> order<span class="token punctuation">.</span>CreatedDate<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>

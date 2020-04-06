@@ -245,15 +245,15 @@
 <li>Add a class library project and install trough Nuget the FluentMigrator Package.</li>
 <li>Add a new class call it whatever you want and add a MigrationAttribute to it and inherit from migration</li>
 </ul>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> FluentMigrator<span class="token punctuation">;</span>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 
-<span class="token punctuation">[</span><span class="token function">Migration</span><span class="token punctuation">(</span><span class="token number">201112091827</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0001_Add_Person</span> <span class="token punctuation">:</span> Migration
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Migration</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">201112091827</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0001_Add_Person</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Migration</span></span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token keyword">string</span> SchemaName <span class="token operator">=</span> <span class="token string">"Personalia"</span><span class="token punctuation">;</span>
-  <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token keyword">string</span> TableName <span class="token operator">=</span> <span class="token string">"Person"</span><span class="token punctuation">;</span>
+  <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> SchemaName <span class="token operator">=</span> <span class="token string">"Personalia"</span><span class="token punctuation">;</span>
+  <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> TableName <span class="token operator">=</span> <span class="token string">"Person"</span><span class="token punctuation">;</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token keyword">void</span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     Create<span class="token punctuation">.</span><span class="token function">Schema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
     Create<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span>
@@ -264,7 +264,7 @@
 
     Create<span class="token punctuation">.</span><span class="token function">Index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OnTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OnColumn</span><span class="token punctuation">(</span><span class="token string">"Email"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Unique</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token keyword">void</span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
     Delete<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
     Delete<span class="token punctuation">.</span><span class="token function">Schema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -274,7 +274,7 @@
 <li>Add an app.config file for it and add a named connectionstring to your configuration, i called it “Dummy”, create the referenced database on your sql server.</li>
 <li>Build your class library, open up a command prompt and type (depending on your location of your libraries, dbtype etc)</li>
 </ul>
-<pre class=" language-shell"><code class="language-shell">..\Lib\Migrate.exe -a ..\Blog.Migrations\bin\Debug\Blog.Migrations.dll -db SqlServer2008 -conn "Dummy"</code></pre>
+<pre class=" language-shell"><code class="language-shell"><span class="token punctuation">..</span><span class="token punctuation">\</span>Lib<span class="token punctuation">\</span>Migrate.exe -a <span class="token punctuation">..</span><span class="token punctuation">\</span>Blog.Migrations<span class="token punctuation">\</span>bin<span class="token punctuation">\</span>Debug<span class="token punctuation">\</span>Blog.Migrations.dll -db SqlServer2008 -conn <span class="token string">"Dummy"</span></code></pre>
 <ul>
 <li>And press “enter”</li>
 </ul>
@@ -288,25 +288,25 @@
 </ul>
 <p>In the table VersionInfo there will be a record with in our situation the number 201112091827 in it, which is basicly the version specified in the migration attribute in the format of YYYYMMDDHHMM, you could also use 1 but if you are in a team i’d suggest using a timestamped version number, which has a low conflict chance.</p>
 <p>So let’s try to undo it (command prompt):</p>
-<pre class=" language-shell"><code class="language-shell">..\Lib\Migrate.exe -a ..\Blog.Migrations\bin\Debug\Blog.Migrations.dll -db SqlServer2008 -conn "Dummy" -task rollback:all</code></pre>
+<pre class=" language-shell"><code class="language-shell"><span class="token punctuation">..</span><span class="token punctuation">\</span>Lib<span class="token punctuation">\</span>Migrate.exe -a <span class="token punctuation">..</span><span class="token punctuation">\</span>Blog.Migrations<span class="token punctuation">\</span>bin<span class="token punctuation">\</span>Debug<span class="token punctuation">\</span>Blog.Migrations.dll -db SqlServer2008 -conn <span class="token string">"Dummy"</span> -task rollback:all</code></pre>
 <p>Your database should be empty again.</p>
 <p>What if you wanted to change the default VersionInfoTable you could just add following code:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> FluentMigrator<span class="token punctuation">;</span>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 
-<span class="token punctuation">[</span>VersionTableMetaData<span class="token punctuation">]</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomVersionMetaData</span> <span class="token punctuation">:</span> IVersionTableMetaData
+<span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">VersionTableMetaData</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomVersionMetaData</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IVersionTableMetaData</span></span>
 <span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">string</span> SchemaName
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> SchemaName
   <span class="token punctuation">{</span>
     <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"dbo"</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">string</span> TableName
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> TableName
   <span class="token punctuation">{</span>
     <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"SchemaVersionInfo"</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 
-  <span class="token keyword">public</span> <span class="token keyword">string</span> ColumnName
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> ColumnName
   <span class="token punctuation">{</span>
     <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"Version"</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>

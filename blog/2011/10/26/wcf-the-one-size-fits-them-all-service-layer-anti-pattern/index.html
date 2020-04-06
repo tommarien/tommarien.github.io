@@ -247,22 +247,22 @@
 <h3 id="How-are-we-using-it"><a href="#How-are-we-using-it" class="headerlink" title="How are we using it?"></a>How are we using it?</h3><p>Most of us are using it as a gateway into our data retrieval and crud methods, sending entire domainobject-graphs (anemic) with all their complexity over the wire.<br>About 90% of the time, these objects are serialized to SOAP.<br>Just so we can use these WCF services, hosted on a IIS Server in our web application, hosted on the same IIS server.</p>
 <h3 id="Reason-why-we-keep-on-doing-this"><a href="#Reason-why-we-keep-on-doing-this" class="headerlink" title="Reason why we keep on doing this:"></a>Reason why we keep on doing this:</h3><p>About 70% of the time the answer is: It’s so easy when we need to make our WCF publicly available. (other possible answer is Simply because we can)</p>
 <p>Please consider following scenario and hopefully you will rethink your answer:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span>DataContract<span class="token punctuation">]</span>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Product</span>
 <span class="token punctuation">{</span>
   <span class="token keyword">public</span> <span class="token function">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
   <span class="token punctuation">{</span>
   <span class="token punctuation">}</span>
 
-  <span class="token punctuation">[</span>DataMember<span class="token punctuation">]</span>
-  <span class="token keyword">public</span> <span class="token keyword">double</span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataMember</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <p>Which off course is nicely used in following WCF Service:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span>ServiceContract<span class="token punctuation">]</span>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IProductService</span>
 <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span>OperationContract<span class="token punctuation">]</span>
-  Product <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token keyword">int</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OperationContract</span></span><span class="token punctuation">]</span>
+  <span class="token return-type class-name">Product</span> <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
 <p>Conversation:</p>
 <p><em>Armand (Architect):</em> John, Lisa has made a screw up in code, you need to rename the property Prise to Price in our product model.<br><em>John ( Senior Developer):</em> Can’t do Armand!<br><em>Armand (Architect):</em> Why not, John?<br><em>John (Senior Developer) :</em> [Hesitates] Well … erm … because we have to call all of our customers and tell them we have a breaking API change.</p>
