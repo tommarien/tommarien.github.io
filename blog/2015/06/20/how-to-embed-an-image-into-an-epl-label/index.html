@@ -234,6 +234,8 @@
 <li><strong>p4</strong> Length of graphic in dots (or print lines)</li>
 <li><strong>DATA</strong> Raw binary data without graphic file formatting. Data must be in bytes. Multiply the width in bytes (p3) by the number of print lines (p4) for the total amount of graphic data. The printer automatically calculates the exact size of the data block based upon this formula.</li>
 </ul>
+<a id="more"></a>
+
 <h2 id="The-challenge"><a href="#The-challenge" class="headerlink" title="The challenge"></a>The challenge</h2><p>The challenge here was to figure out what they exactly mean by <em>Raw binary data without graphic file formatting</em>!</p>
 <p>So after some googling a colleague of mine found the following working solution on <a href="http://www.codeproject.com/Tips/667062/Print-Image-to-Zebra-Printer-using-EPL-Language" target="_blank" rel="noopener">CodeProject</a> and adapted it to our needs.</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>

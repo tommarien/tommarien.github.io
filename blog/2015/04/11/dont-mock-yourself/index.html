@@ -233,7 +233,9 @@
 <p>Do you really feel that the class you are testing is a system on it’s own?</p>
 </blockquote>
 <p>Unless you are developing a framework, the answer in most cases should be no.</p>
-<h2 id="What-do-we-need-to-make-mocking-possible"><a href="#What-do-we-need-to-make-mocking-possible" class="headerlink" title="What do we need to make mocking possible?"></a>What do we need to make mocking possible?</h2><p>Most of the mocking frameworks need a way to intercept calls, either by marking the method (or property) as virtual or by introducing an interface.</p>
+<h2 id="What-do-we-need-to-make-mocking-possible"><a href="#What-do-we-need-to-make-mocking-possible" class="headerlink" title="What do we need to make mocking possible?"></a>What do we need to make mocking possible?</h2><a id="more"></a>
+
+<p>Most of the mocking frameworks need a way to intercept calls, either by marking the method (or property) as virtual or by introducing an interface.</p>
 <p>As virtual method’s (or properties) tend to be a bit on the annoying side, we just <strong>introduce interfaces everywhere</strong>. Named equally to it’s implementation class, prefixed with ‘I’ as good convention abiding citizens do.</p>
 <p>By doing this we just <strong>ignore the reason of existence</strong> of an interface. An interface should exist if there are more implementations available or you want to open it up for extension!</p>
 <blockquote>
