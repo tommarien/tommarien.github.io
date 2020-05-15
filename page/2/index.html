@@ -165,6 +165,146 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/08/04/who-is-reading-your-tests/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2014/08/04/who-is-reading-your-tests/" class="post-title-link" itemprop="url">Who is reading your tests?</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 4, 2014 13:14:13" itemprop="dateCreated datePublished" datetime="2014-08-04T13:14:13+02:00">Aug 4, 2014</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>As the entire <strong>“TDD is dead”</strong> revolt is taking place, let’s not talk about the importance of tests nor about the difference between integration, unit and load tests. But instead ask ourselves the following question if we do decide to add tests to our project:</p>
+<blockquote>
+<p>Who is the audience/stakeholder of these tests?</p>
+</blockquote>
+<h2 id="Who-could-be-the-audience"><a href="#Who-could-be-the-audience" class="headerlink" title="Who could be the audience?"></a>Who could be the audience?</h2><ul>
+<li>Is it the <strong>next developer</strong> trying to make sense of this unmaintainable puddle of misery?</li>
+<li>Is it the <strong>analyst</strong> clicking on the build server’s tests tab?</li>
+<li>Is it <strong>you</strong>, after a two year pause, implementing a new feature?</li>
+<li>Is it <strong>you</strong>, now, just making sure the implementation behaves as expected?</li>
+<li>…</li>
+</ul>
+<h2 id="Given-Scenario"><a href="#Given-Scenario" class="headerlink" title="Given Scenario"></a>Given Scenario</h2><blockquote>
+<p>A user must be able to log in using his username/password.</p>
+</blockquote>
+<p>This looks like something that could have been taken from an analysis document or could be the description on the post-it on your agile board. Now suppose you are assigned with this task, how would you organize your tests?</p>
+<p>Let’s make it as ‘fugly’ as we can:</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IAuthenticationService</span>
+<span class="token punctuation">{</span>
+  <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Authenticate</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> user<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>If we start with the simplest thing we could go for a test class called AuthenticationServiceTests. But that would quickly become a big ball of mud as we start thinking about the possible tests:</p>
+<ul>
+<li>Authenticating with a user and password returns true if user is known and password matches</li>
+<li>Authenticating with an unknown user returns false</li>
+<li>Authenticating with an invalid password returns false</li>
+<li>Authenticating with and null or empty user throws a businessexception</li>
+<li>Authenticating with an invalid password should increment the failed logon attempts counter, to make sure we can lock out users after 3 attempts</li>
+<li>Authenticating with an unconfirmed registered user throws a business exception</li>
+<li>…</li>
+</ul>
+<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_user_logs_on_using_username_and_password</span>
+<span class="token punctuation">{</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_returns_true</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_resets_failed_logon_attempts</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_updates_last_logon</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>You could debate about not following standard .net naming conventions, but this clearly specifies our requirement. But it also involves code side effects which are necessary but may have a complete different audience (ref tests 2 and 3). This could mean you may need to organize them in that way:</p>
+<ul>
+<li>it_resets_failed_logon_attempts is related to locking out users after 3 attempts</li>
+<li>it_updates_last_logon could be related to tracking we need to do</li>
+<li>it_returns_true seems a little bit technical, in fact we just express that it worked or was successful, maybe it_indicates_success could be better.</li>
+</ul>
+<p>Now what happens if we logon with an unknown user, mmm, this seems database oriented, if the record does not exist in the database, the user can not login. But in real life it could mean that the user just did not register on our site or forgot his logon credentials!</p>
+<p>So you might go for this:</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_an_unknown_or_unregistered_user_logs_on</span>
+<span class="token punctuation">{</span>
+    <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_indicates_failure</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>I hope I trickled your mind a bit and that I got the message trough. Expressive <strong>tests are hard work</strong> but can be very useful.</p>
+<p>Just having full code coverage and tests where you need to deep-dive into the code to find out what they are doing may not be the point of your tests.</p>
+<blockquote>
+<p>Tests are a way to express what the code is doing or should be doing ;)</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/07/12/shouldly-how-assertions-should-have-been/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1660,127 +1800,6 @@ container<span class="token punctuation">.</span><span class="token generic-meth
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2013/04/26/castle-windsor-avoiding-runtime-errors-due-to-misconfigured-components/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Tom Marien">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hooked.io">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/blog/2013/04/26/castle-windsor-avoiding-runtime-errors-due-to-misconfigured-components/" class="post-title-link" itemprop="url">Castle Windsor: Avoiding runtime errors due to misconfigured components</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: Apr 26, 2013 23:15:00" itemprop="dateCreated datePublished" datetime="2013-04-26T23:15:00+02:00">Apr 26, 2013</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Components that have missing dependencies can lead to pesky runtime exceptions:</p>
-<blockquote>
-<p><strong>HandlerException was unhandled</strong></p>
-<p>Can’t create component ‘ConsoleApplication1.ComponentA’ as it has dependencies to be satisfied.<br>‘ConsoleApplication1.ComponentA’ is waiting for the following dependencies:</p>
-<ul>
-<li>Service ‘ConsoleApplication1.IDependency’ which was not registered.</li>
-</ul>
-</blockquote>
-<p>In debug mode the container helps you discovering your issue while hovering over your container instance it will show you all the information you need under <strong>Potentially misconfigured items</strong>.</p>
-<p>Let’s try to improve this, first we need to make our component registrations reusable:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Boot</span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IWindsorContainer</span> <span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-    <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    container<span class="token punctuation">.</span><span class="token function">Install</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">SomeInstaller</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> container<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
-<p>We can use this class for instance in our global.asax to instantiate our container. Now lets write a test that verifies that everything is well configured</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WindsorRegistrationFixture</span>
-<span class="token punctuation">{</span>
-  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ShouldNotHaveAnyMisconfiguredComponents</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-    <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> Boot<span class="token punctuation">.</span><span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token class-name"><span class="token keyword">var</span></span> diagnostic <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">PotentiallyMisconfiguredComponentsDiagnostic</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token class-name">IHandler<span class="token punctuation">[</span><span class="token punctuation">]</span></span> handlers <span class="token operator">=</span> diagnostic<span class="token punctuation">.</span><span class="token function">Inspect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>handlers <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> handlers<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      builder<span class="token punctuation">.</span><span class="token function">AppendFormat</span><span class="token punctuation">(</span><span class="token string">"Misconfigured components ({0})\r\n"</span><span class="token punctuation">,</span> handlers<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">IHandler</span> handler <span class="token keyword">in</span> handlers<span class="token punctuation">)</span>
-      <span class="token punctuation">{</span>
-        <span class="token class-name"><span class="token keyword">var</span></span> info <span class="token operator">=</span> <span class="token punctuation">(</span>IExposeDependencyInfo<span class="token punctuation">)</span> handler<span class="token punctuation">;</span>
-        <span class="token class-name"><span class="token keyword">var</span></span> inspector <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DependencyInspector</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        info<span class="token punctuation">.</span><span class="token function">ObtainDependencyDetails</span><span class="token punctuation">(</span>inspector<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      Assert<span class="token punctuation">.</span><span class="token function">Fail</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
-<p>Which will output this :</p>
-<blockquote>
-<p>Misconfigured components (1)<br>‘ConsoleApplication1.ComponentA’ is waiting for the following dependencies:</p>
-</blockquote>
-<ul>
-<li>Service ‘ConsoleApplication1.IDependency’ which was not registered.</li>
-</ul>
-<p>So now every time this test runs (either locally or on your CI build), you know that if this test was green, you will not get any Runtime exceptions caused by misconfigured components.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1851,7 +1870,7 @@ container<span class="token punctuation">.</span><span class="token generic-meth
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1906,12 +1925,12 @@ container<span class="token punctuation">.</span><span class="token generic-meth
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">110k</span>
+    <span title="Symbols count total">114k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:40</span>
+    <span title="Reading time total">1:43</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
