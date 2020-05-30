@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"tommarien.github.io","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="In the spirit of honing our skills, we’ll tackle one more component. This time i’ve picked the button component. So let’s start with the basics, a &lt;button &#x2F;&gt; has children, an onClick handler, a">
+  <meta name="description" content="To keep in the spirit of honing our skills, we’ll tackle one more component, a button. So let’s start with the basics, a &lt;button &#x2F;&gt; has children, an onClick handler, a type (submit, button or re">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Push me">
 <meta property="og:url" content="http://tommarien.github.io/blog/2020/05/15/push-me/index.html">
 <meta property="og:site_name" content="Hooked.io">
-<meta property="og:description" content="In the spirit of honing our skills, we’ll tackle one more component. This time i’ve picked the button component. So let’s start with the basics, a &lt;button &#x2F;&gt; has children, an onClick handler, a">
+<meta property="og:description" content="To keep in the spirit of honing our skills, we’ll tackle one more component, a button. So let’s start with the basics, a &lt;button &#x2F;&gt; has children, an onClick handler, a type (submit, button or re">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-05-15T22:07:27.000Z">
-<meta property="article:modified_time" content="2020-05-17T20:36:05.000Z">
+<meta property="article:modified_time" content="2020-05-30T20:49:36.000Z">
 <meta property="article:author" content="Tom Marien">
 <meta property="article:tag" content="react">
 <meta property="article:tag" content="typescript">
@@ -201,7 +201,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: May 17, 2020 22:36:05" itemprop="dateModified" datetime="2020-05-17T22:36:05+02:00">May 17, 2020</time>
+                <time title="Modified: May 30, 2020 22:49:36" itemprop="dateModified" datetime="2020-05-30T22:49:36+02:00">May 30, 2020</time>
               </span>
 
           <br>
@@ -210,7 +210,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.7k</span>
+              <span>3.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -229,8 +229,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>In the spirit of honing our skills, we’ll tackle one more component. This time i’ve picked the <a href="https://getbootstrap.com/docs/4.5/components/buttons/" target="_blank" rel="noopener">button</a> component.</p>
-<p>So let’s start with the basics, a <code>&lt;button /&gt;</code> has <code>children</code>, an <code>onClick</code> handler, a <code>type</code> (<code>submit</code>, <code>button</code> or <code>reset</code>) and can be <code>disabled</code>. One thing to keep in mind with buttons is that if you don’t supply a type to a button it will default to <code>submit</code>, which is generally not what you want.</p>
+        <p>To keep in the spirit of honing our skills, we’ll tackle one more component, a <a href="https://getbootstrap.com/docs/4.5/components/buttons/" target="_blank" rel="noopener">button</a>.</p>
+<p>So let’s start with the basics, a <code>&lt;button /&gt;</code> has <code>children</code>, an <code>onClick</code> handler, a <code>type</code> (<code>submit</code>, <code>button</code> or <code>reset</code>) and can be <code>disabled</code>.</p>
+<p>One thing to keep in mind with buttons is that if you don’t supply a type, it will default to <code>submit</code> which is generally not what you want.</p>
 <pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">ReactNode</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">ButtonProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
@@ -264,7 +265,7 @@
    */</span>
   <span class="token keyword">type</span><span class="token operator">:</span> <span class="token string">'button'</span> <span class="token operator">|</span> <span class="token string">'submit'</span> <span class="token operator">|</span> <span class="token string">'reset'</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-<h2 id="Touch"><a href="#Touch" class="headerlink" title="Touch"></a>Touch</h2><p>We just need to add that bootstrap flavor, we add <code>variant</code> into the mix:</p>
+<h2 id="Touch"><a href="#Touch" class="headerlink" title="Touch"></a>Touch</h2><p>We just need to add that bootstrap flavor, let’s add <code>variant</code> into the mix:</p>
 <pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span>
 
@@ -317,7 +318,9 @@
   <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Button</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token entity" title="&times;">&amp;times;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Button</span></span><span class="token punctuation">></span></span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
 <p>We should always have accessibility in mind when we create components, a button without a readable text is not accessible. The correct approach is to add an <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute" target="_blank" rel="noopener">aria-label</a> to the button.</p>
+<blockquote>
 <p>And as an added advantage if you’re using React Testing Library, you can use a <a href="https://testing-library.com/docs/dom-testing-library/api-queries#bylabeltext" target="_blank" rel="noopener">ByLabelText</a> query and don’t have to add a <code>data-testid</code> to a button.</p>
+</blockquote>
 <p>So we want to achieve this:</p>
 <pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> <span class="token maybe-class-name">Alert</span> <span class="token keyword">from</span> <span class="token string">'./components/Button'</span><span class="token punctuation">;</span>
@@ -365,9 +368,6 @@
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-<blockquote>
-<p>If you are interested in my setup or in the tests using <a href="https://testing-library.com/docs/react-testing-library/intro" target="_blank" rel="noopener">React Testing Library</a> you can take a look at my <a href="https://github.com/tommarien/react-playground/blob/master/src/components/Button.tsx" target="_blank" rel="noopener">React Playground Repository</a>.</p>
-</blockquote>
 <p>That’s it, i hope you are digging the typescript/react series so far.</p>
 
     </div>
@@ -527,7 +527,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">114k</span>
+    <span title="Symbols count total">113k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
