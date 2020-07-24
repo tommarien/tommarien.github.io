@@ -805,7 +805,7 @@
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <p>Basically this code takes the entire transaction idiom from our hands, it starts a transaction if not already started and if the interceptor started the transaction it will commit/rollback (depending on exceptions thrown) the transaction.</p>
-<h2 id="The-registration"><a href="#The-registration" class="headerlink" title="The registration"></a>The registration</h2><p>Nothing really special going on, just not forget to <a href="/blog/2012/05/01/castle-windsor-facilities-and-specialized-resolving/#Lazy-lt-T-gt" title="Castle Windsor: Facilities and specialized resolving">opt-in for Lazy</a> resolving and register the interceptor as transient, so that it’s lifetime gets bound to whom it is intercepting.</p>
+<h2 id="The-registration"><a href="#The-registration" class="headerlink" title="The registration"></a>The registration</h2><p>Nothing really special going on, just not forget to <a href="/blog/2012/05/01/castle-windsor-facilities-and-specialized-resolving/#Lazy-lt-T-gt" title="Castle Windsor: Facilities and specialized resolving">opt-in for Lazy</a> resolving and register the interceptor as transient, so that it’s lifetime gets bound to whom it is intercepting.</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
 <span class="token comment">// opt-in for Lazy</span>

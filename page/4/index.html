@@ -689,7 +689,7 @@ DomainEvents<span class="token punctuation">.</span>Dispatcher <span class="toke
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>The <em>ICommandHandlerFactory</em> is fully implemented by Castle Windsor’s TypedFactory facility, and if you are wondering why the release code, please read my post about <a href="/blog/2012/04/21/castle-windsor-avoid-memory-leaks-by-learning-the-underlying-mechanics">understanding memory leaks</a> with Castle Windsor.</p>
+<p>The <em>ICommandHandlerFactory</em> is fully implemented by Castle Windsor’s TypedFactory facility, and if you are wondering why the release code, please read my post about <a href="%3C!--%EF%BF%BC0--%3E/blog/2012/04/21/castle-windsor-avoid-memory-leaks-by-learning-the-underlying-mechanics">understanding memory leaks</a> with Castle Windsor.</p>
 <h3 id="The-commanding-facility"><a href="#The-commanding-facility" class="headerlink" title="The commanding facility"></a>The commanding facility</h3><p>All necessary registration’s nicely molded into a custom facility:</p>
 <pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Linq</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>Core<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span>
@@ -804,7 +804,7 @@ container<span class="token punctuation">.</span><span class="token generic-meth
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Even the most monolithic code base could benefit by introducing some of the most basic principles of Domain Driven Design.  The following blog post is a reproduction of a real life code base, in a simplified form, but not far from reality.</p>
+          <p>Even the most monolithic code base could benefit by introducing some of the most basic principles of Domain Driven Design.  The following blog post is a reproduction of a real life code base, in a simplified form, but not far from reality.</p>
 <h2 id="The-breakdown"><a href="#The-breakdown" class="headerlink" title="The breakdown"></a>The breakdown</h2><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
   <span class="token class-name">Customer</span> existingCustomer <span class="token operator">=</span> _customerRepository<span class="token punctuation">.</span><span class="token function">GetById</span><span class="token punctuation">(</span>customer<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -1089,7 +1089,7 @@ container<span class="token punctuation">.</span><span class="token generic-meth
 
       
           <h2 id="There-is-an-‘I’-in-Silence"><a href="#There-is-an-‘I’-in-Silence" class="headerlink" title="There is an ‘I’ in Silence"></a>There is an ‘I’ in Silence</h2><p>If all team members seem very occupied and don’t say a word except maybe on your daily stand-up meetings, then you probably <strong>don’t have a team</strong> at all. Teams that are not communicating could be <strong>developing next to each other</strong>. All those different parts of software need to form a whole, also known as your product. Good teams need to <span style="text-decoration:underline;">communicate</span> whenever the need arises, form code-pairs naturally and should be <span style="text-decoration:underline;">having fun</span> while working.</p>
-<h2 id="Domain-is-king"><a href="#Domain-is-king" class="headerlink" title="Domain is king"></a>Domain is king</h2><p>In absence of a domain expert, tackle every new story in pair. The domain of the application is the <strong><span style="text-decoration:underline;"></strong>most important</span> and the most <span style="text-decoration:underline;">unambiguous</span> part of the application. Invest some time in it !</p>
+<h2 id="Domain-is-king"><a href="#Domain-is-king" class="headerlink" title="Domain is king"></a>Domain is king</h2><p>In absence of a domain expert, tackle every new story in pair. The domain of the application is the __<span style="text-decoration:underline;">__most important</span> and the most <span style="text-decoration:underline;">unambiguous</span> part of the application. Invest some time in it !</p>
 <ul>
 <li>Use a whiteboard (or tool) to draw the basic layout of the domain needed to create.</li>
 <li>Focus on naming and aggregate separation.</li>

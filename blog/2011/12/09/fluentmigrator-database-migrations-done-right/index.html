@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"tommarien.github.io","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="People that know me in real life, know I can be a real stickler when it comes to continuous integration and TDD.  I like my code to be continuously integrated. And i am not only talking about unit-tes">
+  <meta name="description" content="People that know me in real life, know I can be a real stickler when it comes to continuous integration and TDD.  I like my code to be continuously integrated. And i am not only talking about unit-tes">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FluentMigrator, database migrations done right">
 <meta property="og:url" content="http://tommarien.github.io/blog/2011/12/09/fluentmigrator-database-migrations-done-right/index.html">
 <meta property="og:site_name" content="Hooked.io">
-<meta property="og:description" content="People that know me in real life, know I can be a real stickler when it comes to continuous integration and TDD.  I like my code to be continuously integrated. And i am not only talking about unit-tes">
+<meta property="og:description" content="People that know me in real life, know I can be a real stickler when it comes to continuous integration and TDD.  I like my code to be continuously integrated. And i am not only talking about unit-tes">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2011-12-09T18:53:00.000Z">
 <meta property="article:modified_time" content="2011-12-09T18:53:00.000Z">
@@ -224,14 +224,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>People that know me in real life, know I can be a real stickler when it comes to continuous integration and TDD.  I like my code to be continuously integrated. And i am not only talking about unit-tests, that mock out your database, in my oppinion this is the lie part of your code.  No you shouldn’t be testing your orm, but writing logic around assumptions (namely your queries and database operations) is only covering a part of your code.  How would you be certain that you have an unique index in place for instance ?</p>
+        <p>People that know me in real life, know I can be a real stickler when it comes to continuous integration and TDD.  I like my code to be continuously integrated. And i am not only talking about unit-tests, that mock out your database, in my oppinion this is the lie part of your code.  No you shouldn’t be testing your orm, but writing logic around assumptions (namely your queries and database operations) is only covering a part of your code.  How would you be certain that you have an unique index in place for instance ?</p>
 <p>I like all of my code to be tested including all queries and database operations. To be able to do that you need to be able to put your database in a specific state, not only schema but also your data.</p>
 <p>I know it’s possible by doing some scripting magic, but what do i do if i need to revert some of the changes i made ?</p>
 <p>Integration testing becomes a brease using a good ORM, if you got your database covered!</p>
-<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>When Ruby on Rails first became big everyone grew accustomed to their migration framework that was baked in called <a href="http://guides.rubyonrails.org/migrations.html" target="_blank" rel="noopener" title="Rails migrations">Rails migrations</a>. Migration frameworks quickly popped up in other areas and languages like for instance in .Net :</p>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>When Ruby on Rails first became big everyone grew accustomed to their migration framework that was baked in called <a href="http://guides.rubyonrails.org/migrations.html" target="_blank" rel="noopener" title="Rails migrations">Rails migrations</a>. Migration frameworks quickly popped up in other areas and languages like for instance in .Net :</p>
 <ul>
 <li><a href="http://code.google.com/p/migratordotnet" target="_blank" rel="noopener">Migrator.Net</a></li>
-<li><a href="http://sharpmigrations.codeplex.com" target="_blank" rel="noopener">SharpMigrations</a></li>
+<li><a href="http://sharpmigrations.codeplex.com/" target="_blank" rel="noopener">SharpMigrations</a></li>
 </ul>
 <p><a href="https://github.com/schambers/fluentmigrator/wiki" target="_blank" rel="noopener">FluentMigrator</a> was originally started by Sean Chambers, Nate Kohari and Justin Etheredge, but it really was the community around it that got it to evolve.</p>
 <h2 id="What-is-a-migration"><a href="#What-is-a-migration" class="headerlink" title="What is a migration?"></a>What is a migration?</h2><p>Well in the end it all comes down to making a change in the database, it could be a schema-migration, a data-migration or a combination of both.</p>
