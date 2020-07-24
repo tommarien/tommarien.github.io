@@ -165,6 +165,120 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2011/10/26/wcf-the-one-size-fits-them-all-service-layer-anti-pattern/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2011/10/26/wcf-the-one-size-fits-them-all-service-layer-anti-pattern/" class="post-title-link" itemprop="url">Wcf, the one size fits them all Service Layer anti-pattern</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 26, 2011 08:30:00" itemprop="dateCreated datePublished" datetime="2011-10-26T08:30:00+02:00">Oct 26, 2011</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>When you talk with fellow developers and you mention <strong>Service Layer</strong> people automatically hear <strong>WCF Services</strong>. Did i miss a book or some guidance document from Microsoft, stating that WCF stands for service layer?</p>
+<p>For those who have been around for a while, back in the dark ages of .NET (pre WCF Era) there where amongst others the following communication options:</p>
+<ul>
+<li>Web services (XML)</li>
+<li>.NET Remoting (XML or Binary)</li>
+<li>Communication using the Socket/SocketPool classes</li>
+</ul>
+<p>Each with their specific configuration, setup and usage.</p>
+<p>With the release of .Net Framework 3.0/3.5, Microsoft created (or bought) a way to unify all of those options into 1 product that makes it easy, well almost easy, to switch from one option to another. And they named it Windows Communication Foundation.</p>
+<h2 id="What-is-a-Service-Layer-and-when-should-we-implement-one"><a href="#What-is-a-Service-Layer-and-when-should-we-implement-one" class="headerlink" title="What is a Service Layer and when should we implement one?"></a>What is a Service Layer and when should we implement one?</h2><blockquote>
+<p>A Service Layer defines an application’s boundary and its set of available operations from the perspective of interfacing client layers. It encapsulates the application’s business logic, controlling transactions and coordinating responses in the implementation of its operations. <a href="http://martinfowler.com/eaaCatalog/serviceLayer.html" target="_blank" rel="noopener">[Martin Fowler]</a></p>
+</blockquote>
+<p>You typically introduce a Service Layer when you have complex use cases, which possibly will be reused by different UI’s, like for instance between a ASP.NET MVC application, a Windows Service or a Console application and you want to avoid code duplication.  Or you want to separate your use cases from your UI Flow for better testability.</p>
+<h2 id="How-should-we-use-WCF"><a href="#How-should-we-use-WCF" class="headerlink" title="How should we use WCF?"></a>How should we use WCF?</h2><p>It should be an abstraction layer, you simplify the underlying relational/domain complexity into understandable ServiceContracts with their respective model (data contracts).</p>
+<p>And if we do need WCF, it’s because we really need it <a href="https://en.wikipedia.org/wiki/You_aren' target="_blank" rel="noopener"t_gonna_need_it" title="You aren&#39;t gonna need it">YAGNI</a>:</p>
+<ul>
+<li>We have a need for distributed computing</li>
+<li>We need to be able to communicate across the web or across the enterprise</li>
+<li>…</li>
+</ul>
+<p>And yes, using WCF, introduces complexity but you really needed it.</p>
+<h3 id="How-are-we-using-it"><a href="#How-are-we-using-it" class="headerlink" title="How are we using it?"></a>How are we using it?</h3><p>Most of us are using it as a gateway into our data retrieval and crud methods, sending entire domainobject-graphs (anemic) with all their complexity over the wire.<br>About 90% of the time, these objects are serialized to SOAP.<br>Just so we can use these WCF services, hosted on a IIS Server in our web application, hosted on the same IIS server.</p>
+<h3 id="Reason-why-we-keep-on-doing-this"><a href="#Reason-why-we-keep-on-doing-this" class="headerlink" title="Reason why we keep on doing this:"></a>Reason why we keep on doing this:</h3><p>About 70% of the time the answer is: It’s so easy when we need to make our WCF publicly available. (other possible answer is Simply because we can)</p>
+<p>Please consider following scenario and hopefully you will rethink your answer:</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Product</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">public</span> <span class="token function">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataMember</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Which off course is nicely used in following WCF Service:</p>
+<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IProductService</span>
+<span class="token punctuation">{</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OperationContract</span></span><span class="token punctuation">]</span>
+  <span class="token return-type class-name">Product</span> <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Conversation:</p>
+<p><em>Armand (Architect):</em> John, Lisa has made a screw up in code, you need to rename the property Prise to Price in our product model.<br><em>John ( Senior Developer):</em> Can’t do Armand!<br><em>Armand (Architect):</em> Why not, John?<br><em>John (Senior Developer) :</em> [Hesitates] Well … erm … because we have to call all of our customers and tell them we have a breaking API change.</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2011/10/22/what-is-the-point-of-the-region-preprocessor-directive/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -424,7 +538,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -479,12 +593,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">113k</span>
+    <span title="Symbols count total">115k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:43</span>
+    <span title="Reading time total">1:44</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

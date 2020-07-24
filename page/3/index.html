@@ -165,6 +165,111 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/08/27/using-git-as-subversion-client/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2014/08/27/using-git-as-subversion-client/" class="post-title-link" itemprop="url">Using git as subversion client</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 27, 2014 07:23:40" itemprop="dateCreated datePublished" datetime="2014-08-27T07:23:40+02:00">Aug 27, 2014</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Almost a decade ago, a company I worked for, started using <em>Subversion</em> which was a great step forward coming from <em>Visual Source Safe</em>.</p>
+<p>Today, the landscape is totally different, but on enterprise level not much has changed. Some of the companies use <em>Team Foundation Server</em> which is great if you like total integration, but it’s source control system is not that great.<br>Others remained with <em>Subversion</em>.</p>
+<p>They might be thinking of going to <em>Git</em>, but most of them are afraid of the learning curve. As with all learning processes, you just have to start somewhere, just dive-in, step by step you’ll start learning Git.</p>
+<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>As a fan of <a href="http://chocolatey.org/" target="_blank" rel="noopener">Chocolatey</a> as machine package manager, just enter at command prompt</p>
+<pre class=" language-shell"><code class="language-shell">cinst <span class="token function">git</span></code></pre>
+<p>Or <a href="http://msysgit.github.io/" target="_blank" rel="noopener">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
+<h2 id="Checking-out-the-repository"><a href="#Checking-out-the-repository" class="headerlink" title="Checking out the repository"></a>Checking out the repository</h2><p>If your Subversion has the default trunk, branches, tags layout</p>
+<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<p>The -s switch is a shortcut for</p>
+<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -T trunk --t tags --b branches <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<p>This will checkout the trunk of the repository by default. Now suppose your repository already had a branch called Test:</p>
+<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
+* master
+  remotes/svn/Test
+  remotes/svn/trunk</code></pre>
+<h2 id="Advanced-Shallow-clone"><a href="#Advanced-Shallow-clone" class="headerlink" title="Advanced: Shallow clone"></a>Advanced: Shallow clone</h2><p>As the default approach above will crawl trough all svn revisions which can be very slow, if you are in an environment where they are using a single Svn repository with a lot of revisions for different projects, you could be looking at a few hours, days or even weeks (+ 150000 revisions). In that particular use case follow this approach:</p>
+<h3 id="Get-first-revision-of-directory-in-gigantic-repository"><a href="#Get-first-revision-of-directory-in-gigantic-repository" class="headerlink" title="Get first revision of directory in gigantic repository"></a>Get first revision of directory in gigantic repository</h3><pre class=" language-shell"><code class="language-shell">svn log <span class="token operator">&lt;</span>repo_url<span class="token operator">></span></code></pre>
+<p>The lowest/first revision number is what you are looking for, if you want full history in git on the project. If you just wanna checkout you can use the last revision number.</p>
+<h3 id="Checkout-repository"><a href="#Checkout-repository" class="headerlink" title="Checkout repository"></a>Checkout repository</h3><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/ -r <span class="token operator">&lt;</span>first-revision<span class="token operator">></span></code></pre>
+<p>This will initialize an empty git repository, now get the trunk</p>
+<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<p>If you would look at your branches you would see that the test branch is not there in this case !</p>
+<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
+* master
+  remotes/svn/trunk</code></pre>
+<p>To get the remote branch to appear you need to</p>
+<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn fetch</code></pre>
+<h2 id="Updating-your-repository"><a href="#Updating-your-repository" class="headerlink" title="Updating your repository"></a>Updating your repository</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<p>It will fetch latest changes from the trunk and will try to rebase your work on top of it. If any conflicting changes where made, you’ll have to merge them.</p>
+<h2 id="Committing-your-changes"><a href="#Committing-your-changes" class="headerlink" title="Committing your changes"></a>Committing your changes</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn dcommit</code></pre>
+<h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
+<li><a href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion" target="_blank" rel="noopener">Git and Subversion</a></li>
+<li><a href="http://viget.com/extend/effectively-using-git-with-subversion" target="_blank" rel="noopener">Effectively Using Git With Subversion</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/08/04/who-is-reading-your-tests/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -666,180 +771,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2013/06/04/who-manages-the-transaction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Tom Marien">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hooked.io">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/blog/2013/06/04/who-manages-the-transaction/" class="post-title-link" itemprop="url">Who manages the transaction?</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: Jun 4, 2013 20:00:00" itemprop="dateCreated datePublished" datetime="2013-06-04T20:00:00+02:00">Jun 4, 2013</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>In my last <a href="/blog/2013/05/25/use-your-container-to-manage-session-lifetime">post</a> we talked about letting our container manage our ISession lifetime. Immediately after publishing this post, i’ve got a lot of reactions considering the management of transactions, more specifically about issuing a rollback when an exception has been thrown.</p>
-<p>A simplistic approach would be to do this in every commandhandler:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MoveCustomerCommandHandler</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ICommandHandler<span class="token punctuation">&lt;</span>MoveCustomerCommand<span class="token punctuation">></span></span></span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">ISession</span> session<span class="token punctuation">;</span>
-
-  <span class="token keyword">public</span> <span class="token function">MoveCustomerCommandHandler</span><span class="token punctuation">(</span><span class="token class-name">ISession</span> session<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>session <span class="token operator">=</span> session<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Handle</span><span class="token punctuation">(</span><span class="token class-name">MoveCustomerCommand</span> command<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-    <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> transaction <span class="token operator">=</span> session<span class="token punctuation">.</span><span class="token function">BeginTransaction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token comment">// Handling code ...</span>
-      transaction<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
-<p>But this approach seems rather <strong>cumbersome</strong> and <strong>not very flexible</strong>. What if we could automate this repeated code pattern more or less like what behaviors are doing in a WCF context ? We need some sort of AOP approach.</p>
-<h2 id="Meet-AutoTx-interceptor"><a href="#Meet-AutoTx-interceptor" class="headerlink" title="Meet AutoTx interceptor"></a>Meet AutoTx interceptor</h2><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
-<span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>DynamicProxy</span><span class="token punctuation">;</span>
-<span class="token keyword">using</span> <span class="token namespace">NHibernate</span><span class="token punctuation">;</span>
-<span class="token keyword">using</span> <span class="token class-name">IInterceptor</span> <span class="token operator">=</span> <span class="token class-name">Castle<span class="token punctuation">.</span>DynamicProxy<span class="token punctuation">.</span>IInterceptor</span><span class="token punctuation">;</span>
-
-<span class="token keyword">namespace</span> <span class="token namespace">Nebula<span class="token punctuation">.</span>Bootstrapper<span class="token punctuation">.</span>Interceptors</span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AutoTxInterceptor</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IInterceptor</span></span>
-  <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">Lazy<span class="token punctuation">&lt;</span>ISession<span class="token punctuation">></span></span> session<span class="token punctuation">;</span>
-
-    <span class="token keyword">public</span> <span class="token function">AutoTxInterceptor</span><span class="token punctuation">(</span><span class="token class-name">Lazy<span class="token punctuation">&lt;</span>ISession<span class="token punctuation">></span></span> session<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>session <span class="token operator">=</span> session<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token return-type class-name">IInvocation</span> Owner <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Intercept</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token function">BeginTransactionIfNeeded</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-      <span class="token keyword">try</span>
-      <span class="token punctuation">{</span>
-        invocation<span class="token punctuation">.</span><span class="token function">Proceed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">CommitTransactionIfNeeded</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span><span class="token punctuation">)</span>
-      <span class="token punctuation">{</span>
-        <span class="token function">RollBackTransactionIfNeeded</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">throw</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">IsTransactionOwner</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token punctuation">(</span>Owner <span class="token operator">==</span> invocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">BeginTransactionIfNeeded</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span>Transaction<span class="token punctuation">.</span>IsActive<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-      session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span><span class="token function">BeginTransaction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      Owner <span class="token operator">=</span> invocation<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">CommitTransactionIfNeeded</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">IsTransactionOwner</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-      session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span>Transaction<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      Owner <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">RollBackTransactionIfNeeded</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">IsTransactionOwner</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-      session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span>Transaction<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      Owner <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
-<p>Basically this code takes the entire transaction idiom from our hands, it starts a transaction if not already started and if the interceptor started the transaction it will commit/rollback (depending on exceptions thrown) the transaction.</p>
-<h2 id="The-registration"><a href="#The-registration" class="headerlink" title="The registration"></a>The registration</h2><p>Nothing really special going on, just not forget to <a href="/blog/2012/05/01/castle-windsor-facilities-and-specialized-resolving/#Lazy-lt-T-gt" title="Castle Windsor: Facilities and specialized resolving">opt-in for Lazy</a> resolving and register the interceptor as transient, so that it’s lifetime gets bound to whom it is intercepting.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-
-<span class="token comment">// opt-in for Lazy</span>
-container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ILazyComponentLoader<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                            <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>LazyOfTComponentLoader<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment">// Necessary session registration</span>
-<span class="token comment">// ...</span>
-
-<span class="token comment">// Bind lifestyle of to whom it is intercepting</span>
-container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>AutoTxInterceptor<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                            <span class="token punctuation">.</span><span class="token function">LifestyleTransient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment">// register all commandhandlers</span>
-container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Classes<span class="token punctuation">.</span><span class="token function">FromAssemblyContaining</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">NHibernateConfigurationBuilder</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                          <span class="token punctuation">.</span><span class="token function">BasedOn</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">ICommandHandler<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                          <span class="token punctuation">.</span>WithService<span class="token punctuation">.</span><span class="token function">Base</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                          <span class="token punctuation">.</span><span class="token function">Configure</span><span class="token punctuation">(</span>c <span class="token operator">=></span> <span class="token punctuation">{</span> c<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Interceptors</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>AutoTxInterceptor<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-                          <span class="token punctuation">.</span><span class="token function">LifestyleTransient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -910,7 +841,7 @@ container<span class="token punctuation">.</span><span class="token function">Re
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -965,12 +896,12 @@ container<span class="token punctuation">.</span><span class="token function">Re
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">113k</span>
+    <span title="Symbols count total">115k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:43</span>
+    <span title="Reading time total">1:44</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

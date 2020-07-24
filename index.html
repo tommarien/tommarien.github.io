@@ -165,6 +165,141 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2020/07/24/kiss-my-default-props/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tom Marien">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hooked.io">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/blog/2020/07/24/kiss-my-default-props/" class="post-title-link" itemprop="url">Kiss my default props</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 24, 2020 15:21:27" itemprop="dateCreated datePublished" datetime="2020-07-24T15:21:27+02:00">Jul 24, 2020</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>So what if you want to type defaultProps? We’ll use the <a href="https://getbootstrap.com/docs/4.0/components/badge/" target="_blank" rel="noopener">Bootstrap Badge</a> component as an example. According to the <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/default_props" target="_blank" rel="noopener">Typescript React cheatsheet</a>, when we use Typescript &gt; 3.0, we have to use type inference:</p>
+<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">ReactNode</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">Variant</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./Bootstrap'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> defaultProps <span class="token operator">=</span> <span class="token punctuation">{</span>
+  pill<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  children<span class="token operator">:</span> <span class="token maybe-class-name">ReactNode</span><span class="token punctuation">;</span>
+  variant<span class="token operator">:</span> <span class="token maybe-class-name">Variant</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token operator">&amp;</span> <span class="token keyword">typeof</span> defaultProps<span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'badge'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">Badge</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children<span class="token punctuation">,</span> variant<span class="token punctuation">,</span> pill <span class="token punctuation">}</span><span class="token operator">:</span> BadgeProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span>
+      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-pill</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span><span class="token operator">:</span> pill<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+    <span class="token punctuation">></span></span>
+      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token maybe-class-name">Badge</span><span class="token punctuation">.</span><span class="token property-access">defaultProps</span> <span class="token operator">=</span> defaultProps<span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token maybe-class-name">Badge</span><span class="token punctuation">;</span></code></pre>
+<p>But imho, this looses the clear distinction between your component’s required and optional props! I would rather have the following BadgeProps type:</p>
+<pre class=" language-ts"><code class="language-ts"><span class="token keyword">export</span> <span class="token keyword">type</span> BadgeProps <span class="token operator">=</span> <span class="token punctuation">{</span>
+  children<span class="token operator">:</span> ReactNode<span class="token punctuation">;</span>
+  variant<span class="token operator">:</span> Variant<span class="token punctuation">;</span>
+  pill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h4 id="An-alternative-approach"><a href="#An-alternative-approach" class="headerlink" title="An alternative approach"></a>An alternative approach</h4><p>What if we would just use object default values?</p>
+<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">ReactNode</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">Variant</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./Bootstrap'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  children<span class="token operator">:</span> <span class="token maybe-class-name">ReactNode</span><span class="token punctuation">;</span>
+  variant<span class="token operator">:</span> <span class="token maybe-class-name">Variant</span><span class="token punctuation">;</span>
+  pill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'badge'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">Badge</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children<span class="token punctuation">,</span> variant<span class="token punctuation">,</span> pill <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token operator">:</span> BadgeProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span>
+      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-pill</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span><span class="token operator">:</span> pill<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+    <span class="token punctuation">></span></span>
+      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token maybe-class-name">Badge</span><span class="token punctuation">;</span></code></pre>
+<p>See easier and simpler (<a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank" rel="noopener">KISS</a>) and not only that according to a <a href="https://twitter.com/dan_abramov/status/1133878326358171650" target="_blank" rel="noopener">tweet</a> of Dan Abramov, defaultProps will be eventually deprecated for functional components.</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2020/05/15/push-me/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -875,90 +1010,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2019/03/28/what-happened-to-me/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Tom Marien">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hooked.io">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/blog/2019/03/28/what-happened-to-me/" class="post-title-link" itemprop="url">What happened to me?</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: Mar 28, 2019 20:37:44" itemprop="dateCreated datePublished" datetime="2019-03-28T20:37:44+01:00">Mar 28, 2019</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Jan 25, 2020 21:45:45" itemprop="dateModified" datetime="2020-01-25T21:45:45+01:00">Jan 25, 2020</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>863</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Has it been almost three years since my last blog post 🤦‍♂️?</p>
-<p>Up until the very beginning of 2016 i was mostly doing .Net Development using frameworks such as <em>Microsoft WebAPI</em>, <em>Microsoft ASP.NET MVC</em>. But years before that, an itch developed.</p>
-<p>Around 2012 my interest grew into <strong>dynamic languages</strong> and i started to experiment and play with Ruby. If i look back, i think it was mostly the fact that it felt so weird to lay a typed contract over a dynamic format like JSON.</p>
-<p>On the other hand our codebases started to grow on the client side. We were using frameworks like <em>JQuery</em> and <em>JQuery.Ui</em> to make things more ux friendly. In the end it looked like we had to create a controller in Javascript to keep it well structured.</p>
-<p>In the beginning of 2016 i got the opportunity to become lead of a new project for a client. The choice was made to build it entirely using Javascript, by using <em>Angular.JS</em> for the frontend and <em>NODE.JS</em> for backend.</p>
-<p><strong>I never looked back</strong>, now my preferred stack is <em>React.JS</em> and <em>Node.JS</em> on the back-end and decided to pick up blogging again!</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1029,7 +1080,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1084,12 +1135,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">113k</span>
+    <span title="Symbols count total">115k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:43</span>
+    <span title="Reading time total">1:44</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

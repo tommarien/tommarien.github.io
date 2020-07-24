@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"tommarien.github.io","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Almost a decade ago, a company I worked for, started using Subversion which was a great step forward coming from Visual Source Safe. Today, the landscape is totally different, but on enterprise level">
+  <meta name="description" content="So what if you want to type defaultProps? We’ll use the Bootstrap Badge component as an example. According to the Typescript React cheatsheet, when we use Typescript &gt; 3.0, we have to use type infe">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Using git as subversion client">
-<meta property="og:url" content="http://tommarien.github.io/blog/2014/08/27/using-git-as-subversion-client/index.html">
+<meta property="og:title" content="Kiss my default props">
+<meta property="og:url" content="http://tommarien.github.io/blog/2020/07/24/kiss-my-default-props/index.html">
 <meta property="og:site_name" content="Hooked.io">
-<meta property="og:description" content="Almost a decade ago, a company I worked for, started using Subversion which was a great step forward coming from Visual Source Safe. Today, the landscape is totally different, but on enterprise level">
+<meta property="og:description" content="So what if you want to type defaultProps? We’ll use the Bootstrap Badge component as an example. According to the Typescript React cheatsheet, when we use Typescript &gt; 3.0, we have to use type infe">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2014-08-27T05:23:40.000Z">
-<meta property="article:modified_time" content="2014-08-27T05:23:40.000Z">
+<meta property="article:published_time" content="2020-07-24T13:21:27.000Z">
+<meta property="article:modified_time" content="2020-07-24T13:21:27.000Z">
 <meta property="article:author" content="Tom Marien">
-<meta property="article:tag" content="git">
-<meta property="article:tag" content="subversion">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="typescript">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://tommarien.github.io/blog/2014/08/27/using-git-as-subversion-client/">
+<link rel="canonical" href="http://tommarien.github.io/blog/2020/07/24/kiss-my-default-props/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Using git as subversion client | Hooked.io</title>
+  <title>Kiss my default props | Hooked.io</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
     <script pjax>
@@ -171,7 +171,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2014/08/27/using-git-as-subversion-client/">
+    <link itemprop="mainEntityOfPage" href="http://tommarien.github.io/blog/2020/07/24/kiss-my-default-props/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -184,7 +184,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Using git as subversion client
+          Kiss my default props
         </h1>
 
         <div class="post-meta">
@@ -194,7 +194,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: Aug 27, 2014 07:23:40" itemprop="dateCreated datePublished" datetime="2014-08-27T07:23:40+02:00">Aug 27, 2014</time>
+              <time title="Created: Jul 24, 2020 15:21:27" itemprop="dateCreated datePublished" datetime="2020-07-24T15:21:27+02:00">Jul 24, 2020</time>
             </span>
 
           <br>
@@ -203,14 +203,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.1k</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
+              <span>1 mins.</span>
             </span>
 
         </div>
@@ -222,40 +222,70 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Almost a decade ago, a company I worked for, started using <em>Subversion</em> which was a great step forward coming from <em>Visual Source Safe</em>.</p>
-<p>Today, the landscape is totally different, but on enterprise level not much has changed. Some of the companies use <em>Team Foundation Server</em> which is great if you like total integration, but it’s source control system is not that great.<br>Others remained with <em>Subversion</em>.</p>
-<p>They might be thinking of going to <em>Git</em>, but most of them are afraid of the learning curve. As with all learning processes, you just have to start somewhere, just dive-in, step by step you’ll start learning Git.</p>
-<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>As a fan of <a href="http://chocolatey.org/" target="_blank" rel="noopener">Chocolatey</a> as machine package manager, just enter at command prompt</p>
-<pre class=" language-shell"><code class="language-shell">cinst <span class="token function">git</span></code></pre>
-<p>Or <a href="http://msysgit.github.io/" target="_blank" rel="noopener">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
-<h2 id="Checking-out-the-repository"><a href="#Checking-out-the-repository" class="headerlink" title="Checking out the repository"></a>Checking out the repository</h2><p>If your Subversion has the default trunk, branches, tags layout</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
-<p>The -s switch is a shortcut for</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -T trunk --t tags --b branches <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
-<p>This will checkout the trunk of the repository by default. Now suppose your repository already had a branch called Test:</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
-* master
-  remotes/svn/Test
-  remotes/svn/trunk</code></pre>
-<h2 id="Advanced-Shallow-clone"><a href="#Advanced-Shallow-clone" class="headerlink" title="Advanced: Shallow clone"></a>Advanced: Shallow clone</h2><p>As the default approach above will crawl trough all svn revisions which can be very slow, if you are in an environment where they are using a single Svn repository with a lot of revisions for different projects, you could be looking at a few hours, days or even weeks (+ 150000 revisions). In that particular use case follow this approach:</p>
-<h3 id="Get-first-revision-of-directory-in-gigantic-repository"><a href="#Get-first-revision-of-directory-in-gigantic-repository" class="headerlink" title="Get first revision of directory in gigantic repository"></a>Get first revision of directory in gigantic repository</h3><pre class=" language-shell"><code class="language-shell">svn log <span class="token operator">&lt;</span>repo_url<span class="token operator">></span></code></pre>
-<p>The lowest/first revision number is what you are looking for, if you want full history in git on the project. If you just wanna checkout you can use the last revision number.</p>
-<h3 id="Checkout-repository"><a href="#Checkout-repository" class="headerlink" title="Checkout repository"></a>Checkout repository</h3><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/ -r <span class="token operator">&lt;</span>first-revision<span class="token operator">></span></code></pre>
-<p>This will initialize an empty git repository, now get the trunk</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
-<p>If you would look at your branches you would see that the test branch is not there in this case !</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
-* master
-  remotes/svn/trunk</code></pre>
-<p>To get the remote branch to appear you need to</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn fetch</code></pre>
-<h2 id="Updating-your-repository"><a href="#Updating-your-repository" class="headerlink" title="Updating your repository"></a>Updating your repository</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
-<p>It will fetch latest changes from the trunk and will try to rebase your work on top of it. If any conflicting changes where made, you’ll have to merge them.</p>
-<h2 id="Committing-your-changes"><a href="#Committing-your-changes" class="headerlink" title="Committing your changes"></a>Committing your changes</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn dcommit</code></pre>
-<h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
-<li><a href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion" target="_blank" rel="noopener">Git and Subversion</a></li>
-<li><a href="http://viget.com/extend/effectively-using-git-with-subversion" target="_blank" rel="noopener">Effectively Using Git With Subversion</a></li>
-</ul>
+        <p>So what if you want to type defaultProps? We’ll use the <a href="https://getbootstrap.com/docs/4.0/components/badge/" target="_blank" rel="noopener">Bootstrap Badge</a> component as an example. According to the <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/default_props" target="_blank" rel="noopener">Typescript React cheatsheet</a>, when we use Typescript &gt; 3.0, we have to use type inference:</p>
+<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">ReactNode</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">Variant</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./Bootstrap'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> defaultProps <span class="token operator">=</span> <span class="token punctuation">{</span>
+  pill<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  children<span class="token operator">:</span> <span class="token maybe-class-name">ReactNode</span><span class="token punctuation">;</span>
+  variant<span class="token operator">:</span> <span class="token maybe-class-name">Variant</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token operator">&amp;</span> <span class="token keyword">typeof</span> defaultProps<span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'badge'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">Badge</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children<span class="token punctuation">,</span> variant<span class="token punctuation">,</span> pill <span class="token punctuation">}</span><span class="token operator">:</span> BadgeProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span>
+      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-pill</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span><span class="token operator">:</span> pill<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+    <span class="token punctuation">></span></span>
+      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token maybe-class-name">Badge</span><span class="token punctuation">.</span><span class="token property-access">defaultProps</span> <span class="token operator">=</span> defaultProps<span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token maybe-class-name">Badge</span><span class="token punctuation">;</span></code></pre>
+<p>But imho, this looses the clear distinction between your component’s required and optional props! I would rather have the following BadgeProps type:</p>
+<pre class=" language-ts"><code class="language-ts"><span class="token keyword">export</span> <span class="token keyword">type</span> BadgeProps <span class="token operator">=</span> <span class="token punctuation">{</span>
+  children<span class="token operator">:</span> ReactNode<span class="token punctuation">;</span>
+  variant<span class="token operator">:</span> Variant<span class="token punctuation">;</span>
+  pill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h4 id="An-alternative-approach"><a href="#An-alternative-approach" class="headerlink" title="An alternative approach"></a>An alternative approach</h4><p>What if we would just use object default values?</p>
+<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">ReactNode</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">Variant</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./Bootstrap'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  children<span class="token operator">:</span> <span class="token maybe-class-name">ReactNode</span><span class="token punctuation">;</span>
+  variant<span class="token operator">:</span> <span class="token maybe-class-name">Variant</span><span class="token punctuation">;</span>
+  pill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'badge'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">Badge</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children<span class="token punctuation">,</span> variant<span class="token punctuation">,</span> pill <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token operator">:</span> BadgeProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span>
+      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-pill</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span><span class="token operator">:</span> pill<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+    <span class="token punctuation">></span></span>
+      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token maybe-class-name">Badge</span><span class="token punctuation">;</span></code></pre>
+<p>See easier and simpler (<a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank" rel="noopener">KISS</a>) and not only that according to a <a href="https://twitter.com/dan_abramov/status/1133878326358171650" target="_blank" rel="noopener">tweet</a> of Dan Abramov, defaultProps will be eventually deprecated for functional components.</p>
 
     </div>
 
@@ -265,8 +295,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/git/" rel="tag"># git</a>
-              <a href="/tags/subversion/" rel="tag"># subversion</a>
+              <a href="/tags/react/" rel="tag"># react</a>
+              <a href="/tags/typescript/" rel="tag"># typescript</a>
           </div>
 
         
@@ -275,13 +305,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2014/08/04/who-is-reading-your-tests/" rel="prev" title="Who is reading your tests?">
-      <i class="fa fa-chevron-left"></i> Who is reading your tests?
+    <a href="/blog/2020/05/15/push-me/" rel="prev" title="Push me">
+      <i class="fa fa-chevron-left"></i> Push me
     </a></div>
-      <div class="post-nav-item">
-    <a href="/blog/2014/10/09/targeting-net-4-what-could-possibly-go-wrong/" rel="next" title="Targeting .NET 4.0, what could possibly go wrong?">
-      Targeting .NET 4.0, what could possibly go wrong? <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -348,7 +375,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-Started"><span class="nav-number">1.</span> <span class="nav-text">Getting Started</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Checking-out-the-repository"><span class="nav-number">2.</span> <span class="nav-text">Checking out the repository</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Advanced-Shallow-clone"><span class="nav-number">3.</span> <span class="nav-text">Advanced: Shallow clone</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-first-revision-of-directory-in-gigantic-repository"><span class="nav-number">3.1.</span> <span class="nav-text">Get first revision of directory in gigantic repository</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Checkout-repository"><span class="nav-number">3.2.</span> <span class="nav-text">Checkout repository</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Updating-your-repository"><span class="nav-number">4.</span> <span class="nav-text">Updating your repository</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Committing-your-changes"><span class="nav-number">5.</span> <span class="nav-text">Committing your changes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Further-reading"><span class="nav-number">6.</span> <span class="nav-text">Further reading</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#An-alternative-approach"><span class="nav-number">1.</span> <span class="nav-text">An alternative approach</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -543,9 +570,9 @@ window.addEventListener('pjax:success', () => {
 
 <script>
   var disqus_config = function() {
-    this.page.url = "http://tommarien.github.io/blog/2014/08/27/using-git-as-subversion-client/";
-    this.page.identifier = "blog/2014/08/27/using-git-as-subversion-client/";
-    this.page.title = "Using git as subversion client";
+    this.page.url = "http://tommarien.github.io/blog/2020/07/24/kiss-my-default-props/";
+    this.page.identifier = "blog/2020/07/24/kiss-my-default-props/";
+    this.page.title = "Kiss my default props";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
