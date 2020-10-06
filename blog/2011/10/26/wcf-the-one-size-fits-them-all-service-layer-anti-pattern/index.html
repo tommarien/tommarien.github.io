@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -87,7 +87,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -204,7 +204,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.6k</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -233,11 +233,11 @@
 <p>Each with their specific configuration, setup and usage.</p>
 <p>With the release of .Net Framework 3.0/3.5, Microsoft created (or bought) a way to unify all of those options into 1 product that makes it easy, well almost easy, to switch from one option to another. And they named it Windows Communication Foundation.</p>
 <h2 id="What-is-a-Service-Layer-and-when-should-we-implement-one"><a href="#What-is-a-Service-Layer-and-when-should-we-implement-one" class="headerlink" title="What is a Service Layer and when should we implement one?"></a>What is a Service Layer and when should we implement one?</h2><blockquote>
-<p>A Service Layer defines an application’s boundary and its set of available operations from the perspective of interfacing client layers. It encapsulates the application’s business logic, controlling transactions and coordinating responses in the implementation of its operations. <a href="http://martinfowler.com/eaaCatalog/serviceLayer.html" target="_blank" rel="noopener">[Martin Fowler]</a></p>
+<p>A Service Layer defines an application’s boundary and its set of available operations from the perspective of interfacing client layers. It encapsulates the application’s business logic, controlling transactions and coordinating responses in the implementation of its operations. <a target="_blank" rel="noopener" href="http://martinfowler.com/eaaCatalog/serviceLayer.html">[Martin Fowler]</a></p>
 </blockquote>
 <p>You typically introduce a Service Layer when you have complex use cases, which possibly will be reused by different UI’s, like for instance between a ASP.NET MVC application, a Windows Service or a Console application and you want to avoid code duplication.  Or you want to separate your use cases from your UI Flow for better testability.</p>
 <h2 id="How-should-we-use-WCF"><a href="#How-should-we-use-WCF" class="headerlink" title="How should we use WCF?"></a>How should we use WCF?</h2><p>It should be an abstraction layer, you simplify the underlying relational/domain complexity into understandable ServiceContracts with their respective model (data contracts).</p>
-<p>And if we do need WCF, it’s because we really need it <a href="https://en.wikipedia.org/wiki/You_aren' target="_blank" rel="noopener"t_gonna_need_it" title="You aren&#39;t gonna need it">YAGNI</a>:</p>
+<p>And if we do need WCF, it’s because we really need it <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/You_aren't_gonna_need_it" title="You aren&#39;t gonna need it">YAGNI</a>:</p>
 <ul>
 <li>We have a need for distributed computing</li>
 <li>We need to be able to communicate across the web or across the enterprise</li>
@@ -247,23 +247,25 @@
 <h3 id="How-are-we-using-it"><a href="#How-are-we-using-it" class="headerlink" title="How are we using it?"></a>How are we using it?</h3><p>Most of us are using it as a gateway into our data retrieval and crud methods, sending entire domainobject-graphs (anemic) with all their complexity over the wire.<br>About 90% of the time, these objects are serialized to SOAP.<br>Just so we can use these WCF services, hosted on a IIS Server in our web application, hosted on the same IIS server.</p>
 <h3 id="Reason-why-we-keep-on-doing-this"><a href="#Reason-why-we-keep-on-doing-this" class="headerlink" title="Reason why we keep on doing this:"></a>Reason why we keep on doing this:</h3><p>About 70% of the time the answer is: It’s so easy when we need to make our WCF publicly available. (other possible answer is Simply because we can)</p>
 <p>Please consider following scenario and hopefully you will rethink your answer:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Product</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token function">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataMember</span></span><span class="token punctuation">]</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>Which off course is nicely used in following WCF Service:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IProductService</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OperationContract</span></span><span class="token punctuation">]</span>
   <span class="token return-type class-name">Product</span> <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>Conversation:</p>
 <p><em>Armand (Architect):</em> John, Lisa has made a screw up in code, you need to rename the property Prise to Price in our product model.<br><em>John ( Senior Developer):</em> Can’t do Armand!<br><em>Armand (Architect):</em> Why not, John?<br><em>John (Senior Developer) :</em> [Hesitates] Well … erm … because we have to call all of our customers and tell them we have a breaking API change.</p>
 
@@ -428,14 +430,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -80,7 +80,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -323,38 +323,40 @@
 </blockquote>
 <p>In debug mode the container helps you discovering your issue while hovering over your container instance it will show you all the information you need under <strong>Potentially misconfigured items</strong>.</p>
 <p>Let’s try to improve this, first we need to make our component registrations reusable:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Boot</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Boot</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IWindsorContainer</span> <span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     container<span class="token punctuation">.</span><span class="token function">Install</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">SomeInstaller</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> container<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>We can use this class for instance in our global.asax to instantiate our container. Now lets write a test that verifies that everything is well configured</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WindsorRegistrationFixture</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WindsorRegistrationFixture</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ShouldNotHaveAnyMisconfiguredComponents</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> Boot<span class="token punctuation">.</span><span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> diagnostic <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">PotentiallyMisconfiguredComponentsDiagnostic</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token class-name">IHandler<span class="token punctuation">[</span><span class="token punctuation">]</span></span> handlers <span class="token operator">=</span> diagnostic<span class="token punctuation">.</span><span class="token function">Inspect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>handlers <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> handlers<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      builder<span class="token punctuation">.</span><span class="token function">AppendFormat</span><span class="token punctuation">(</span><span class="token string">"Misconfigured components ({0})\r\n"</span><span class="token punctuation">,</span> handlers<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      builder<span class="token punctuation">.</span><span class="token function">AppendFormat</span><span class="token punctuation">(</span><span class="token string">"Misconfigured components (&#123;0&#125;)\r\n"</span><span class="token punctuation">,</span> handlers<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">IHandler</span> handler <span class="token keyword">in</span> handlers<span class="token punctuation">)</span>
-      <span class="token punctuation">{</span>
+      <span class="token punctuation">&#123;</span>
         <span class="token class-name"><span class="token keyword">var</span></span> info <span class="token operator">=</span> <span class="token punctuation">(</span>IExposeDependencyInfo<span class="token punctuation">)</span> handler<span class="token punctuation">;</span>
         <span class="token class-name"><span class="token keyword">var</span></span> inspector <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DependencyInspector</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
         info<span class="token punctuation">.</span><span class="token function">ObtainDependencyDetails</span><span class="token punctuation">(</span>inspector<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
+      <span class="token punctuation">&#125;</span>
       Assert<span class="token punctuation">.</span><span class="token function">Fail</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>Which will output this :</p>
 <blockquote>
 <p>Misconfigured components (1)<br>‘ConsoleApplication1.ComponentA’ is waiting for the following dependencies:</p>
@@ -605,17 +607,18 @@
 </ul>
 <p>I will briefly touch one of many facilities available for Castle Windsor: TypedFactoryFacility.</p>
 <h2 id="Array-T-IEnumerable-lt-T-gt-IList-lt-T-gt-ICollection-lt-T-gt"><a href="#Array-T-IEnumerable-lt-T-gt-IList-lt-T-gt-ICollection-lt-T-gt" class="headerlink" title="Array[T] - IEnumerable&lt;T&gt; - IList&lt;T&gt; - ICollection&lt;T&gt;"></a>Array[T] - IEnumerable&lt;T&gt; - IList&lt;T&gt; - ICollection&lt;T&gt;</h2><p>What if one of your components depend on an array or a IEnumerable&lt;T&gt;. Consider following scenario:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TaskExecutorWithArray</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">TaskExecutorWithArray</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">ITask<span class="token punctuation">[</span><span class="token punctuation">]</span></span> tasks<span class="token punctuation">;</span>
 
   <span class="token keyword">public</span> <span class="token function">TaskExecutorWithArray</span><span class="token punctuation">(</span><span class="token class-name">ITask<span class="token punctuation">[</span><span class="token punctuation">]</span></span> tasks<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">this</span><span class="token punctuation">.</span>tasks <span class="token operator">=</span> tasks<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>In Castle Windsor you need to <strong>opt-in</strong> for this behavior before registering components, so the container knows you want this behavior.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
 <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token comment">// Important opt-in for this behavior before registering components !</span>
@@ -629,35 +632,38 @@ container<span class="token punctuation">.</span><span class="token function">Re
 <span class="token comment">// Resolve our array</span>
 
 <span class="token class-name">TaskExecutorWithArray</span> executor<span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>TaskExecutorWithArray<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>This will work if your TaskExecutor is depending on an IEnumerable, ICollection, IList or an array of ITask. The second constructor parameter of CollectionResolver determines if Windsor allows <strong>empty collections</strong>, so if the value is true it will not throw an exception if you have no components registered.</p>
 <blockquote>
 <p>You need to <strong>opt-in before registering any components</strong> otherwise it will not work!</p>
 </blockquote>
 <h3 id="CollectionResolverFacility"><a href="#CollectionResolverFacility" class="headerlink" title="CollectionResolverFacility"></a>CollectionResolverFacility</h3><p>As this does not exist out of the box and it is so important to opt-in before registering any components, let’s create our first facility. A facility is more or less an extension of Castle.Windsor.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>Core<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>Core<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel<span class="token punctuation">.</span>Resolvers<span class="token punctuation">.</span>SpecializedResolvers</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">Windsor<span class="token punctuation">.</span>Tests<span class="token punctuation">.</span>Facilities</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CollectionResolverFacility</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IFacility</span></span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Init</span><span class="token punctuation">(</span><span class="token class-name">IKernel</span> kernel<span class="token punctuation">,</span> <span class="token class-name">IConfiguration</span> facilityConfig<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       kernel<span class="token punctuation">.</span>Resolver<span class="token punctuation">.</span><span class="token function">AddSubResolver</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">CollectionResolver</span><span class="token punctuation">(</span>kernel<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
 
-    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Terminate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Terminate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>Now next time you need to have collection dependencies you will just need to add the facility to Windsor like this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
 <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token comment">// Add the facility to the container before adding any component registrations !</span>
 container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">AddFacility</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>CollectionResolverFacility<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="Func-lt-T-gt"><a href="#Func-lt-T-gt" class="headerlink" title="Func&lt;T&gt;"></a>Func&lt;T&gt;</h2><p>What if you needed to resolve a Func ? You could just do this, albeit a little bit cumbersome:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
 <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token comment">// Register your component</span>
@@ -670,8 +676,9 @@ container<span class="token punctuation">.</span><span class="token function">Re
 
 <span class="token comment">// Now you can resolve your func</span>
 <span class="token class-name">Func<span class="token punctuation">&lt;</span>ITask<span class="token punctuation">></span></span> taskFunc <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Func<span class="token punctuation">&lt;</span>ITask<span class="token punctuation">></span><span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>What if you wanted this behavior out of the box without registering every delegate by hand: use the power of <strong>TypedFactoryFacility</strong>:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
 <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token comment">// Add the facility</span>
@@ -682,8 +689,9 @@ container<span class="token punctuation">.</span><span class="token function">Re
 
 <span class="token comment">// Now you can resolve a func for every component you registered !</span>
 <span class="token class-name">Func<span class="token punctuation">&lt;</span>ITask<span class="token punctuation">></span></span> taskFunc <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Func<span class="token punctuation">&lt;</span>ITask<span class="token punctuation">></span><span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="Lazy-lt-T-gt"><a href="#Lazy-lt-T-gt" class="headerlink" title="Lazy&lt;T&gt;"></a>Lazy&lt;T&gt;</h2><p>Last but not least how to use Lazy&lt;T&gt;, a recent addition to Castle Windsor (as of version 3)</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span>
 <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token comment">// Opt-in for this behavior</span>
@@ -695,6 +703,7 @@ container<span class="token punctuation">.</span><span class="token function">Re
 
 <span class="token comment">// Now resolve your Lazy&lt;ITask></span>
 <span class="token class-name">Lazy<span class="token punctuation">&lt;</span>ITask<span class="token punctuation">></span></span> lazyTask <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Lazy<span class="token punctuation">&lt;</span>ITask<span class="token punctuation">></span><span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>Next time i will try to elaborate on the trough power of the TypedFactoryFacility, i hope you are liking the series so far. Remember your feedback is important!</p>
 
       
@@ -836,14 +845,14 @@ container<span class="token punctuation">.</span><span class="token function">Re
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

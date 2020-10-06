@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -86,7 +86,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -225,36 +225,47 @@
         <p>Almost a decade ago, a company I worked for, started using <em>Subversion</em> which was a great step forward coming from <em>Visual Source Safe</em>.</p>
 <p>Today, the landscape is totally different, but on enterprise level not much has changed. Some of the companies use <em>Team Foundation Server</em> which is great if you like total integration, but it’s source control system is not that great.<br>Others remained with <em>Subversion</em>.</p>
 <p>They might be thinking of going to <em>Git</em>, but most of them are afraid of the learning curve. As with all learning processes, you just have to start somewhere, just dive-in, step by step you’ll start learning Git.</p>
-<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>As a fan of <a href="http://chocolatey.org/" target="_blank" rel="noopener">Chocolatey</a> as machine package manager, just enter at command prompt</p>
-<pre class=" language-shell"><code class="language-shell">cinst <span class="token function">git</span></code></pre>
-<p>Or <a href="http://msysgit.github.io/" target="_blank" rel="noopener">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
+<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>As a fan of <a target="_blank" rel="noopener" href="http://chocolatey.org/">Chocolatey</a> as machine package manager, just enter at command prompt</p>
+<pre class="language-shell" data-language="shell"><code class="language-shell">cinst git</code></pre>
+
+<p>Or <a target="_blank" rel="noopener" href="http://msysgit.github.io/">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
 <h2 id="Checking-out-the-repository"><a href="#Checking-out-the-repository" class="headerlink" title="Checking out the repository"></a>Checking out the repository</h2><p>If your Subversion has the default trunk, branches, tags layout</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn clone -s &lt;repo_url&gt; --prefix svn&#x2F;</code></pre>
+
 <p>The -s switch is a shortcut for</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -T trunk --t tags --b branches <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn clone -T trunk --t tags --b branches &lt;repo_url&gt; --prefix svn&#x2F;</code></pre>
+
 <p>This will checkout the trunk of the repository by default. Now suppose your repository already had a branch called Test:</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
+<pre class="language-shell" data-language="shell"><code class="language-shell">&gt; git branch -a
 * master
-  remotes/svn/Test
-  remotes/svn/trunk</code></pre>
+  remotes&#x2F;svn&#x2F;Test
+  remotes&#x2F;svn&#x2F;trunk</code></pre>
+
 <h2 id="Advanced-Shallow-clone"><a href="#Advanced-Shallow-clone" class="headerlink" title="Advanced: Shallow clone"></a>Advanced: Shallow clone</h2><p>As the default approach above will crawl trough all svn revisions which can be very slow, if you are in an environment where they are using a single Svn repository with a lot of revisions for different projects, you could be looking at a few hours, days or even weeks (+ 150000 revisions). In that particular use case follow this approach:</p>
-<h3 id="Get-first-revision-of-directory-in-gigantic-repository"><a href="#Get-first-revision-of-directory-in-gigantic-repository" class="headerlink" title="Get first revision of directory in gigantic repository"></a>Get first revision of directory in gigantic repository</h3><pre class=" language-shell"><code class="language-shell">svn log <span class="token operator">&lt;</span>repo_url<span class="token operator">></span></code></pre>
+<h3 id="Get-first-revision-of-directory-in-gigantic-repository"><a href="#Get-first-revision-of-directory-in-gigantic-repository" class="headerlink" title="Get first revision of directory in gigantic repository"></a>Get first revision of directory in gigantic repository</h3><pre class="language-shell" data-language="shell"><code class="language-shell">svn log &lt;repo_url&gt;</code></pre>
+
 <p>The lowest/first revision number is what you are looking for, if you want full history in git on the project. If you just wanna checkout you can use the last revision number.</p>
-<h3 id="Checkout-repository"><a href="#Checkout-repository" class="headerlink" title="Checkout repository"></a>Checkout repository</h3><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/ -r <span class="token operator">&lt;</span>first-revision<span class="token operator">></span></code></pre>
+<h3 id="Checkout-repository"><a href="#Checkout-repository" class="headerlink" title="Checkout repository"></a>Checkout repository</h3><pre class="language-shell" data-language="shell"><code class="language-shell">git svn clone -s &lt;repo_url&gt; --prefix svn&#x2F; -r &lt;first-revision&gt;</code></pre>
+
 <p>This will initialize an empty git repository, now get the trunk</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn rebase</code></pre>
+
 <p>If you would look at your branches you would see that the test branch is not there in this case !</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
+<pre class="language-shell" data-language="shell"><code class="language-shell">&gt; git branch -a
 * master
-  remotes/svn/trunk</code></pre>
+  remotes&#x2F;svn&#x2F;trunk</code></pre>
+
 <p>To get the remote branch to appear you need to</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn fetch</code></pre>
-<h2 id="Updating-your-repository"><a href="#Updating-your-repository" class="headerlink" title="Updating your repository"></a>Updating your repository</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn fetch</code></pre>
+
+<h2 id="Updating-your-repository"><a href="#Updating-your-repository" class="headerlink" title="Updating your repository"></a>Updating your repository</h2><pre class="language-shell" data-language="shell"><code class="language-shell">git svn rebase</code></pre>
+
 <p>It will fetch latest changes from the trunk and will try to rebase your work on top of it. If any conflicting changes where made, you’ll have to merge them.</p>
-<h2 id="Committing-your-changes"><a href="#Committing-your-changes" class="headerlink" title="Committing your changes"></a>Committing your changes</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn dcommit</code></pre>
+<h2 id="Committing-your-changes"><a href="#Committing-your-changes" class="headerlink" title="Committing your changes"></a>Committing your changes</h2><pre class="language-shell" data-language="shell"><code class="language-shell">git svn dcommit</code></pre>
+
 <h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
-<li><a href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion" target="_blank" rel="noopener">Git and Subversion</a></li>
-<li><a href="http://viget.com/extend/effectively-using-git-with-subversion" target="_blank" rel="noopener">Effectively Using Git With Subversion</a></li>
+<li><a target="_blank" rel="noopener" href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion">Git and Subversion</a></li>
+<li><a target="_blank" rel="noopener" href="http://viget.com/extend/effectively-using-git-with-subversion">Effectively Using Git With Subversion</a></li>
 </ul>
 
     </div>
@@ -417,14 +428,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

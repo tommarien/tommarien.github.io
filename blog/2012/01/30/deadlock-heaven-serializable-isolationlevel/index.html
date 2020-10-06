@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -226,17 +226,20 @@
       
         <p>I recently got the opportunity to investigate deadlocks, that occurred on a production environment. I always volunteer when deadlocks are involved. Just because you get a chance to learn a lot about locking and how it works on SqlServer. Most of the time, deadlocks can be solved by adding an index. But not this time, this time i discovered something bigger. The client was using WCF as a service tier. By default using transactions on a wcf service or with the use of a TransactionScope your transaction isolationlevel becomes <strong>Serializable</strong> by default.</p>
 <blockquote>
-<p>With a lock-based <a title="Concurrency control" href="http://en.wikipedia.org/wiki/Concurrency_control" target="_blank" rel="noopener">concurrency control</a> DBMS implementation, <a title="Serializability" href="http://en.wikipedia.org/wiki/Serializability" target="_blank" rel="noopener">serializability</a> requires read and write locks (acquired on selected data) to be released at the end of the transaction. Also <em>range-locks</em> must be acquired when a <a title="SELECT" href="http://en.wikipedia.org/wiki/SELECT" target="_blank" rel="noopener">SELECT</a> query uses a ranged <em>WHERE</em> clause, especially to avoid the <strong>phantom reads</strong> phenomenon.</p>
+<p>With a lock-based <a title="Concurrency control" target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Concurrency_control">concurrency control</a> DBMS implementation, <a title="Serializability" target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Serializability">serializability</a> requires read and write locks (acquired on selected data) to be released at the end of the transaction. Also <em>range-locks</em> must be acquired when a <a title="SELECT" target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/SELECT">SELECT</a> query uses a ranged <em>WHERE</em> clause, especially to avoid the <strong>phantom reads</strong> phenomenon.</p>
 </blockquote>
 <p>So by default your actions will cause Range locks<a href="%5Bhttp://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/%5D(http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^1</a><a href="%5Bhttp://blogs.msdn.com/b/sqlserverstorageengine/archive/2006/05/26/range-locks.aspx%5D(http://blogs.msdn.com/b/sqlserverstorageengine/archive/2006/05/26/range-locks.aspx)">^3</a>, which under high load in parallel execution will cause deadlocks and serious scalability issues. Remember that on SqlServer your default isolationlevel is <strong>ReadCommitted</strong>, either by running statements on Management Studio or by using default ITransaction instances.</p>
 <p>I am going to try to prove that TransactionLevel serializable is <strong>unusable</strong> in any SqlServer system that has parallel execution and has a decent to high load. So remember to set it on ReadCommitted whenever you use the TransactionAttribute or use a TransactionScope. You could eventually add the snapshot option by executing following statement:</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> MyDatabase
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">DATABASE</span> MyDatabase
 <span class="token keyword">SET</span> READ_COMMITTED_SNAPSHOT <span class="token keyword">ON</span></code></pre>
+
 <h2 id="Test-Setup-for-the-scenario"><a href="#Test-Setup-for-the-scenario" class="headerlink" title="Test Setup for the scenario"></a>Test Setup for the scenario</h2><p>Create two query windows in SqlServer Management Studio, from here indicated by spid 52 and spid 56.<br>To see which locks are issued use following statement in another query window:</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> sys<span class="token punctuation">.</span>dm_tran_locks</code></pre>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> sys<span class="token punctuation">.</span>dm_tran_locks</code></pre>
+
 <p>Don’t forget to rollback your transaction on any query window after each scenario:</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">ROLLBACK</span> <span class="token keyword">TRAN</span></code></pre>
-<h2 id="Scenario-table-with-primary-key"><a href="#Scenario-table-with-primary-key" class="headerlink" title="Scenario: table with primary key"></a>Scenario: table with primary key</h2><h3 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">SCHEMA</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ROLLBACK</span> <span class="token keyword">TRAN</span></code></pre>
+
+<h2 id="Scenario-table-with-primary-key"><a href="#Scenario-table-with-primary-key" class="headerlink" title="Scenario: table with primary key"></a>Scenario: table with primary key</h2><h3 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h3><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">SCHEMA</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span>
 GO
 <span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Person<span class="token punctuation">]</span>
 <span class="token punctuation">[</span>Id<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token keyword">bigint</span><span class="token punctuation">]</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
@@ -249,20 +252,25 @@ GO
 <span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Person<span class="token punctuation">]</span> <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> <span class="token punctuation">[</span>Scenario1<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>Person<span class="token punctuation">]</span> <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 GO</code></pre>
-<h3 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h3><h4 id="spid-52"><a href="#spid-52" class="headerlink" title="spid 52"></a>spid 52</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION</span> <span class="token keyword">LEVEL</span> <span class="token keyword">SERIALIZABLE</span>
+
+<h3 id="Steps"><a href="#Steps" class="headerlink" title="Steps"></a>Steps</h3><h4 id="spid-52"><a href="#spid-52" class="headerlink" title="spid 52"></a>spid 52</h4><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION</span> <span class="token keyword">LEVEL</span> <span class="token keyword">SERIALIZABLE</span>
 <span class="token keyword">BEGIN</span> <span class="token keyword">TRAN</span>
 <span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Scenario1<span class="token punctuation">.</span>Person <span class="token keyword">where</span> Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
 GO</code></pre>
+
 <p>You will see a RangeS-S<a href="%5Bhttp://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/%5D(http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^2</a> lock on KEY (primary) for spid 52</p>
-<h4 id="spid-56"><a href="#spid-56" class="headerlink" title="spid 56"></a>spid 56</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION</span> <span class="token keyword">LEVEL</span> <span class="token keyword">SERIALIZABLE</span>
+<h4 id="spid-56"><a href="#spid-56" class="headerlink" title="spid 56"></a>spid 56</h4><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SET</span> <span class="token keyword">TRANSACTION</span> <span class="token keyword">ISOLATION</span> <span class="token keyword">LEVEL</span> <span class="token keyword">SERIALIZABLE</span>
 <span class="token keyword">BEGIN</span> <span class="token keyword">TRAN</span>
 <span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> Scenario1<span class="token punctuation">.</span>Person <span class="token keyword">where</span> Id <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
 GO</code></pre>
+
 <p>You will see a RangeS-S<a href="%5Bhttp://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/%5D(http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^2</a> lock on the same KEY (primary) for spid 56</p>
-<h4 id="spid-52-1"><a href="#spid-52-1" class="headerlink" title="spid 52"></a>spid 52</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Scenario1<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">Values</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<h4 id="spid-52-1"><a href="#spid-52-1" class="headerlink" title="spid 52"></a>spid 52</h4><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Scenario1<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">Values</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 GO</code></pre>
+
 <p>You will see a RangeI-N<a href="%5Bhttp://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/%5D(http://yrushka.com/index.php/performance-tunning/key-range-locking-types-in-serializable-isolation-level/)">^2</a> lock on KEY (primary) for spid 52, because spid 56 holds the range lock, also your query is blocked</p>
-<h4 id="spid-56-1"><a href="#spid-56-1" class="headerlink" title="spid 56"></a>spid 56</h4><pre class=" language-sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Scenario1<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">Values</span> <span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="spid-56-1"><a href="#spid-56-1" class="headerlink" title="spid 56"></a>spid 56</h4><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Scenario1<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>Id<span class="token punctuation">)</span> <span class="token keyword">Values</span> <span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <blockquote>
 <p>Msg 1205, Level 13, State 48, Line 1<br>Transaction (Process ID 56) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction.</p>
 </blockquote>
@@ -273,7 +281,8 @@ GO</code></pre>
 <p><em>Step 4</em>: OMG, what shall i do, sql server cannot guarantee any longer that the values you read are still consistent so you will be the victim.</p>
 <h2 id="Now-why-is-this-unusable-as-i-never-select-before-update"><a href="#Now-why-is-this-unusable-as-i-never-select-before-update" class="headerlink" title="Now why is this unusable, as i never select before update?"></a>Now why is this unusable, as i never select before update?</h2><p>Just be carefull when implementing a OneToMany relationship and loading it eager because it will place a range lock on your foreign key index!</p>
 <p>For instance an order with no orderlines present in the db will instance a range lock on your orderline foreign key index because you will do the following in pseudo:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> order <span class="token operator">=</span> orderSet<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>o<span class="token operator">=></span> o<span class="token punctuation">.</span>Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span><span class="token string">"OrderLines"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Single</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> order <span class="token operator">=</span> orderSet<span class="token punctuation">.</span><span class="token function">Where</span><span class="token punctuation">(</span>o<span class="token operator">=></span> o<span class="token punctuation">.</span>Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Include</span><span class="token punctuation">(</span><span class="token string">"OrderLines"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Single</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>This would issue a rangelock (depending on the data allready present) on the orderid column index in table orderline.</p>
 <p>If you were using WCF with the TransactionAttribute, remember that wcf only commits the transaction when everything is serialized over the wire!</p>
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>The default IsolationLevel of a <strong>TransactionScope</strong> is Serializable, make an aware choice next time you use it.</p>
@@ -440,14 +449,14 @@ GO</code></pre>
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

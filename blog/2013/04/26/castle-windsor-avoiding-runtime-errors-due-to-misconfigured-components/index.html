@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -87,7 +87,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -233,38 +233,40 @@
 </blockquote>
 <p>In debug mode the container helps you discovering your issue while hovering over your container instance it will show you all the information you need under <strong>Potentially misconfigured items</strong>.</p>
 <p>Let’s try to improve this, first we need to make our component registrations reusable:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Boot</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Boot</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IWindsorContainer</span> <span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     container<span class="token punctuation">.</span><span class="token function">Install</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">SomeInstaller</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> container<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>We can use this class for instance in our global.asax to instantiate our container. Now lets write a test that verifies that everything is well configured</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WindsorRegistrationFixture</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WindsorRegistrationFixture</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ShouldNotHaveAnyMisconfiguredComponents</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> Boot<span class="token punctuation">.</span><span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> diagnostic <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">PotentiallyMisconfiguredComponentsDiagnostic</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token class-name">IHandler<span class="token punctuation">[</span><span class="token punctuation">]</span></span> handlers <span class="token operator">=</span> diagnostic<span class="token punctuation">.</span><span class="token function">Inspect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>handlers <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> handlers<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      builder<span class="token punctuation">.</span><span class="token function">AppendFormat</span><span class="token punctuation">(</span><span class="token string">"Misconfigured components ({0})\r\n"</span><span class="token punctuation">,</span> handlers<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      builder<span class="token punctuation">.</span><span class="token function">AppendFormat</span><span class="token punctuation">(</span><span class="token string">"Misconfigured components (&#123;0&#125;)\r\n"</span><span class="token punctuation">,</span> handlers<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">IHandler</span> handler <span class="token keyword">in</span> handlers<span class="token punctuation">)</span>
-      <span class="token punctuation">{</span>
+      <span class="token punctuation">&#123;</span>
         <span class="token class-name"><span class="token keyword">var</span></span> info <span class="token operator">=</span> <span class="token punctuation">(</span>IExposeDependencyInfo<span class="token punctuation">)</span> handler<span class="token punctuation">;</span>
         <span class="token class-name"><span class="token keyword">var</span></span> inspector <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DependencyInspector</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span>
         info<span class="token punctuation">.</span><span class="token function">ObtainDependencyDetails</span><span class="token punctuation">(</span>inspector<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
+      <span class="token punctuation">&#125;</span>
       Assert<span class="token punctuation">.</span><span class="token function">Fail</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>Which will output this :</p>
 <blockquote>
 <p>Misconfigured components (1)<br>‘ConsoleApplication1.ComponentA’ is waiting for the following dependencies:</p>
@@ -434,14 +436,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

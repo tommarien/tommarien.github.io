@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -87,7 +87,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -204,14 +204,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>6k</span>
+              <span>6.1k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>5 mins.</span>
+              <span>6 mins.</span>
             </span>
 
         </div>
@@ -233,9 +233,10 @@
 </ul>
 <h2 id="Service-Locator"><a href="#Service-Locator" class="headerlink" title="Service Locator"></a>Service Locator</h2><p>Part of ASP.NET MVC 3 is the <a title="IDependencyResolver" href="http://msdn.microsoft.com/en-us/library/system.web.mvc.idependencyresolver%28v=vs.98%29.aspx" target="_blank">IDependencyResolver</a> interface which is basically the contract of the service locator pattern (described by Martin Fowler <a href="http://martinfowler.com/articles/injection.html" target="_blank">here</a>) or better said <a title="ServiceLocator Anti-Pattern" href="http://blog.ploeh.dk/2010/02/03/ServiceLocatorIsAnAntiPattern.aspx" target="_blank">anti pattern</a>!</p>
 <p>If you are using Castle Windsor combined with service location you can get a lot of memory issues basically because the contract has no method for releasing your services/components.<br>When you are using Windsor you should always try to <strong>avoid getting an instance from the container yourself</strong> and when you have to, remember to <strong>always release the component after using it</strong>!</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name">IComponent</span> component <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token function">Resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">IComponent</span> component <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token function">Resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 component<span class="token punctuation">.</span><span class="token function">Act</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 container<span class="token punctuation">.</span><span class="token function">Release</span><span class="token punctuation">(</span>component<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>But why is that? Why do we need to release our components that we ask for explicitly?</p>
 <h2 id="Release-Policy"><a href="#Release-Policy" class="headerlink" title="Release Policy"></a>Release Policy</h2><p>Again this is explained very detailed on the <a title="Castle Wiki" href="http://docs.castleproject.org/Windsor.Release-Policy.ashx" target="_blank">Castle Wiki</a> but i will list the important ones.</p>
 <ul>
@@ -259,55 +260,58 @@ container<span class="token punctuation">.</span><span class="token function">Re
 <li>PerWebRequest : …</li>
 </ul>
 <p>But what about Transient and Pooled ? Especially with these you gotta watch out!</p>
-<h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IComponent</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<h3 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h3><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IComponent</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span>
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyComponent</span><span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IComponent</span></span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyComponent</span><span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IComponent</span></span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IDisposableComponent</span><span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IComponent</span><span class="token punctuation">,</span><span class="token class-name">IDisposable</span></span>
-<span class="token punctuation">{</span>
-  <span class="token return-type class-name"><span class="token keyword">bool</span></span> IsDisposed <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token return-type class-name"><span class="token keyword">bool</span></span> IsDisposed <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyDisposableComponent</span><span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IDisposableComponent</span></span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> IsDisposed <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> IsDisposed <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Dispose</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     IsDisposed <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IService</span>
-<span class="token punctuation">{</span>
-   <span class="token return-type class-name">IDisposableComponent</span> Component <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<span class="token punctuation">&#123;</span>
+   <span class="token return-type class-name">IDisposableComponent</span> Component <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MyServiceUsingComponent</span><span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IService</span></span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name">IDisposableComponent</span> Component <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">IDisposableComponent</span> Component <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token function">MyServiceUsingComponent</span><span class="token punctuation">(</span><span class="token class-name">IDisposableComponent</span> component<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     Component <span class="token operator">=</span> component<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
 </code></pre>
-<h3 id="What-happens-if-we-resolve-a-transient"><a href="#What-happens-if-we-resolve-a-transient" class="headerlink" title="What happens if we resolve a transient"></a>What happens if we resolve a transient</h3><pre class=" language-csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<h3 id="What-happens-if-we-resolve-a-transient"><a href="#What-happens-if-we-resolve-a-transient" class="headerlink" title="What happens if we resolve a transient"></a>What happens if we resolve a transient</h3><pre class="language-csharp" data-language="csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>MyComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span><span class="token function">LifestyleTransient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token class-name"><span class="token keyword">var</span></span> component <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 Assert<span class="token punctuation">.</span><span class="token function">IsFalse</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">.</span>ReleasePolicy<span class="token punctuation">.</span><span class="token function">HasTrack</span><span class="token punctuation">(</span>component<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>So this actually means that Windsor is not tracking the component, which means the garbage collector will be able to clean up this instance.</p>
-<h4 id="What-happens-if-we-resolve-a-transient-with-a-decommission-concern-for-instance-IDisposable"><a href="#What-happens-if-we-resolve-a-transient-with-a-decommission-concern-for-instance-IDisposable" class="headerlink" title="What happens if we resolve a transient with a decommission concern for instance IDisposable"></a>What happens if we resolve a transient with a decommission concern for instance IDisposable</h4><pre class=" language-csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<h4 id="What-happens-if-we-resolve-a-transient-with-a-decommission-concern-for-instance-IDisposable"><a href="#What-happens-if-we-resolve-a-transient-with-a-decommission-concern-for-instance-IDisposable" class="headerlink" title="What happens if we resolve a transient with a decommission concern for instance IDisposable"></a>What happens if we resolve a transient with a decommission concern for instance IDisposable</h4><pre class="language-csharp" data-language="csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>MyDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span>LifeStyle<span class="token punctuation">.</span>Transient<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token class-name"><span class="token keyword">var</span></span> component <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 Assert<span class="token punctuation">.</span><span class="token function">IsTrue</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">.</span>ReleasePolicy<span class="token punctuation">.</span><span class="token function">HasTrack</span><span class="token punctuation">(</span>component<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>So if we don’t release the component after using it, the garbage collector will not be able to pick it up as Windsor is still referencing it and your dispose method will never get invoked!</p>
-<h3 id="What-happens-if-we-resolve-a-transient-component-that-is-dependent-on-another-transient-component-with-a-decommission-concern"><a href="#What-happens-if-we-resolve-a-transient-component-that-is-dependent-on-another-transient-component-with-a-decommission-concern" class="headerlink" title="What happens if we resolve a transient component that is dependent on another transient component with a decommission concern?"></a>What happens if we resolve a transient component that is dependent on another transient component with a decommission concern?</h3><pre class=" language-csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<h3 id="What-happens-if-we-resolve-a-transient-component-that-is-dependent-on-another-transient-component-with-a-decommission-concern"><a href="#What-happens-if-we-resolve-a-transient-component-that-is-dependent-on-another-transient-component-with-a-decommission-concern" class="headerlink" title="What happens if we resolve a transient component that is dependent on another transient component with a decommission concern?"></a>What happens if we resolve a transient component that is dependent on another transient component with a decommission concern?</h3><pre class="language-csharp" data-language="csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>MyDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span>LifeStyle<span class="token punctuation">.</span>Transient<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -317,14 +321,16 @@ container<span class="token punctuation">.</span><span class="token function">Re
 
 <span class="token class-name"><span class="token keyword">var</span></span> service <span class="token operator">=</span> container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IService<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 Assert<span class="token punctuation">.</span><span class="token function">IsTrue</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">.</span>ReleasePolicy<span class="token punctuation">.</span><span class="token function">HasTrack</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>The tracking will propagate onto the parent service so again if we don’t release the service after using it, we will get a memory leak!</p>
-<h3 id="Always-release-after-you-are-done"><a href="#Always-release-after-you-are-done" class="headerlink" title="Always release after you are done"></a>Always release after you are done</h3><pre class=" language-csharp"><code class="language-csharp">Container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<h3 id="Always-release-after-you-are-done"><a href="#Always-release-after-you-are-done" class="headerlink" title="Always release after you are done"></a>Always release after you are done</h3><pre class="language-csharp" data-language="csharp"><code class="language-csharp">Container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>MyDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
                             <span class="token punctuation">.</span>LifeStyle<span class="token punctuation">.</span>Transient<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token class-name"><span class="token keyword">var</span></span> component <span class="token operator">=</span> Container<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Resolve</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IDisposableComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 Container<span class="token punctuation">.</span><span class="token function">Release</span><span class="token punctuation">(</span>component<span class="token punctuation">)</span><span class="token punctuation">;</span>
 Assert<span class="token punctuation">.</span><span class="token function">IsTrue</span><span class="token punctuation">(</span>component<span class="token punctuation">.</span>IsDisposed<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h3 id="Why-does-Windsor-track-components-with-a-decommission-concern"><a href="#Why-does-Windsor-track-components-with-a-decommission-concern" class="headerlink" title="Why does Windsor track components with a decommission concern?"></a>Why does Windsor track components with a decommission concern?</h3><p>At the end of the lifetime of the component, either trough a implicit (Component or Component dependent on ends life) or explicit release (trough a container.Release), Windsor will execute all decommission steps. For instance when your component implements IDisposable, Windsor will call the Dispose method.</p>
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>The <strong>LifecycledComponentsReleasePolicy</strong> is great because it will track your components that have no real end of life defined and will cleanup after you. But especially be aware if you have a singleton component taking in a transient dependency with a decommission concern, because even if you release your singleton component after using it, it will not release the transient dependency immediatly, it will have to wait until your singleton’s life ends!</p>
 <p>Because the real releasing (think disposing) of your transient dependency will happen at the end the life of the singleton component, most of the time when your application stops, only then will the container release the reference to the transient dependency and eventually call the dispose method. And even then this is just 1 instance of that transient component, so that will not cause a memory issue.</p>
@@ -491,14 +497,14 @@ Assert<span class="token punctuation">.</span><span class="token function">IsTru
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

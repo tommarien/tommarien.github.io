@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -87,7 +87,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -204,7 +204,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.3k</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -223,10 +223,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Sometimes we, developers, tend to have an itch. When i saw that there was a new kid in town (<a href="https://ci.appveyor.com/projects" target="_blank" rel="noopener">AppVeyor</a>) that does free open source continuous integration, i just had to scratch.</p>
+        <p>Sometimes we, developers, tend to have an itch. When i saw that there was a new kid in town (<a target="_blank" rel="noopener" href="https://ci.appveyor.com/projects">AppVeyor</a>) that does free open source continuous integration, i just had to scratch.</p>
 <p>As i resend xml configuration files, i love the simplicity of yaml and the older ini file formats.</p>
 <p>But if you would like to read ini files in .net you have to do a dll import:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DllImport</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"KERNEL32.DLL"</span><span class="token punctuation">,</span>   EntryPoint <span class="token operator">=</span> <span class="token string">"GetPrivateProfileStringW"</span><span class="token punctuation">,</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DllImport</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"KERNEL32.DLL"</span><span class="token punctuation">,</span>   EntryPoint <span class="token operator">=</span> <span class="token string">"GetPrivateProfileStringW"</span><span class="token punctuation">,</span>
   SetLastError<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span>
   CharSet<span class="token operator">=</span>CharSet<span class="token punctuation">.</span>Unicode<span class="token punctuation">,</span> ExactSpelling<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span>
   CallingConvention<span class="token operator">=</span>CallingConvention<span class="token punctuation">.</span>StdCall<span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
@@ -237,44 +237,53 @@
   <span class="token class-name"><span class="token keyword">string</span></span> lpReturnString<span class="token punctuation">,</span>
   <span class="token class-name"><span class="token keyword">int</span></span> nSize<span class="token punctuation">,</span>
   <span class="token class-name"><span class="token keyword">string</span></span> lpFilename<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>So i thought of creating a simple relaxed ini parsing library called <a href="https://github.com/tommarien/zenini" target="_blank" rel="noopener">ZenIni</a> which you can obtain through Nuget.</p>
-<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><pre class=" language-shell"><code class="language-shell">Install-Package zenini</code></pre>
+
+<p>So i thought of creating a simple relaxed ini parsing library called <a target="_blank" rel="noopener" href="https://github.com/tommarien/zenini">ZenIni</a> which you can obtain through Nuget.</p>
+<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><pre class="language-shell" data-language="shell"><code class="language-shell">Install-Package zenini</code></pre>
+
 <h3 id="Provider"><a href="#Provider" class="headerlink" title="Provider"></a>Provider</h3><p>Everything starts with constructing the provider, which you could register as a static instance in your DI container of choice:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Zenini</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Zenini<span class="token punctuation">.</span>Readers</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">ConsoleApplication5</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">Program</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> args<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">var</span></span> provider <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">IniSettingsProvider</span><span class="token punctuation">(</span>
         <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DefaultSettingsReader</span><span class="token punctuation">(</span>StringComparer<span class="token punctuation">.</span>OrdinalIgnoreCase<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>The DefaultSettingsReader allows you to specify how strings should be compared so you can choose whether or not to ignore case.</p>
 <h3 id="IIniSettings"><a href="#IIniSettings" class="headerlink" title="IIniSettings"></a>IIniSettings</h3><p>The IniSettings class is the in memory representation of your ini file, which consists out of sections with or without nested key/value pairs.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name">IIniSettings</span> settings <span class="token operator">=</span> provider<span class="token punctuation">.</span><span class="token function">FromFile</span><span class="token punctuation">(</span><span class="token string">@"c:\Temp\DefaultSettings.ini"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">IIniSettings</span> settings <span class="token operator">=</span> provider<span class="token punctuation">.</span><span class="token function">FromFile</span><span class="token punctuation">(</span><span class="token string">@"c:\Temp\DefaultSettings.ini"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h3 id="Sections"><a href="#Sections" class="headerlink" title="Sections"></a>Sections</h3><p>Getting a section is as easy as</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name">ISection</span> firstSection <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">ISection</span> firstSection <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+
 <p>Even if the original file did not contain the section if will never return null, it will return the static instance Section.Empty. This to relieve you from checking for null when you need to access a value.</p>
 <h3 id="Values"><a href="#Values" class="headerlink" title="Values"></a>Values</h3><p>Given the following ini file</p>
-<pre class=" language-ini"><code class="language-ini"><span class="token selector">[SectionOne]</span>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[SectionOne]</span>
 <span class="token constant">Status</span><span class="token attr-value"><span class="token punctuation">=</span>Single</span>
 <span class="token constant">Name</span><span class="token attr-value"><span class="token punctuation">=</span>Derek</span>
 <span class="token constant">Value</span><span class="token attr-value"><span class="token punctuation">=</span>Yes</span>
 <span class="token constant">Age</span><span class="token attr-value"><span class="token punctuation">=</span>30</span>
 <span class="token constant">Single</span><span class="token attr-value"><span class="token punctuation">=</span>True</span></code></pre>
+
 <p>To get the status you just have to do:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> status <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token string">"Status"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> status <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token string">"Status"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="Extensions"><a href="#Extensions" class="headerlink" title="Extensions"></a>Extensions</h2><p>There are some extension methods to help you with common used types like booleans and integer values. Given the same ini file, to get the age setting you call:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span><span class="token punctuation">?</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span><span class="token punctuation">?</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>It returns a nullable, so if your ini file does not contain the setting you can just add a default like this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token number">25</span><span class="token punctuation">;</span></code></pre>
-<p>Just give it a spin, it’s small and very easy. The <a href="https://github.com/tommarien/zenini/wiki/Specification" target="_blank" rel="noopener">specification</a> is documented on the wiki.</p>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token number">25</span><span class="token punctuation">;</span></code></pre>
+
+<p>Just give it a spin, it’s small and very easy. The <a target="_blank" rel="noopener" href="https://github.com/tommarien/zenini/wiki/Specification">specification</a> is documented on the wiki.</p>
 
     </div>
 
@@ -437,14 +446,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

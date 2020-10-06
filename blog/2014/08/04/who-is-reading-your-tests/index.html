@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -86,7 +86,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -238,10 +238,11 @@
 </blockquote>
 <p>This looks like something that could have been taken from an analysis document or could be the description on the post-it on your agile board. Now suppose you are assigned with this task, how would you organize your tests?</p>
 <p>Let’s make it as ‘fugly’ as we can:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IAuthenticationService</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IAuthenticationService</span>
+<span class="token punctuation">&#123;</span>
   <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Authenticate</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> user<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>If we start with the simplest thing we could go for a test class called AuthenticationServiceTests. But that would quickly become a big ball of mud as we start thinking about the possible tests:</p>
 <ul>
 <li>Authenticating with a user and password returns true if user is known and password matches</li>
@@ -252,24 +253,25 @@
 <li>Authenticating with an unconfirmed registered user throws a business exception</li>
 <li>…</li>
 </ul>
-<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
+<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_user_logs_on_using_username_and_password</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_returns_true</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_resets_failed_logon_attempts</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_updates_last_logon</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>You could debate about not following standard .net naming conventions, but this clearly specifies our requirement. But it also involves code side effects which are necessary but may have a complete different audience (ref tests 2 and 3). This could mean you may need to organize them in that way:</p>
 <ul>
 <li>it_resets_failed_logon_attempts is related to locking out users after 3 attempts</li>
@@ -278,14 +280,15 @@
 </ul>
 <p>Now what happens if we logon with an unknown user, mmm, this seems database oriented, if the record does not exist in the database, the user can not login. But in real life it could mean that the user just did not register on our site or forgot his logon credentials!</p>
 <p>So you might go for this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_an_unknown_or_unregistered_user_logs_on</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
     <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
     <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_indicates_failure</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>I hope I trickled your mind a bit and that I got the message trough. Expressive <strong>tests are hard work</strong> but can be very useful.</p>
 <p>Just having full code coverage and tests where you need to deep-dive into the code to find out what they are doing may not be the point of your tests.</p>
 <blockquote>
@@ -452,14 +455,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

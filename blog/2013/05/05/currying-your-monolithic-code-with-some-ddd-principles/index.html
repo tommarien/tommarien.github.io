@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -32,8 +32,8 @@
 <meta property="article:author" content="Tom Marien">
 <meta property="article:tag" content="code quality">
 <meta property="article:tag" content="csharp">
-<meta property="article:tag" content="domain driven design">
 <meta property="article:tag" content="object oriented">
+<meta property="article:tag" content="domain driven design">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://tommarien.github.io/blog/2013/05/05/currying-your-monolithic-code-with-some-ddd-principles/">
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -205,14 +205,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>5.9k</span>
+              <span>6.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>5 mins.</span>
+              <span>6 mins.</span>
             </span>
 
         </div>
@@ -225,8 +225,8 @@
 
       
         <p>Even the most monolithic code base could benefit by introducing some of the most basic principles of Domain Driven Design.  The following blog post is a reproduction of a real life code base, in a simplified form, but not far from reality.</p>
-<h2 id="The-breakdown"><a href="#The-breakdown" class="headerlink" title="The breakdown"></a>The breakdown</h2><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
+<h2 id="The-breakdown"><a href="#The-breakdown" class="headerlink" title="The breakdown"></a>The breakdown</h2><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
   <span class="token class-name">Customer</span> existingCustomer <span class="token operator">=</span> _customerRepository<span class="token punctuation">.</span><span class="token function">GetById</span><span class="token punctuation">(</span>customer<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>existingCustomer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">InvalidOperationException</span><span class="token punctuation">(</span><span class="token string">"Customer does not exist"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -246,20 +246,21 @@
 
   <span class="token comment">// If we have address changes update invoicing service</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>hasChanges<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
       _invoicingService<span class="token punctuation">.</span><span class="token function">Execute</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">UpdateAddress</span>
-          <span class="token punctuation">{</span>
+          <span class="token punctuation">&#123;</span>
               Id <span class="token operator">=</span> customer<span class="token punctuation">.</span>Id<span class="token punctuation">,</span>
               Street <span class="token operator">=</span> customer<span class="token punctuation">.</span>Street<span class="token punctuation">,</span>
               Number <span class="token operator">=</span> customer<span class="token punctuation">.</span>StreetNumber<span class="token punctuation">,</span>
               Postal <span class="token operator">=</span> customer<span class="token punctuation">.</span>PostalCode<span class="token punctuation">,</span>
               City <span class="token operator">=</span> customer<span class="token punctuation">.</span>City<span class="token punctuation">,</span>
               Country <span class="token operator">=</span> customer<span class="token punctuation">.</span>Country
-          <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+          <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
 
   _unitOfWork<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>By seeing the above code snippet, even without knowing all the specific implementations, we can clearly identify the requirements of this method:</p>
 <ul>
 <li>Map all necessary values from the data-transfer object to the domain</li>
@@ -267,82 +268,85 @@
 <li>We need to persist the changes if any</li>
 </ul>
 <p>Just for the sake of clarity i will include the initial <a title="Anemic Domain Model" href="http://martinfowler.com/bliki/AnemicDomainModel.html" target="_blank">anemic</a> domain model</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Customer</span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Street <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> StreetNumber <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> PostalCode <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> City <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Country <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Customer</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Street <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> StreetNumber <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> PostalCode <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> City <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Country <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h2 id="The-‘Address’-value-object"><a href="#The-‘Address’-value-object" class="headerlink" title="The ‘Address’ value object"></a>The ‘Address’ value object</h2><p>By introducing a DDD value object for all the address related properties we could simplify all the necessary change tracking in this code, i will include the Address code snippet just for clarity but i let my Resharper generate all equality members.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Address</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Address</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token function">Address</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> street
       <span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> streetNumber<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> postalCode
       <span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> city<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> country<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     Street <span class="token operator">=</span> street<span class="token punctuation">;</span>
     StreetNumber <span class="token operator">=</span> streetNumber<span class="token punctuation">;</span>
     PostalCode <span class="token operator">=</span> postalCode<span class="token punctuation">;</span>
     City <span class="token operator">=</span> city<span class="token punctuation">;</span>
     Country <span class="token operator">=</span> country<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
 
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Street <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> StreetNumber <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> PostalCode <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> City <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Country <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Street <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> StreetNumber <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> PostalCode <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> City <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Country <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">protected</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Equals</span><span class="token punctuation">(</span><span class="token class-name">Address</span> other<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">return</span> <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>Street<span class="token punctuation">,</span> other<span class="token punctuation">.</span>Street<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>StreetNumber<span class="token punctuation">,</span> other<span class="token punctuation">.</span>StreetNumber<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
             <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>PostalCode<span class="token punctuation">,</span> other<span class="token punctuation">.</span>PostalCode<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>City<span class="token punctuation">,</span> other<span class="token punctuation">.</span>City<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
             <span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Equals</span><span class="token punctuation">(</span>Country<span class="token punctuation">,</span> other<span class="token punctuation">.</span>Country<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Equals</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">object</span></span> obj<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">ReferenceEquals</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> obj<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">ReferenceEquals</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> obj<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>obj<span class="token punctuation">.</span><span class="token function">GetType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">Address</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token function">Equals</span><span class="token punctuation">(</span><span class="token punctuation">(</span>Address<span class="token punctuation">)</span> obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> <span class="token function">GetHashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">unchecked</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">int</span></span> hashCode <span class="token operator">=</span> <span class="token punctuation">(</span>Street <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token punctuation">?</span> Street<span class="token punctuation">.</span><span class="token function">GetHashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       hashCode <span class="token operator">=</span> <span class="token punctuation">(</span>hashCode<span class="token operator">*</span><span class="token number">397</span><span class="token punctuation">)</span> <span class="token operator">^</span> <span class="token punctuation">(</span>StreetNumber <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token punctuation">?</span> StreetNumber<span class="token punctuation">.</span><span class="token function">GetHashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       hashCode <span class="token operator">=</span> <span class="token punctuation">(</span>hashCode<span class="token operator">*</span><span class="token number">397</span><span class="token punctuation">)</span> <span class="token operator">^</span> <span class="token punctuation">(</span>PostalCode <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token punctuation">?</span> PostalCode<span class="token punctuation">.</span><span class="token function">GetHashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       hashCode <span class="token operator">=</span> <span class="token punctuation">(</span>hashCode<span class="token operator">*</span><span class="token number">397</span><span class="token punctuation">)</span> <span class="token operator">^</span> <span class="token punctuation">(</span>City <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token punctuation">?</span> City<span class="token punctuation">.</span><span class="token function">GetHashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       hashCode <span class="token operator">=</span> <span class="token punctuation">(</span>hashCode<span class="token operator">*</span><span class="token number">397</span><span class="token punctuation">)</span> <span class="token operator">^</span> <span class="token punctuation">(</span>Country <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token punctuation">?</span> Country<span class="token punctuation">.</span><span class="token function">GetHashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
       <span class="token keyword">return</span> hashCode<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">bool</span> <span class="token keyword">operator</span> <span class="token operator">==</span><span class="token punctuation">(</span><span class="token class-name">Address</span> left<span class="token punctuation">,</span> <span class="token class-name">Address</span> right<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">return</span> <span class="token function">Equals</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> right<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">bool</span> <span class="token keyword">operator</span> <span class="token operator">!=</span><span class="token punctuation">(</span><span class="token class-name">Address</span> left<span class="token punctuation">,</span> <span class="token class-name">Address</span> right<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">return</span> <span class="token operator">!</span><span class="token function">Equals</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> right<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>This is how our Customer domain object could look like at this moment:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Customer</span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name">Address</span> Address <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Customer</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">Address</span> Address <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>By doing this we can refactor our main monolithic block to this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
   <span class="token class-name">Customer</span> existingCustomer <span class="token operator">=</span> _customerRepository<span class="token punctuation">.</span><span class="token function">GetById</span><span class="token punctuation">(</span>customer<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>existingCustomer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">InvalidOperationException</span><span class="token punctuation">(</span><span class="token string">"Customer does not exist"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -360,65 +364,69 @@
 
   <span class="token comment">// If we have address changes update invoicing service</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>hasChanges<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     _invoicingService<span class="token punctuation">.</span><span class="token function">Execute</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">UpdateAddress</span>
-      <span class="token punctuation">{</span>
+      <span class="token punctuation">&#123;</span>
           Id <span class="token operator">=</span> customer<span class="token punctuation">.</span>Id<span class="token punctuation">,</span>
           Street <span class="token operator">=</span> customer<span class="token punctuation">.</span>Street<span class="token punctuation">,</span>
           Number <span class="token operator">=</span> customer<span class="token punctuation">.</span>StreetNumber<span class="token punctuation">,</span>
           Postal <span class="token operator">=</span> customer<span class="token punctuation">.</span>PostalCode<span class="token punctuation">,</span>
           City <span class="token operator">=</span> customer<span class="token punctuation">.</span>City<span class="token punctuation">,</span>
           Country <span class="token operator">=</span> customer<span class="token punctuation">.</span>Country
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
 
   _unitOfWork<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h3 id="Introduce-a-domain-event-and-put-the-logic-where-it-belongs"><a href="#Introduce-a-domain-event-and-put-the-logic-where-it-belongs" class="headerlink" title="Introduce a domain event and put the logic where it belongs"></a>Introduce a domain event and put the logic where it belongs</h3><p>For more details i encourage you to read<a title="Domain Events Salvation" href="http://www.udidahan.com/2009/06/14/domain-events-salvation/" target="_blank"> Udi Dahan’s post</a> on it.</p>
 <h3 id="The-‘CustomerMoved’-domain-event"><a href="#The-‘CustomerMoved’-domain-event" class="headerlink" title="The ‘CustomerMoved’ domain event:"></a>The ‘CustomerMoved’ domain event:</h3><p>This event indicates that a customer has moved</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomerMoved</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IDomainEvent</span></span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name">Address</span> Address <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomerMoved</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IDomainEvent</span></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">Address</span> Address <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h3 id="It’s-handler"><a href="#It’s-handler" class="headerlink" title="It’s handler"></a>It’s handler</h3><p>Which has only the responsability to let the invoicing system know when a customer has moved.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UpdateInvoicingAddressHandler</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IDomainEventHandler<span class="token punctuation">&lt;</span>CustomerMoved<span class="token punctuation">></span></span></span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UpdateInvoicingAddressHandler</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IDomainEventHandler<span class="token punctuation">&lt;</span>CustomerMoved<span class="token punctuation">></span></span></span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">InvoicingService</span> _invoicingService<span class="token punctuation">;</span>
 
   <span class="token keyword">public</span> <span class="token function">UpdateInvoicingAddressHandler</span><span class="token punctuation">(</span><span class="token class-name">InvoicingService</span> invoicingService<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     _invoicingService <span class="token operator">=</span> invoicingService<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">On</span><span class="token punctuation">(</span><span class="token class-name">CustomerMoved</span> @<span class="token keyword">event</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     _invoicingService<span class="token punctuation">.</span><span class="token function">Execute</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">UpdateAddress</span>
-          <span class="token punctuation">{</span>
+          <span class="token punctuation">&#123;</span>
               Id <span class="token operator">=</span> @<span class="token keyword">event</span><span class="token punctuation">.</span>Id<span class="token punctuation">,</span>
               Street <span class="token operator">=</span> @<span class="token keyword">event</span><span class="token punctuation">.</span>Address<span class="token punctuation">.</span>Street<span class="token punctuation">,</span>
               Number <span class="token operator">=</span> @<span class="token keyword">event</span><span class="token punctuation">.</span>Address<span class="token punctuation">.</span>StreetNumber<span class="token punctuation">,</span>
               Postal <span class="token operator">=</span> @<span class="token keyword">event</span><span class="token punctuation">.</span>Address<span class="token punctuation">.</span>PostalCode<span class="token punctuation">,</span>
               City <span class="token operator">=</span> @<span class="token keyword">event</span><span class="token punctuation">.</span>Address<span class="token punctuation">.</span>City<span class="token punctuation">,</span>
               Country <span class="token operator">=</span> @<span class="token keyword">event</span><span class="token punctuation">.</span>Address<span class="token punctuation">.</span>Country
-          <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+          <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h3 id="Remove-setters"><a href="#Remove-setters" class="headerlink" title="Remove setters"></a>Remove setters</h3><p>Let’s create a move method that does all necessary mechanics and remove the address property setter</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Customer</span>
-<span class="token punctuation">{</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token keyword">public</span> <span class="token return-type class-name">Address</span> Address <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Customer</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name">Address</span> Address <span class="token punctuation">&#123;</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Move</span><span class="token punctuation">(</span><span class="token class-name">Address</span> newAddress<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>Address <span class="token operator">==</span> newAddress<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
     Address <span class="token operator">=</span> newAddress<span class="token punctuation">;</span>
-    DomainEvents<span class="token punctuation">.</span><span class="token function">Raise</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">CustomerMoved</span> <span class="token punctuation">{</span>Id <span class="token operator">=</span> Id<span class="token punctuation">,</span> Address <span class="token operator">=</span> newAddress<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
-<h2 id="The-result-which-is-no-longer-monolithic"><a href="#The-result-which-is-no-longer-monolithic" class="headerlink" title="The result, which is no longer monolithic"></a>The result, which is no longer monolithic</h2><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
+    DomainEvents<span class="token punctuation">.</span><span class="token function">Raise</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">CustomerMoved</span> <span class="token punctuation">&#123;</span>Id <span class="token operator">=</span> Id<span class="token punctuation">,</span> Address <span class="token operator">=</span> newAddress<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<h2 id="The-result-which-is-no-longer-monolithic"><a href="#The-result-which-is-no-longer-monolithic" class="headerlink" title="The result, which is no longer monolithic"></a>The result, which is no longer monolithic</h2><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Update</span><span class="token punctuation">(</span><span class="token class-name">CustomerDto</span> customer<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
   <span class="token class-name">Customer</span> existingCustomer <span class="token operator">=</span> _customerRepository<span class="token punctuation">.</span><span class="token function">GetById</span><span class="token punctuation">(</span>customer<span class="token punctuation">.</span>Id<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>existingCustomer <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">InvalidOperationException</span><span class="token punctuation">(</span><span class="token string">"Customer does not exist"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
@@ -428,7 +436,8 @@
   existingCustomer<span class="token punctuation">.</span><span class="token function">Move</span><span class="token punctuation">(</span>newAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
   _unitOfWork<span class="token punctuation">.</span><span class="token function">SaveChanges</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>I hope that i convinced or can inspire some of you, we could and should all benefit from the principles applied in DDD.</p>
 
     </div>
@@ -441,8 +450,8 @@
           <div class="post-tags">
               <a href="/tags/code-quality/" rel="tag"># code quality</a>
               <a href="/tags/csharp/" rel="tag"># csharp</a>
-              <a href="/tags/domain-driven-design/" rel="tag"># domain driven design</a>
               <a href="/tags/object-oriented/" rel="tag"># object oriented</a>
+              <a href="/tags/domain-driven-design/" rel="tag"># domain driven design</a>
           </div>
 
         
@@ -524,7 +533,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-breakdown"><span class="nav-number">1.</span> <span class="nav-text">The breakdown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-‘Address’-value-object"><span class="nav-number">2.</span> <span class="nav-text">The ‘Address’ value object</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduce-a-domain-event-and-put-the-logic-where-it-belongs"><span class="nav-number">2.1.</span> <span class="nav-text">Introduce a domain event and put the logic where it belongs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-‘CustomerMoved’-domain-event"><span class="nav-number">2.2.</span> <span class="nav-text">The ‘CustomerMoved’ domain event:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#It’s-handler"><span class="nav-number">2.3.</span> <span class="nav-text">It’s handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Remove-setters"><span class="nav-number">2.4.</span> <span class="nav-text">Remove setters</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-result-which-is-no-longer-monolithic"><span class="nav-number">3.</span> <span class="nav-text">The result, which is no longer monolithic</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-breakdown"><span class="nav-number">1.</span> <span class="nav-text">The breakdown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-%E2%80%98Address%E2%80%99-value-object"><span class="nav-number">2.</span> <span class="nav-text">The ‘Address’ value object</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduce-a-domain-event-and-put-the-logic-where-it-belongs"><span class="nav-number">2.1.</span> <span class="nav-text">Introduce a domain event and put the logic where it belongs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-%E2%80%98CustomerMoved%E2%80%99-domain-event"><span class="nav-number">2.2.</span> <span class="nav-text">The ‘CustomerMoved’ domain event:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#It%E2%80%99s-handler"><span class="nav-number">2.3.</span> <span class="nav-text">It’s handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Remove-setters"><span class="nav-number">2.4.</span> <span class="nav-text">Remove setters</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-result-which-is-no-longer-monolithic"><span class="nav-number">3.</span> <span class="nav-text">The result, which is no longer monolithic</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -593,14 +602,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

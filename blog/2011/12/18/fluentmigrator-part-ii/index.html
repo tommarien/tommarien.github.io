@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -205,7 +205,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.2k</span>
+              <span>4.1k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -226,17 +226,17 @@
       
         <p>As a result of <a href="/blog/2011/12/09/fluentmigrator-database-migrations-done-right">my previous post</a> of FluentMigrator, i thought publishing a follow-up article would be a great idea.  Meanwhile I joined the team of FluentMigrator as a contributor.   I would like to continue on the previous post and show some more common scenario’s.</p>
 <h2 id="The-start"><a href="#The-start" class="headerlink" title="The start"></a>The start</h2><p>Let’s revisit the first migration we wrote, we where creating a unique index on email with a separate Create expression, with the latest bits, that is no longer necessary as the Unique() and Indexed() methods are now implemented for single column indexes.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">Blog<span class="token punctuation">.</span>Migrations</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Migration</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">20111209182700</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0001_AddPerson</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Migration</span></span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> SchemaName <span class="token operator">=</span> <span class="token string">"Personalia"</span><span class="token punctuation">;</span>
     <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> TableName <span class="token operator">=</span> <span class="token string">"Person"</span><span class="token punctuation">;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Create<span class="token punctuation">.</span><span class="token function">Schema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
       Create<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span>
@@ -244,73 +244,79 @@
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Firstname"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsAnsiString</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Nullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Lastname"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsAnsiString</span><span class="token punctuation">(</span><span class="token number">60</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Nullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Email"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsAnsiString</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">NotNullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Unique</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Delete<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
       Delete<span class="token punctuation">.</span><span class="token function">Schema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>Just for reference i will add the command prompt syntax for the last time</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token punctuation">..</span><span class="token punctuation">\</span>Lib<span class="token punctuation">\</span>Migrate.exe -a .<span class="token punctuation">\</span>Blog.Migrations<span class="token punctuation">\</span>bin<span class="token punctuation">\</span>Debug<span class="token punctuation">\</span>Blog.Migrations.dll -db SqlServer2008</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">..\Lib\Migrate.exe -a .\Blog.Migrations\bin\Debug\Blog.Migrations.dll -db SqlServer2008</code></pre>
+
 <p><strong>Important:</strong> we no longer define the -conn parameter, if we add a connection to the app.config of our migration assembly named the same as our machine name, it will automagically fall back to that one. Another recent addition.</p>
 <h2 id="Let’s-add-some-data-to-it"><a href="#Let’s-add-some-data-to-it" class="headerlink" title="Let’s add some data to it"></a>Let’s add some data to it</h2><p>We’ll use the embedded script just as a showcase for it because you could also make this work with an Insert expression.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">Blog<span class="token punctuation">.</span>Migrations</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Migration</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">20111209184700</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0002_AddDataToPerson</span> <span class="token punctuation">:</span><span class="token type-list"><span class="token class-name">Migration</span></span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Execute<span class="token punctuation">.</span><span class="token function">EmbeddedScript</span><span class="token punctuation">(</span><span class="token string">"M0002_Data.sql"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Execute<span class="token punctuation">.</span><span class="token function">Sql</span><span class="token punctuation">(</span><span class="token string">"DELETE FROM Personalia.Person"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>We’ll also need an embedded sql script named: M0002_Data.sql</p>
-<pre class=" language-sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Personalia<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>FirstName<span class="token punctuation">,</span> LastName<span class="token punctuation">,</span> Email<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'Tom'</span><span class="token punctuation">,</span><span class="token string">'Marien'</span><span class="token punctuation">,</span><span class="token string">'tommarien@gmail.com'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Personalia<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>FirstName<span class="token punctuation">,</span> LastName<span class="token punctuation">,</span> Email<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'Tom'</span><span class="token punctuation">,</span><span class="token string">'Marien'</span><span class="token punctuation">,</span><span class="token string">'tommarien@gmail.com'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> Personalia<span class="token punctuation">.</span>Person <span class="token punctuation">(</span>FirstName<span class="token punctuation">,</span> LastName<span class="token punctuation">,</span> Email<span class="token punctuation">)</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token string">'John'</span><span class="token punctuation">,</span><span class="token string">'Doe'</span><span class="token punctuation">,</span><span class="token string">'john.doe@gmail.com'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>Remember that we could just rollback 1 step (1 migration) with following command (see <a href="https://github.com/schambers/fluentmigrator/wiki/Command-Line-Runner-Options" target="_blank" rel="noopener">Wiki</a>)</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token punctuation">..</span><span class="token punctuation">\</span>Lib<span class="token punctuation">\</span>Migrate.exe -a .<span class="token punctuation">\</span>Blog.Migrations<span class="token punctuation">\</span>bin<span class="token punctuation">\</span>Debug<span class="token punctuation">\</span>Blog.Migrations.dll -db SqlServer2008 -task rollback -steps <span class="token number">1</span></code></pre>
-<h2 id="Add-PersonType-table-with-data"><a href="#Add-PersonType-table-with-data" class="headerlink" title="Add PersonType table with data"></a>Add PersonType table with data</h2><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
+
+<p>Remember that we could just rollback 1 step (1 migration) with following command (see <a target="_blank" rel="noopener" href="https://github.com/schambers/fluentmigrator/wiki/Command-Line-Runner-Options">Wiki</a>)</p>
+<pre class="language-shell" data-language="shell"><code class="language-shell">..\Lib\Migrate.exe -a .\Blog.Migrations\bin\Debug\Blog.Migrations.dll -db SqlServer2008 -task rollback -steps 1</code></pre>
+
+<h2 id="Add-PersonType-table-with-data"><a href="#Add-PersonType-table-with-data" class="headerlink" title="Add PersonType table with data"></a>Add PersonType table with data</h2><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 <span class="token keyword">namespace</span> <span class="token namespace">Blog<span class="token punctuation">.</span>Migrations</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Migration</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">20111218143205</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0003_AddPersonType</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Migration</span></span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> TableName <span class="token operator">=</span> <span class="token string">"PersonType"</span><span class="token punctuation">;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Create<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Id"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsInt32</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">NotNullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">PrimaryKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Name"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsAnsiString</span><span class="token punctuation">(</span><span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">NotNullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-      Insert<span class="token punctuation">.</span><span class="token function">IntoTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Row</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">{</span>Id <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"None"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      Insert<span class="token punctuation">.</span><span class="token function">IntoTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Row</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">{</span>Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Natural"</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      Insert<span class="token punctuation">.</span><span class="token function">IntoTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Row</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">{</span> Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Legal"</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+      Insert<span class="token punctuation">.</span><span class="token function">IntoTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Row</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span>Id <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"None"</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      Insert<span class="token punctuation">.</span><span class="token function">IntoTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Row</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span>Id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Natural"</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      Insert<span class="token punctuation">.</span><span class="token function">IntoTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Row</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token punctuation">&#123;</span> Id <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> Name <span class="token operator">=</span> <span class="token string">"Legal"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Delete<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h2 id="Last-but-not-least"><a href="#Last-but-not-least" class="headerlink" title="Last but not least"></a>Last but not least</h2><p>Add a column and foreign key constraint from Person.PersonTypeId to PersonType.Id</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 <span class="token keyword">namespace</span> <span class="token namespace">Blog<span class="token punctuation">.</span>Migrations</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Migration</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">20111218144345</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0004_AddForeignKeyToPerson</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Migration</span></span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Create<span class="token punctuation">.</span><span class="token function">Column</span><span class="token punctuation">(</span><span class="token string">"PersonTypeId"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OnTable</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>TableName<span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">AsInt32</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Nullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -326,14 +332,14 @@
         <span class="token punctuation">.</span><span class="token function">ForeignColumn</span><span class="token punctuation">(</span><span class="token string">"PersonTypeId"</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">ToTable</span><span class="token punctuation">(</span>M0003_AddPersonType<span class="token punctuation">.</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">PrimaryColumn</span><span class="token punctuation">(</span><span class="token string">"Id"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       Delete<span class="token punctuation">.</span><span class="token function">ForeignKey</span><span class="token punctuation">(</span><span class="token string">"FK_Person_PersonType"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OnTable</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
       Delete<span class="token punctuation">.</span><span class="token function">Column</span><span class="token punctuation">(</span><span class="token string">"PersonTypeId"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">FromTable</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>M0001_AddPerson<span class="token punctuation">.</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
 
     </div>
 
@@ -428,7 +434,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-start"><span class="nav-number">1.</span> <span class="nav-text">The start</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Let’s-add-some-data-to-it"><span class="nav-number">2.</span> <span class="nav-text">Let’s add some data to it</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-PersonType-table-with-data"><span class="nav-number">3.</span> <span class="nav-text">Add PersonType table with data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Last-but-not-least"><span class="nav-number">4.</span> <span class="nav-text">Last but not least</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-start"><span class="nav-number">1.</span> <span class="nav-text">The start</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Let%E2%80%99s-add-some-data-to-it"><span class="nav-number">2.</span> <span class="nav-text">Let’s add some data to it</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Add-PersonType-table-with-data"><span class="nav-number">3.</span> <span class="nav-text">Add PersonType table with data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Last-but-not-least"><span class="nav-number">4.</span> <span class="nav-text">Last but not least</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -497,14 +503,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

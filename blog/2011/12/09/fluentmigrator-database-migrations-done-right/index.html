@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -228,12 +228,12 @@
 <p>I like all of my code to be tested including all queries and database operations. To be able to do that you need to be able to put your database in a specific state, not only schema but also your data.</p>
 <p>I know it’s possible by doing some scripting magic, but what do i do if i need to revert some of the changes i made ?</p>
 <p>Integration testing becomes a brease using a good ORM, if you got your database covered!</p>
-<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>When Ruby on Rails first became big everyone grew accustomed to their migration framework that was baked in called <a href="http://guides.rubyonrails.org/migrations.html" target="_blank" rel="noopener" title="Rails migrations">Rails migrations</a>. Migration frameworks quickly popped up in other areas and languages like for instance in .Net :</p>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>When Ruby on Rails first became big everyone grew accustomed to their migration framework that was baked in called <a target="_blank" rel="noopener" href="http://guides.rubyonrails.org/migrations.html" title="Rails migrations">Rails migrations</a>. Migration frameworks quickly popped up in other areas and languages like for instance in .Net :</p>
 <ul>
-<li><a href="http://code.google.com/p/migratordotnet" target="_blank" rel="noopener">Migrator.Net</a></li>
-<li><a href="http://sharpmigrations.codeplex.com/" target="_blank" rel="noopener">SharpMigrations</a></li>
+<li><a target="_blank" rel="noopener" href="http://code.google.com/p/migratordotnet">Migrator.Net</a></li>
+<li><a target="_blank" rel="noopener" href="http://sharpmigrations.codeplex.com/">SharpMigrations</a></li>
 </ul>
-<p><a href="https://github.com/schambers/fluentmigrator/wiki" target="_blank" rel="noopener">FluentMigrator</a> was originally started by Sean Chambers, Nate Kohari and Justin Etheredge, but it really was the community around it that got it to evolve.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/schambers/fluentmigrator/wiki">FluentMigrator</a> was originally started by Sean Chambers, Nate Kohari and Justin Etheredge, but it really was the community around it that got it to evolve.</p>
 <h2 id="What-is-a-migration"><a href="#What-is-a-migration" class="headerlink" title="What is a migration?"></a>What is a migration?</h2><p>Well in the end it all comes down to making a change in the database, it could be a schema-migration, a data-migration or a combination of both.</p>
 <p>A migration has two parts namely:</p>
 <ul>
@@ -245,16 +245,16 @@
 <li>Add a class library project and install trough Nuget the FluentMigrator Package.</li>
 <li>Add a new class call it whatever you want and add a MigrationAttribute to it and inherit from migration</li>
 </ul>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Migration</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token number">201112091827</span><span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">M0001_Add_Person</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">Migration</span></span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> SchemaName <span class="token operator">=</span> <span class="token string">"Personalia"</span><span class="token punctuation">;</span>
   <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token class-name"><span class="token keyword">string</span></span> TableName <span class="token operator">=</span> <span class="token string">"Person"</span><span class="token punctuation">;</span>
 
   <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Up</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     Create<span class="token punctuation">.</span><span class="token function">Schema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
     Create<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Id"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsInt64</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Identity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">PrimaryKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -263,18 +263,20 @@
         <span class="token punctuation">.</span><span class="token function">WithColumn</span><span class="token punctuation">(</span><span class="token string">"Email"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">AsAnsiString</span><span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">NotNullable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
     Create<span class="token punctuation">.</span><span class="token function">Index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OnTable</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">OnColumn</span><span class="token punctuation">(</span><span class="token string">"Email"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">Unique</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#125;</span>
   <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Down</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     Delete<span class="token punctuation">.</span><span class="token function">Table</span><span class="token punctuation">(</span>TableName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">InSchema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
     Delete<span class="token punctuation">.</span><span class="token function">Schema</span><span class="token punctuation">(</span>SchemaName<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <ul>
 <li>Add an app.config file for it and add a named connectionstring to your configuration, i called it “Dummy”, create the referenced database on your sql server.</li>
 <li>Build your class library, open up a command prompt and type (depending on your location of your libraries, dbtype etc)</li>
 </ul>
-<pre class=" language-shell"><code class="language-shell"><span class="token punctuation">..</span><span class="token punctuation">\</span>Lib<span class="token punctuation">\</span>Migrate.exe -a <span class="token punctuation">..</span><span class="token punctuation">\</span>Blog.Migrations<span class="token punctuation">\</span>bin<span class="token punctuation">\</span>Debug<span class="token punctuation">\</span>Blog.Migrations.dll -db SqlServer2008 -conn <span class="token string">"Dummy"</span></code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">..\Lib\Migrate.exe -a ..\Blog.Migrations\bin\Debug\Blog.Migrations.dll -db SqlServer2008 -conn &quot;Dummy&quot;</code></pre>
+
 <ul>
 <li>And press “enter”</li>
 </ul>
@@ -288,29 +290,31 @@
 </ul>
 <p>In the table VersionInfo there will be a record with in our situation the number 201112091827 in it, which is basicly the version specified in the migration attribute in the format of YYYYMMDDHHMM, you could also use 1 but if you are in a team i’d suggest using a timestamped version number, which has a low conflict chance.</p>
 <p>So let’s try to undo it (command prompt):</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token punctuation">..</span><span class="token punctuation">\</span>Lib<span class="token punctuation">\</span>Migrate.exe -a <span class="token punctuation">..</span><span class="token punctuation">\</span>Blog.Migrations<span class="token punctuation">\</span>bin<span class="token punctuation">\</span>Debug<span class="token punctuation">\</span>Blog.Migrations.dll -db SqlServer2008 -conn <span class="token string">"Dummy"</span> -task rollback:all</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">..\Lib\Migrate.exe -a ..\Blog.Migrations\bin\Debug\Blog.Migrations.dll -db SqlServer2008 -conn &quot;Dummy&quot; -task rollback:all</code></pre>
+
 <p>Your database should be empty again.</p>
 <p>What if you wanted to change the default VersionInfoTable you could just add following code:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">FluentMigrator</span><span class="token punctuation">;</span>
 
 <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">VersionTableMetaData</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomVersionMetaData</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IVersionTableMetaData</span></span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> SchemaName
-  <span class="token punctuation">{</span>
-    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"dbo"</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token string">"dbo"</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> TableName
-  <span class="token punctuation">{</span>
-    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"SchemaVersionInfo"</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token string">"SchemaVersionInfo"</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> ColumnName
-  <span class="token punctuation">{</span>
-    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token string">"Version"</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#123;</span>
+    <span class="token keyword">get</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token string">"Version"</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>If you migrate up again you should get the expected VersionInfo table created, namely “SchemaVersionInfo” in schema “Database” !</p>
 <h2 id="Benefits"><a href="#Benefits" class="headerlink" title="Benefits"></a>Benefits</h2><ul>
 <li>You can use the fluent syntax for all basic schema migrations</li>
@@ -482,14 +486,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

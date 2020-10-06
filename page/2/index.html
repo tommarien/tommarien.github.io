@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -80,7 +80,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -282,7 +282,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.5k</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -301,7 +301,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Our current project, has the ability to generate and combine <a href="https://en.wikipedia.org/wiki/Eltron_Programming_Language" target="_blank" rel="noopener">EPL</a> labels from different sources. One of the scenarios required to embed an image (png) into a generated label.</p>
+          <p>Our current project, has the ability to generate and combine <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Eltron_Programming_Language">EPL</a> labels from different sources. One of the scenarios required to embed an image (png) into a generated label.</p>
 <h2 id="GW-Direct-Graphic-Write-command"><a href="#GW-Direct-Graphic-Write-command" class="headerlink" title="GW - Direct Graphic Write command"></a>GW - Direct Graphic Write command</h2><p><strong>Description</strong> Use this command to load binary graphic data directly into the Image Buffer memory for immediate printing. The printer does not store graphic data sent directly to the image buffer.</p>
 <p>The graphic data is lost when the image has finished printing, power is removed or the printer is reset. Commands that size (Q and q) or clear (N and M) the image buffer will also remove graphic image data.</p>
 <p><strong>Syntax</strong> GWp1,p2,p3,p4,DATA</p>
@@ -313,22 +313,22 @@
 <li><strong>DATA</strong> Raw binary data without graphic file formatting. Data must be in bytes. Multiply the width in bytes (p3) by the number of print lines (p4) for the total amount of graphic data. The printer automatically calculates the exact size of the data block based upon this formula.</li>
 </ul>
 <h2 id="The-challenge"><a href="#The-challenge" class="headerlink" title="The challenge"></a>The challenge</h2><p>The challenge here was to figure out what they exactly mean by <em>Raw binary data without graphic file formatting</em>!</p>
-<p>So after some googling a colleague of mine found the following working solution on <a href="http://www.codeproject.com/Tips/667062/Print-Image-to-Zebra-Printer-using-EPL-Language" target="_blank" rel="noopener">CodeProject</a> and adapted it to our needs.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<p>So after some googling a colleague of mine found the following working solution on <a target="_blank" rel="noopener" href="http://www.codeproject.com/Tips/667062/Print-Image-to-Zebra-Printer-using-EPL-Language">CodeProject</a> and adapted it to our needs.</p>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>IO</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Text</span><span class="token punctuation">;</span>
 
 <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">SendImageToPrinter</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> top<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">int</span></span> left<span class="token punctuation">,</span> <span class="token class-name">Bitmap</span> bitmap<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">MemoryStream</span> ms <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">MemoryStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
   <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">BinaryWriter</span> bw <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">BinaryWriter</span><span class="token punctuation">(</span>ms<span class="token punctuation">,</span> Encoding<span class="token punctuation">.</span>ASCII<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token comment">//we set p3 parameter, remember it is Width of Graphic in bytes,</span>
     <span class="token comment">//so we divide the width of image and round up of it</span>
     <span class="token class-name"><span class="token keyword">int</span></span> P3 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>Math<span class="token punctuation">.</span><span class="token function">Ceiling</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">double</span><span class="token punctuation">)</span>bitmap<span class="token punctuation">.</span>Width <span class="token operator">/</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    bw<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>Encoding<span class="token punctuation">.</span>ASCII<span class="token punctuation">.</span><span class="token function">GetBytes</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span><span class="token function">Format</span>
-    <span class="token punctuation">(</span><span class="token string">"GW{0},{1},{2},{3},"</span><span class="token punctuation">,</span> top<span class="token punctuation">,</span> left<span class="token punctuation">,</span> P3<span class="token punctuation">,</span> bitmap<span class="token punctuation">.</span>Height<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    bw<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>Encoding<span class="token punctuation">.</span>ASCII<span class="token punctuation">.</span><span class="token function">GetBytes</span><span class="token punctuation">(</span><span class="token keyword">string</span><span class="token punctuation">.</span>Format
+    <span class="token punctuation">(</span><span class="token string">"GW&#123;0&#125;,&#123;1&#125;,&#123;2&#125;,&#123;3&#125;,"</span><span class="token punctuation">,</span> top<span class="token punctuation">,</span> left<span class="token punctuation">,</span> P3<span class="token punctuation">,</span> bitmap<span class="token punctuation">.</span>Height<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token comment">//the width of matrix is rounded up multi of 8</span>
     <span class="token class-name"><span class="token keyword">int</span></span> canvasWidth <span class="token operator">=</span> P3 <span class="token operator">*</span> <span class="token number">8</span><span class="token punctuation">;</span>
     <span class="token comment">//Now we convert image into 2 dimension binary matrix by 2 for loops below,</span>
@@ -341,35 +341,36 @@
     <span class="token comment">//    1 &lt;&lt; 6  ---> 01000000</span>
     <span class="token comment">//    1 &lt;&lt; 3  ---> 00001000</span>
     <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> y <span class="token operator">&lt;</span> bitmap<span class="token punctuation">.</span>Height<span class="token punctuation">;</span> <span class="token operator">++</span>y<span class="token punctuation">)</span>     <span class="token comment">//loop from top to bottom</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> x <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> x <span class="token operator">&lt;</span> canvasWidth<span class="token punctuation">;</span> <span class="token punctuation">)</span>       <span class="token comment">//from left to right</span>
-      <span class="token punctuation">{</span>
+      <span class="token punctuation">&#123;</span>
         <span class="token class-name"><span class="token keyword">byte</span></span> abyte <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
         <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> b <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> b <span class="token operator">&lt;</span> <span class="token number">8</span><span class="token punctuation">;</span> <span class="token operator">++</span>b<span class="token punctuation">,</span> <span class="token operator">++</span>x<span class="token punctuation">)</span>     <span class="token comment">//get 8 bits together and write to memory</span>
-        <span class="token punctuation">{</span>
+        <span class="token punctuation">&#123;</span>
           <span class="token class-name"><span class="token keyword">int</span></span> dot <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>                     <span class="token comment">//set 1 for white,0 for black</span>
           <span class="token comment">//pixel still in width of bitmap,</span>
           <span class="token comment">//check luminance for white or black, out of bitmap set to white</span>
           <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">&lt;</span> bitmap<span class="token punctuation">.</span>Width<span class="token punctuation">)</span>
-          <span class="token punctuation">{</span>
+          <span class="token punctuation">&#123;</span>
             <span class="token class-name">Color</span> color <span class="token operator">=</span> bitmap<span class="token punctuation">.</span><span class="token function">GetPixel</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token class-name"><span class="token keyword">int</span></span> luminance <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>color<span class="token punctuation">.</span>R <span class="token operator">*</span> <span class="token number">0.3</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span>color<span class="token punctuation">.</span>G <span class="token operator">*</span> <span class="token number">0.59</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span>color<span class="token punctuation">.</span>B <span class="token operator">*</span> <span class="token number">0.11</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             dot <span class="token operator">=</span> luminance <span class="token operator">></span> <span class="token number">127</span> <span class="token punctuation">?</span> <span class="token number">1</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
-          <span class="token punctuation">}</span>
+          <span class="token punctuation">&#125;</span>
           abyte <span class="token operator">|=</span> <span class="token punctuation">(</span><span class="token keyword">byte</span><span class="token punctuation">)</span><span class="token punctuation">(</span>dot <span class="token operator">&lt;&lt;</span> <span class="token punctuation">(</span><span class="token number">7</span> <span class="token operator">-</span> b<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//shift left,</span>
           <span class="token comment">//then OR together to get 8 bits into a byte</span>
-        <span class="token punctuation">}</span>
+        <span class="token punctuation">&#125;</span>
         bw<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span>abyte<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
     bw<span class="token punctuation">.</span><span class="token function">Write</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     bw<span class="token punctuation">.</span><span class="token function">Flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token comment">//reset memory</span>
     ms<span class="token punctuation">.</span>Position <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
     <span class="token comment">//get encoding, I have no idea why encode page of 1252 works and fails for others</span>
     <span class="token keyword">return</span> Encoding<span class="token punctuation">.</span><span class="token function">GetEncoding</span><span class="token punctuation">(</span><span class="token number">1252</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">GetString</span><span class="token punctuation">(</span>ms<span class="token punctuation">.</span><span class="token function">ToArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h2 id="The-problem"><a href="#The-problem" class="headerlink" title="The problem"></a>The problem</h2><p>After analyzing the performance of our code under high load, we came to the conclusion that this extraction was actually really slowing the entire process down. It took around 1.5 seconds on average for a 10KB image (caused by usage of GetPixel).</p>
 <h3 id="What-does-it-do"><a href="#What-does-it-do" class="headerlink" title="What does it do?"></a>What does it do?</h3><ul>
 <li>Extracts raw binary data</li>
@@ -380,17 +381,17 @@
 <li>Extract the raw binary data</li>
 </ul>
 <p>As we already had an image within bounds which was already black and white (greyscale) in format1bppindexed format.</p>
-<h4 id="Extract-raw-binary-fast-avg-84ms-on-10KB-file"><a href="#Extract-raw-binary-fast-avg-84ms-on-10KB-file" class="headerlink" title="Extract raw binary fast (avg 84ms on 10KB file)"></a>Extract raw binary fast (avg 84ms on 10KB file)</h4><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing</span><span class="token punctuation">;</span>
+<h4 id="Extract-raw-binary-fast-avg-84ms-on-10KB-file"><a href="#Extract-raw-binary-fast-avg-84ms-on-10KB-file" class="headerlink" title="Extract raw binary fast (avg 84ms on 10KB file)"></a>Extract raw binary fast (avg 84ms on 10KB file)</h4><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing<span class="token punctuation">.</span>Imaging</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Runtime<span class="token punctuation">.</span>InteropServices</span><span class="token punctuation">;</span>
 
 <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token function">GetRawPixelData</span><span class="token punctuation">(</span><span class="token class-name">Image</span> image<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> bitmap <span class="token operator">=</span> <span class="token punctuation">(</span>Bitmap<span class="token punctuation">)</span> image<span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token class-name"><span class="token keyword">var</span></span> bitmapData <span class="token operator">=</span> bitmap<span class="token punctuation">.</span><span class="token function">LockBits</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">Rectangle</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> bitmap<span class="token punctuation">.</span>Width<span class="token punctuation">,</span> bitmap<span class="token punctuation">.</span>Height<span class="token punctuation">)</span><span class="token punctuation">,</span> ImageLockMode<span class="token punctuation">.</span>ReadOnly<span class="token punctuation">,</span> PixelFormat<span class="token punctuation">.</span>Format1bppIndexed<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">try</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">var</span></span> length <span class="token operator">=</span> bitmapData<span class="token punctuation">.</span>Stride<span class="token operator">*</span>bitmapData<span class="token punctuation">.</span>Height<span class="token punctuation">;</span>
       <span class="token class-name"><span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> bytes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">byte</span></span><span class="token punctuation">[</span>length<span class="token punctuation">]</span><span class="token punctuation">;</span>
 
@@ -398,33 +399,34 @@
       Marshal<span class="token punctuation">.</span><span class="token function">Copy</span><span class="token punctuation">(</span>bitmapData<span class="token punctuation">.</span>Scan0<span class="token punctuation">,</span> bytes<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> length<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
       <span class="token keyword">return</span> bytes<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
     <span class="token keyword">finally</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token comment">// Make sure we unlock no matter what</span>
       bitmap<span class="token punctuation">.</span><span class="token function">UnlockBits</span><span class="token punctuation">(</span>bitmapData<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
-<h4 id="Conversion-to-black-and-white-greyscale"><a href="#Conversion-to-black-and-white-greyscale" class="headerlink" title="Conversion to black and white (greyscale)"></a>Conversion to black and white (greyscale)</h4><pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<h4 id="Conversion-to-black-and-white-greyscale"><a href="#Conversion-to-black-and-white-greyscale" class="headerlink" title="Conversion to black and white (greyscale)"></a>Conversion to black and white (greyscale)</h4><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Drawing<span class="token punctuation">.</span>Imaging</span><span class="token punctuation">;</span>
 
 <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ConvertToGrayscale</span><span class="token punctuation">(</span><span class="token class-name">Image</span> image<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name">Bitmap</span> bitmap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Bitmap</span><span class="token punctuation">(</span>image<span class="token punctuation">.</span>Width<span class="token punctuation">,</span> image<span class="token punctuation">.</span>Height<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> g <span class="token operator">=</span> Graphics<span class="token punctuation">.</span><span class="token function">FromImage</span><span class="token punctuation">(</span>bitmap<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token comment">//create the grayscale ColorMatrix</span>
       <span class="token class-name"><span class="token keyword">var</span></span> colorMatrix <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ColorMatrix</span><span class="token punctuation">(</span>
           <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
-          <span class="token punctuation">{</span>
-              <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span><span class="token number">.3f</span><span class="token punctuation">,</span> <span class="token number">.3f</span><span class="token punctuation">,</span> <span class="token number">.3f</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-              <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span><span class="token number">.59f</span><span class="token punctuation">,</span> <span class="token number">.59f</span><span class="token punctuation">,</span> <span class="token number">.59f</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-              <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span><span class="token number">.11f</span><span class="token punctuation">,</span> <span class="token number">.11f</span><span class="token punctuation">,</span> <span class="token number">.11f</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-              <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-              <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">}</span>
-          <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token punctuation">&#123;</span>
+              <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span><span class="token number">.3f</span><span class="token punctuation">,</span> <span class="token number">.3f</span><span class="token punctuation">,</span> <span class="token number">.3f</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+              <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span><span class="token number">.59f</span><span class="token punctuation">,</span> <span class="token number">.59f</span><span class="token punctuation">,</span> <span class="token number">.59f</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+              <span class="token keyword">new</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#123;</span><span class="token number">.11f</span><span class="token punctuation">,</span> <span class="token number">.11f</span><span class="token punctuation">,</span> <span class="token number">.11f</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+              <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+              <span class="token keyword">new</span> <span class="token constructor-invocation class-name"><span class="token keyword">float</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> <span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">&#125;</span>
+          <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
       <span class="token comment">//create some image attributes</span>
       <span class="token class-name">ImageAttributes</span> attributes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ImageAttributes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -436,9 +438,9 @@
       <span class="token comment">//using the grayscale color matrix</span>
       g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Rectangle</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> image<span class="token punctuation">.</span>Width<span class="token punctuation">,</span> image<span class="token punctuation">.</span>Height<span class="token punctuation">)</span><span class="token punctuation">,</span>
           <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> image<span class="token punctuation">.</span>Width<span class="token punctuation">,</span> image<span class="token punctuation">.</span>Height<span class="token punctuation">,</span> GraphicsUnit<span class="token punctuation">.</span>Pixel<span class="token punctuation">,</span> attributes<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
 
       
     </div>
@@ -511,7 +513,7 @@
 
       
           <p><img src="/images/0001_scissorglue_billjunk.jpg"></p>
-<p>We use mocks, stubs or fakes when writing tests, mostly using a mocking framework of choice (<a href="https://github.com/Moq/moq4" target="_blank" rel="noopener">Moq</a>, <a href="http://hibernatingrhinos.com/oss/rhino-mocks" target="_blank" rel="noopener">RhinoMocks</a>, <a href="http://nsubstitute.github.io/" target="_blank" rel="noopener">NSubstitute</a>).</p>
+<p>We use mocks, stubs or fakes when writing tests, mostly using a mocking framework of choice (<a target="_blank" rel="noopener" href="https://github.com/Moq/moq4">Moq</a>, <a target="_blank" rel="noopener" href="http://hibernatingrhinos.com/oss/rhino-mocks">RhinoMocks</a>, <a target="_blank" rel="noopener" href="http://nsubstitute.github.io/">NSubstitute</a>).</p>
 <p>The <strong>reason</strong> why we do this is to isolate our <em>System under test (SUT)</em> from it’s dependencies.</p>
 <p>We want to <strong>avoid repeating</strong> ourselves and test the same logical code block (method, property, class, condition, …) multiple times.</p>
 <h2 id="What’s-wrong-with-it"><a href="#What’s-wrong-with-it" class="headerlink" title="What’s wrong with it?"></a>What’s wrong with it?</h2><p>In fact there is nothing wrong with it, apart from a <strong>misunderstanding</strong> of <em>‘System under test’</em>.</p>
@@ -590,7 +592,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.3k</span>
+              <span>2.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -609,10 +611,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Sometimes we, developers, tend to have an itch. When i saw that there was a new kid in town (<a href="https://ci.appveyor.com/projects" target="_blank" rel="noopener">AppVeyor</a>) that does free open source continuous integration, i just had to scratch.</p>
+          <p>Sometimes we, developers, tend to have an itch. When i saw that there was a new kid in town (<a target="_blank" rel="noopener" href="https://ci.appveyor.com/projects">AppVeyor</a>) that does free open source continuous integration, i just had to scratch.</p>
 <p>As i resend xml configuration files, i love the simplicity of yaml and the older ini file formats.</p>
 <p>But if you would like to read ini files in .net you have to do a dll import:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DllImport</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"KERNEL32.DLL"</span><span class="token punctuation">,</span>   EntryPoint <span class="token operator">=</span> <span class="token string">"GetPrivateProfileStringW"</span><span class="token punctuation">,</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DllImport</span><span class="token attribute-arguments"><span class="token punctuation">(</span><span class="token string">"KERNEL32.DLL"</span><span class="token punctuation">,</span>   EntryPoint <span class="token operator">=</span> <span class="token string">"GetPrivateProfileStringW"</span><span class="token punctuation">,</span>
   SetLastError<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span>
   CharSet<span class="token operator">=</span>CharSet<span class="token punctuation">.</span>Unicode<span class="token punctuation">,</span> ExactSpelling<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span>
   CallingConvention<span class="token operator">=</span>CallingConvention<span class="token punctuation">.</span>StdCall<span class="token punctuation">)</span></span></span><span class="token punctuation">]</span>
@@ -623,44 +625,53 @@
   <span class="token class-name"><span class="token keyword">string</span></span> lpReturnString<span class="token punctuation">,</span>
   <span class="token class-name"><span class="token keyword">int</span></span> nSize<span class="token punctuation">,</span>
   <span class="token class-name"><span class="token keyword">string</span></span> lpFilename<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>So i thought of creating a simple relaxed ini parsing library called <a href="https://github.com/tommarien/zenini" target="_blank" rel="noopener">ZenIni</a> which you can obtain through Nuget.</p>
-<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><pre class=" language-shell"><code class="language-shell">Install-Package zenini</code></pre>
+
+<p>So i thought of creating a simple relaxed ini parsing library called <a target="_blank" rel="noopener" href="https://github.com/tommarien/zenini">ZenIni</a> which you can obtain through Nuget.</p>
+<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><pre class="language-shell" data-language="shell"><code class="language-shell">Install-Package zenini</code></pre>
+
 <h3 id="Provider"><a href="#Provider" class="headerlink" title="Provider"></a>Provider</h3><p>Everything starts with constructing the provider, which you could register as a static instance in your DI container of choice:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Zenini</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Zenini<span class="token punctuation">.</span>Readers</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">ConsoleApplication5</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">internal</span> <span class="token keyword">class</span> <span class="token class-name">Program</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Main</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span></span> args<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">var</span></span> provider <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">IniSettingsProvider</span><span class="token punctuation">(</span>
         <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DefaultSettingsReader</span><span class="token punctuation">(</span>StringComparer<span class="token punctuation">.</span>OrdinalIgnoreCase<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>The DefaultSettingsReader allows you to specify how strings should be compared so you can choose whether or not to ignore case.</p>
 <h3 id="IIniSettings"><a href="#IIniSettings" class="headerlink" title="IIniSettings"></a>IIniSettings</h3><p>The IniSettings class is the in memory representation of your ini file, which consists out of sections with or without nested key/value pairs.</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name">IIniSettings</span> settings <span class="token operator">=</span> provider<span class="token punctuation">.</span><span class="token function">FromFile</span><span class="token punctuation">(</span><span class="token string">@"c:\Temp\DefaultSettings.ini"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">IIniSettings</span> settings <span class="token operator">=</span> provider<span class="token punctuation">.</span><span class="token function">FromFile</span><span class="token punctuation">(</span><span class="token string">@"c:\Temp\DefaultSettings.ini"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h3 id="Sections"><a href="#Sections" class="headerlink" title="Sections"></a>Sections</h3><p>Getting a section is as easy as</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name">ISection</span> firstSection <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name">ISection</span> firstSection <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+
 <p>Even if the original file did not contain the section if will never return null, it will return the static instance Section.Empty. This to relieve you from checking for null when you need to access a value.</p>
 <h3 id="Values"><a href="#Values" class="headerlink" title="Values"></a>Values</h3><p>Given the following ini file</p>
-<pre class=" language-ini"><code class="language-ini"><span class="token selector">[SectionOne]</span>
+<pre class="language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[SectionOne]</span>
 <span class="token constant">Status</span><span class="token attr-value"><span class="token punctuation">=</span>Single</span>
 <span class="token constant">Name</span><span class="token attr-value"><span class="token punctuation">=</span>Derek</span>
 <span class="token constant">Value</span><span class="token attr-value"><span class="token punctuation">=</span>Yes</span>
 <span class="token constant">Age</span><span class="token attr-value"><span class="token punctuation">=</span>30</span>
 <span class="token constant">Single</span><span class="token attr-value"><span class="token punctuation">=</span>True</span></code></pre>
+
 <p>To get the status you just have to do:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> status <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token string">"Status"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> status <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValue</span><span class="token punctuation">(</span><span class="token string">"Status"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="Extensions"><a href="#Extensions" class="headerlink" title="Extensions"></a>Extensions</h2><p>There are some extension methods to help you with common used types like booleans and integer values. Given the same ini file, to get the age setting you call:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span><span class="token punctuation">?</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span><span class="token punctuation">?</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>It returns a nullable, so if your ini file does not contain the setting you can just add a default like this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token number">25</span><span class="token punctuation">;</span></code></pre>
-<p>Just give it a spin, it’s small and very easy. The <a href="https://github.com/tommarien/zenini/wiki/Specification" target="_blank" rel="noopener">specification</a> is documented on the wiki.</p>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">int</span></span> age <span class="token operator">=</span> settings<span class="token punctuation">[</span><span class="token string">"SectionOne"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">GetValueAsInt</span><span class="token punctuation">(</span><span class="token string">"Age"</span><span class="token punctuation">)</span> <span class="token operator">??</span> <span class="token number">25</span><span class="token punctuation">;</span></code></pre>
+
+<p>Just give it a spin, it’s small and very easy. The <a target="_blank" rel="noopener" href="https://github.com/tommarien/zenini/wiki/Specification">specification</a> is documented on the wiki.</p>
 
       
     </div>
@@ -733,14 +744,14 @@
 
       
           <p>While .NET framework is a highly compatible, in-place update to the Microsoft .NET Framework 4, there are some rough edges that you need to be aware of.</p>
-<p>We needed to target .NET 4.0 for a brand new application at a client. We had everything perfectly worked out, continuous integration build set up from day 1. Next day, a release build with an <a href="http://www.jrsoftware.org/isinfo.php" target="_blank" rel="noopener">Inno Setup</a> installer.</p>
-<p>Later on, when our PO asked us for some screen shots, we showed him the release build on <a href="http://www.jetbrains.com/teamcity/" target="_blank" rel="noopener">TeamCity</a>, where he could just download the artifact and install the application.</p>
+<p>We needed to target .NET 4.0 for a brand new application at a client. We had everything perfectly worked out, continuous integration build set up from day 1. Next day, a release build with an <a target="_blank" rel="noopener" href="http://www.jrsoftware.org/isinfo.php">Inno Setup</a> installer.</p>
+<p>Later on, when our PO asked us for some screen shots, we showed him the release build on <a target="_blank" rel="noopener" href="http://www.jetbrains.com/teamcity/">TeamCity</a>, where he could just download the artifact and install the application.</p>
 <p>He did what we asked him to do, he clicked next-next-finish on the installer and the application was supposed to open for the very first time on his machine, instead he got the following issue:</p>
 <blockquote>
 <p>Could not load type ‘System.Runtime.CompilerServices.ExtensionAttribute’ from assembly ‘mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089’.</p>
 </blockquote>
-<p>At first a bit puzzled by the problem, the google-reflex took over and we started our investigation. Which quickly lead to a very helpfull article on <a href="http://stackoverflow.com/questions/13748055/could-not-load-type-system-runtime-compilerservices-extensionattribute-from-as" target="_blank" rel="noopener">StackOverflow</a> and a deep dive <a href="http://www.hurryupandwait.io/blog/what-you-should-know-about-running-ilmerge-on-net-4-5-assemblies-targeting-net-4-0" target="_blank" rel="noopener">blog post</a> of Matt Wrock about il-merging.</p>
-<p>Apparantly in .NET 4.5, Microsoft decided it was time to move/refactor a couple attributes from System.Core assembly to mscorlib. The types still exist in System.Core but with a <a href="http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.typeforwardedtoattribute.aspx" target="_blank" rel="noopener">TypeForwardedToAttribute</a> to their new home in mscorlib.</p>
+<p>At first a bit puzzled by the problem, the google-reflex took over and we started our investigation. Which quickly lead to a very helpfull article on <a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/13748055/could-not-load-type-system-runtime-compilerservices-extensionattribute-from-as">StackOverflow</a> and a deep dive <a target="_blank" rel="noopener" href="http://www.hurryupandwait.io/blog/what-you-should-know-about-running-ilmerge-on-net-4-5-assemblies-targeting-net-4-0">blog post</a> of Matt Wrock about il-merging.</p>
+<p>Apparantly in .NET 4.5, Microsoft decided it was time to move/refactor a couple attributes from System.Core assembly to mscorlib. The types still exist in System.Core but with a <a target="_blank" rel="noopener" href="http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.typeforwardedtoattribute.aspx">TypeForwardedToAttribute</a> to their new home in mscorlib.</p>
 <p>I wanted to know how this was possible and how we could have missed it.</p>
 <p>Looking at the CI build, a build warning indicated the issue:</p>
 <blockquote>
@@ -751,8 +762,9 @@
 <p>“\Program Files (x86)\Reference Assemblies\Microsoft\Framework.NETFramework\v4.0”.</p>
 </blockquote>
 <p>To verify you can quickly open the assembly with ildasm and look at it’s manifest:</p>
-<h6 id="Missing-reference-assemblies"><a href="#Missing-reference-assemblies" class="headerlink" title="Missing reference assemblies"></a>Missing reference assemblies</h6><pre><code>  .custom instance void [mscorlib]System.Runtime.CompilerServices.ExtensionAttribute::.ctor() = ( 01 00 00 00 )</code></pre>
-<h6 id="Correct-reference-assemblies"><a href="#Correct-reference-assemblies" class="headerlink" title="Correct reference assemblies"></a>Correct reference assemblies</h6><pre><code>  .custom instance void [System.Core]System.Runtime.CompilerServices.ExtensionAttribute::.ctor() = ( 01 00 00 00 )</code></pre>
+<h6 id="Missing-reference-assemblies"><a href="#Missing-reference-assemblies" class="headerlink" title="Missing reference assemblies"></a>Missing reference assemblies</h6><pre class="language-none"><code class="language-none">.custom instance void [mscorlib]System.Runtime.CompilerServices.ExtensionAttribute::.ctor() &#x3D; ( 01 00 00 00 )</code></pre>
+
+<h6 id="Correct-reference-assemblies"><a href="#Correct-reference-assemblies" class="headerlink" title="Correct reference assemblies"></a>Correct reference assemblies</h6><pre class="language-none"><code class="language-none">.custom instance void [System.Core]System.Runtime.CompilerServices.ExtensionAttribute::.ctor() &#x3D; ( 01 00 00 00 )</code></pre>
 
       
     </div>
@@ -893,14 +905,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

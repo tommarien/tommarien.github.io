@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -206,7 +206,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.2k</span>
+              <span>3.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -227,49 +227,49 @@
       
         <p>There are many blog posts on how to manage the lifetime of ISession in a web application. Mainly because only ISessionFactory is thread-safe, which is a good thing because your ISession instance acts as a unit of work. For a web application the advised solution is to use the <em>session-per-request</em> pattern.</p>
 <ul>
-<li><a href="http://nhforge.org/blogs/nhibernate/archive/2011/03/03/effective-nhibernate-session-management-for-web-apps.aspx" target="_blank" rel="noopener">NHibernate Forge</a></li>
-<li><a href="http://lostechies.com/nelsonmontalvo/2007/03/30/simple-nhibernate-example-part-4-session-management" target="_blank" rel="noopener">SessionManager by Nelson Moltavo</a></li>
-<li><a href="http://nhforge.org/doc/nh/en/index.html#quickstart-playingwithcats" target="_blank" rel="noopener">NHibernate documentation</a></li>
+<li><a target="_blank" rel="noopener" href="http://nhforge.org/blogs/nhibernate/archive/2011/03/03/effective-nhibernate-session-management-for-web-apps.aspx">NHibernate Forge</a></li>
+<li><a target="_blank" rel="noopener" href="http://lostechies.com/nelsonmontalvo/2007/03/30/simple-nhibernate-example-part-4-session-management">SessionManager by Nelson Moltavo</a></li>
+<li><a target="_blank" rel="noopener" href="http://nhforge.org/doc/nh/en/index.html#quickstart-playingwithcats">NHibernate documentation</a></li>
 </ul>
 <p>Even myself created one in the golden years, I’ve even posted it SourceForge a decade ago, but I’ve seem to have lost the link over the years. Coincidence, maybe?</p>
 <p>I tend to include a container in my projects, why not let your container manage this for you? It knows about lifetime/lifestyle’s, so why reinventing the wheel again?</p>
 <h2 id="NHibernateConfigurationBuilder"><a href="#NHibernateConfigurationBuilder" class="headerlink" title="NHibernateConfigurationBuilder"></a>NHibernateConfigurationBuilder</h2><p>First we create a builder around the Configuration class, because i personally hate to put everything in an Xml file and I don’t believe my database of choice is going to change in the middle of my project. This is not a needed step, but it includes some goodies</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">NHibernate<span class="token punctuation">.</span>Cfg</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">NHibernate<span class="token punctuation">.</span>Cfg</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">NHibernate<span class="token punctuation">.</span>Dialect</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">NHibernate<span class="token punctuation">.</span>Driver</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">NHibernate<span class="token punctuation">.</span>Mapping<span class="token punctuation">.</span>ByCode</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">NHibernate<span class="token punctuation">.</span>Tool<span class="token punctuation">.</span>hbm2ddl</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">Nebula<span class="token punctuation">.</span>Data</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">NHibernateConfigurationBuilder</span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">private</span> <span class="token class-name"><span class="token keyword">string</span></span> connectionStringName<span class="token punctuation">;</span>
 
     <span class="token keyword">public</span> <span class="token function">NHibernateConfigurationBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       connectionStringName <span class="token operator">=</span> <span class="token string">"Nebula"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
 
     <span class="token keyword">public</span> <span class="token return-type class-name">NHibernateConfigurationBuilder</span> <span class="token function">UsingNamedConnectionString</span><span class="token punctuation">(</span>
         <span class="token class-name"><span class="token keyword">string</span></span> connectionStringName<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token keyword">this</span><span class="token punctuation">.</span>connectionStringName <span class="token operator">=</span> connectionStringName<span class="token punctuation">;</span>
       <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    <span class="token punctuation">&#125;</span>
 
     <span class="token keyword">public</span> <span class="token return-type class-name">Configuration</span> <span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name"><span class="token keyword">var</span></span> configuration <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Configuration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
       <span class="token comment">// initialize database configuration</span>
       configuration<span class="token punctuation">.</span><span class="token function">DataBaseIntegration</span><span class="token punctuation">(</span>cfg <span class="token operator">=></span>
-      <span class="token punctuation">{</span>
+      <span class="token punctuation">&#123;</span>
           cfg<span class="token punctuation">.</span>ConnectionStringName <span class="token operator">=</span> connectionStringName<span class="token punctuation">;</span>
           cfg<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Driver</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Sql2008ClientDriver<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
           cfg<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Dialect</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>MsSql2008Dialect<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
           cfg<span class="token punctuation">.</span>KeywordsAutoImport <span class="token operator">=</span> Hbm2DDLKeyWords<span class="token punctuation">.</span>AutoQuote<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
       <span class="token comment">// initialize mappers</span>
       <span class="token class-name"><span class="token keyword">var</span></span> mapper <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ModelMapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -279,22 +279,23 @@
       <span class="token comment">// Auto Quote all table and column names</span>
       SchemaMetadataUpdater<span class="token punctuation">.</span><span class="token function">QuoteTableAndColumns</span><span class="token punctuation">(</span>configuration<span class="token punctuation">)</span><span class="token punctuation">;</span>
       <span class="token keyword">return</span> configuration<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <h2 id="The-Installer"><a href="#The-Installer" class="headerlink" title="The Installer"></a>The Installer</h2><p>Wrap all registrations up in an installer and inject session anywhere you want</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel<span class="token punctuation">.</span>Registration</span><span class="token punctuation">;</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel<span class="token punctuation">.</span>Registration</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel<span class="token punctuation">.</span>SubSystems<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>Windsor</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">NHibernate</span><span class="token punctuation">;</span>
 <span class="token keyword">using</span> <span class="token namespace">Nebula<span class="token punctuation">.</span>Data</span><span class="token punctuation">;</span>
 
 <span class="token keyword">namespace</span> <span class="token namespace">Nebula<span class="token punctuation">.</span>Bootstrapper<span class="token punctuation">.</span>Installers</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">NHibernateInstaller</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IWindsorInstaller</span></span>
-  <span class="token punctuation">{</span>
+  <span class="token punctuation">&#123;</span>
     <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Install</span><span class="token punctuation">(</span><span class="token class-name">IWindsorContainer</span> container<span class="token punctuation">,</span> <span class="token class-name">IConfigurationStore</span> store<span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
+    <span class="token punctuation">&#123;</span>
       <span class="token class-name">ISessionFactory</span> sessionfactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">NHibernateConfigurationBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">Build</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">.</span><span class="token function">BuildSessionFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -310,16 +311,18 @@
             <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">UsingFactory</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ISessionFactory<span class="token punctuation">,</span> ISession<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>
                 factory <span class="token operator">=></span> factory<span class="token punctuation">.</span><span class="token function">OpenSession</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
             <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>For the registration of ISessionFactory i could have used a factory method, but that would delay any possible configuration mismatches until the first time a sessionfactory/session is needed.</p>
 <p>If you have a usecase for IStatelessSession, append this to the installer and you are good to go:</p>
-<pre class=" language-csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp">container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>
   Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IStatelessSession<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
             <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">UsingFactory</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ISessionFactory<span class="token punctuation">,</span> IStatelessSession<span class="token punctuation">></span></span></span><span class="token punctuation">(</span>
                   factory <span class="token operator">=></span> factory<span class="token punctuation">.</span><span class="token function">OpenStatelessSession</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
             <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="Side-note"><a href="#Side-note" class="headerlink" title="Side note"></a>Side note</h2><p>The same mechanics can also be used to manage the lifetime of Entity framework’s objectcontext! Even if you are in a wcf context, just change the lifestyle of your session accordingly (see wcf facility).</p>
 
     </div>
@@ -484,14 +487,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

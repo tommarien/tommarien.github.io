@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -86,7 +86,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -210,7 +210,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.5k</span>
+              <span>3.4k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -229,53 +229,55 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>To keep in the spirit of honing our skills, we’ll tackle one more component, a <a href="https://getbootstrap.com/docs/4.5/components/buttons/" target="_blank" rel="noopener">button</a>.</p>
+        <p>To keep in the spirit of honing our skills, we’ll tackle one more component, a <a target="_blank" rel="noopener" href="https://getbootstrap.com/docs/4.5/components/buttons/">button</a>.</p>
 <p>So let’s start with the basics, a <code>&lt;button /&gt;</code> has <code>children</code>, an <code>onClick</code> handler, a <code>type</code> (<code>submit</code>, <code>button</code> or <code>reset</code>) and can be <code>disabled</code>.</p>
 <p>One thing to keep in mind with buttons is that if you don’t supply a type, it will default to <code>submit</code> which is generally not what you want.</p>
-<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token maybe-class-name">ReactNode</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> ReactNode <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">ButtonProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-  children<span class="token operator">:</span> <span class="token maybe-class-name">ReactNode</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> ButtonProps <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  children<span class="token operator">:</span> ReactNode<span class="token punctuation">;</span>
   disabled<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
-  onClick<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">event<span class="token operator">:</span> React<span class="token punctuation">.</span>MouseEvent<span class="token operator">&lt;</span>HTMLButtonElement<span class="token punctuation">,</span> MouseEvent<span class="token operator">></span></span><span class="token punctuation">)</span> <span class="token arrow operator">=></span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+  onClick<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">event<span class="token operator">:</span> React<span class="token punctuation">.</span>MouseEvent<span class="token operator">&lt;</span>HTMLButtonElement<span class="token punctuation">,</span> MouseEvent<span class="token operator">></span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span><span class="token punctuation">;</span>
   <span class="token keyword">type</span><span class="token operator">:</span> <span class="token string">'submit'</span> <span class="token operator">|</span> <span class="token string">'reset'</span> <span class="token operator">|</span> <span class="token string">'button'</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 
-<span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> ButtonProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">{</span> children<span class="token punctuation">,</span> disabled<span class="token punctuation">,</span> onClick<span class="token punctuation">,</span> <span class="token keyword">type</span> <span class="token punctuation">}</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
+<span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> ButtonProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span>Element <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> children<span class="token punctuation">,</span> disabled<span class="token punctuation">,</span> onClick<span class="token punctuation">,</span> <span class="token keyword">type</span> <span class="token punctuation">&#125;</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
 
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>disabled<span class="token punctuation">}</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>onClick<span class="token punctuation">}</span></span> <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token keyword">type</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span>
-      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>disabled<span class="token punctuation">&#125;</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>onClick<span class="token punctuation">&#125;</span></span> <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token keyword">type</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">&#123;</span>children<span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token maybe-class-name">Button</span><span class="token punctuation">;</span></code></pre>
-<p>Using the <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html#picktk" target="_blank" rel="noopener">Pick</a> utility type we could shorten the <code>ButtonProps</code> to the following:</p>
-<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">ButtonProps</span> <span class="token operator">=</span> <span class="token maybe-class-name">Pick</span><span class="token operator">&lt;</span>
-  <span class="token maybe-class-name">React</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">DetailedHTMLProps</span></span><span class="token operator">&lt;</span>
-    <span class="token maybe-class-name">React</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">ButtonHTMLAttributes</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLButtonElement</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
-    <span class="token maybe-class-name">HTMLButtonElement</span>
-  <span class="token operator">></span><span class="token punctuation">,</span>
-  <span class="token string">'children'</span> <span class="token operator">|</span> <span class="token string">'disabled'</span> <span class="token operator">|</span> <span class="token string">'onClick'</span>
-<span class="token operator">></span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> Button<span class="token punctuation">;</span></code></pre>
+
+<p>Using the <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/utility-types.html#picktk">Pick</a> utility type we could shorten the <code>ButtonProps</code> to the following:</p>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">export</span> <span class="token keyword">type</span> ButtonProps <span class="token operator">=</span> Pick<span class="token operator">&lt;</span>
+  React<span class="token punctuation">.</span>DetailedHTMLProps<span class="token operator">&lt;</span>
+    React<span class="token punctuation">.</span>ButtonHTMLAttributes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLButtonElement</span></span><span class="token punctuation">></span></span><span class="token plain-text">,
+    HTMLButtonElement
+  >,
+  'children' | 'disabled' | 'onClick'
+> &amp; </span><span class="token punctuation">&#123;</span>
   <span class="token comment">/**
    * The reason we are not picking this is because react allows undefined.
    */</span>
   <span class="token keyword">type</span><span class="token operator">:</span> <span class="token string">'button'</span> <span class="token operator">|</span> <span class="token string">'submit'</span> <span class="token operator">|</span> <span class="token string">'reset'</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<span class="token punctuation">&#125;</span><span class="token plain-text">;</span></code></pre>
+
 <h2 id="Touch"><a href="#Touch" class="headerlink" title="Touch"></a>Touch</h2><p>We just need to add that bootstrap flavor, let’s add <code>variant</code> into the mix:</p>
-<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">ButtonProps</span> <span class="token operator">=</span> <span class="token maybe-class-name">Pick</span><span class="token operator">&lt;</span>
-  <span class="token maybe-class-name">React</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">DetailedHTMLProps</span></span><span class="token operator">&lt;</span>
-    <span class="token maybe-class-name">React</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">ButtonHTMLAttributes</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLButtonElement</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
-    <span class="token maybe-class-name">HTMLButtonElement</span>
-  <span class="token operator">></span><span class="token punctuation">,</span>
-  <span class="token string">'children'</span> <span class="token operator">|</span> <span class="token string">'disabled'</span> <span class="token operator">|</span> <span class="token string">'onClick'</span>
-<span class="token operator">></span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> ButtonProps <span class="token operator">=</span> Pick<span class="token operator">&lt;</span>
+  React<span class="token punctuation">.</span>DetailedHTMLProps<span class="token operator">&lt;</span>
+    React<span class="token punctuation">.</span>ButtonHTMLAttributes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLButtonElement</span></span><span class="token punctuation">></span></span><span class="token plain-text">,
+    HTMLButtonElement
+  >,
+  'children' | 'disabled' | 'onClick'
+> &amp; </span><span class="token punctuation">&#123;</span>
   <span class="token comment">/**
    * The reason we are not picking this is because react allows undefined.
    */</span>
@@ -290,84 +292,88 @@
     <span class="token operator">|</span> <span class="token string">'light'</span>
     <span class="token operator">|</span> <span class="token string">'dark'</span>
     <span class="token operator">|</span> <span class="token string">'link'</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">;
 
-<span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'btn'</span><span class="token punctuation">;</span>
+const BS_ROOT = 'btn';
 
-<span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> ButtonProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">{</span> children<span class="token punctuation">,</span> disabled<span class="token punctuation">,</span> onClick<span class="token punctuation">,</span> <span class="token keyword">type</span><span class="token punctuation">,</span> variant <span class="token punctuation">}</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
+function Button(props: ButtonProps): JSX.Element </span><span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> children<span class="token punctuation">,</span> disabled<span class="token punctuation">,</span> onClick<span class="token punctuation">,</span> <span class="token keyword">type</span><span class="token punctuation">,</span> variant <span class="token punctuation">&#125;</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
 
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
-      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
-      <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>disabled<span class="token punctuation">}</span></span>
-      <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>onClick<span class="token punctuation">}</span></span>
-      <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token keyword">type</span><span class="token punctuation">}</span></span>
-    <span class="token punctuation">></span></span>
-      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>variant<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>disabled<span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>onClick<span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token keyword">type</span><span class="token punctuation">&#125;</span></span>
+    <span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">&#123;</span>children<span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token maybe-class-name">Button</span><span class="token punctuation">;</span></code></pre>
+export default Button;</span></code></pre>
+
 <h2 id="Satisfaction"><a href="#Satisfaction" class="headerlink" title="Satisfaction"></a>Satisfaction</h2><p>But what if you wanted a “close” button which just an <code>x</code> inside it as children?</p>
-<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token maybe-class-name">Alert</span> <span class="token keyword">from</span> <span class="token string">'./components/Button'</span><span class="token punctuation">;</span>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Alert <span class="token keyword">from</span> <span class="token string">'./components/Button'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Button</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token entity" title="&times;">&amp;times;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Button</span></span><span class="token punctuation">></span></span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
-<p>We should always have accessibility in mind when we create components, a button without a readable text is not accessible. The correct approach is to add an <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute" target="_blank" rel="noopener">aria-label</a> to the button.</p>
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span>Element <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Button</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">&amp;times;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Button</span></span><span class="token punctuation">></span></span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
+<p>We should always have accessibility in mind when we create components, a button without a readable text is not accessible. The correct approach is to add an <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute">aria-label</a> to the button.</p>
 <blockquote>
-<p>And as an added advantage if you’re using React Testing Library, you can use a <a href="https://testing-library.com/docs/dom-testing-library/api-queries#bylabeltext" target="_blank" rel="noopener">ByLabelText</a> query and don’t have to add a <code>data-testid</code> to a button.</p>
+<p>And as an added advantage if you’re using React Testing Library, you can use a <a target="_blank" rel="noopener" href="https://testing-library.com/docs/dom-testing-library/api-queries#bylabeltext">ByLabelText</a> query and don’t have to add a <code>data-testid</code> to a button.</p>
 </blockquote>
 <p>So we want to achieve this:</p>
-<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token maybe-class-name">Alert</span> <span class="token keyword">from</span> <span class="token string">'./components/Button'</span><span class="token punctuation">;</span>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Alert <span class="token keyword">from</span> <span class="token string">'./components/Button'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span>Element <span class="token punctuation">&#123;</span>
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Button</span></span> <span class="token attr-name">aria-label</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Close<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-      <span class="token entity" title="&times;">&amp;times;</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Button</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Button</span></span> <span class="token attr-name">aria-label</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Close<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      &amp;times;
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Button</span></span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>We can again pick the <code>aria-label</code> from the button properties.</p>
-<pre class=" language-tsx"><code class="language-tsx"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token maybe-class-name">ButtonProps</span> <span class="token operator">=</span> <span class="token maybe-class-name">Pick</span><span class="token operator">&lt;</span>
-  <span class="token maybe-class-name">React</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">DetailedHTMLProps</span></span><span class="token operator">&lt;</span>
-    <span class="token maybe-class-name">React</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">ButtonHTMLAttributes</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLButtonElement</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
-    <span class="token maybe-class-name">HTMLButtonElement</span>
-  <span class="token operator">></span><span class="token punctuation">,</span>
-  <span class="token string">'aria-label'</span> <span class="token operator">|</span> <span class="token string">'children'</span> <span class="token operator">|</span> <span class="token string">'disabled'</span> <span class="token operator">|</span> <span class="token string">'onClick'</span>
-<span class="token operator">></span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">export</span> <span class="token keyword">type</span> ButtonProps <span class="token operator">=</span> Pick<span class="token operator">&lt;</span>
+  React<span class="token punctuation">.</span>DetailedHTMLProps<span class="token operator">&lt;</span>
+    React<span class="token punctuation">.</span>ButtonHTMLAttributes<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLButtonElement</span></span><span class="token punctuation">></span></span><span class="token plain-text">,
+    HTMLButtonElement
+  >,
+  'aria-label' | 'children' | 'disabled' | 'onClick'
+> &amp; </span><span class="token punctuation">&#123;</span>
   <span class="token keyword">type</span><span class="token operator">:</span> <span class="token string">'button'</span> <span class="token operator">|</span> <span class="token string">'submit'</span> <span class="token operator">|</span> <span class="token string">'reset'</span><span class="token punctuation">;</span>
   variant<span class="token operator">:</span> <span class="token string">'primary'</span><span class="token punctuation">;</span> <span class="token comment">//shortened</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">;
 
-<span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'btn'</span><span class="token punctuation">;</span>
+const BS_ROOT = 'btn';
 
-<span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> ButtonProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Element</span></span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">{</span>
+function Button(props: ButtonProps): JSX.Element </span><span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span>
     <span class="token string">'aria-label'</span><span class="token operator">:</span> ariaLabel<span class="token punctuation">,</span>
     children<span class="token punctuation">,</span>
     disabled<span class="token punctuation">,</span>
     onClick<span class="token punctuation">,</span>
     <span class="token keyword">type</span><span class="token punctuation">,</span>
     variant<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
 
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
-      <span class="token attr-name">aria-label</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>ariaLabel<span class="token punctuation">}</span></span>
-      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
-      <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>disabled<span class="token punctuation">}</span></span>
-      <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>onClick<span class="token punctuation">}</span></span>
-      <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token keyword">type</span><span class="token punctuation">}</span></span>
-    <span class="token punctuation">></span></span>
-      <span class="token punctuation">{</span>children<span class="token punctuation">}</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+      <span class="token attr-name">aria-label</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>ariaLabel<span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>variant<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>disabled<span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>onClick<span class="token punctuation">&#125;</span></span>
+      <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token keyword">type</span><span class="token punctuation">&#125;</span></span>
+    <span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">&#123;</span>children<span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>That’s it, i hope you are digging the typescript/react series so far.</p>
 
     </div>
@@ -530,14 +536,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

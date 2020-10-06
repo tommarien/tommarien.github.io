@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -87,7 +87,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -211,7 +211,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.9k</span>
+              <span>2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -230,70 +230,76 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>In <strong>React Testing Library</strong>, the recommended way, after the other queries don’t work for your use-case, is to add a <a href="https://testing-library.com/docs/dom-testing-library/api-queries#bytestid" target="_blank" rel="noopener"><code>data-testid</code></a> attribute on the element.</p>
+        <p>In <strong>React Testing Library</strong>, the recommended way, after the other queries don’t work for your use-case, is to add a <a target="_blank" rel="noopener" href="https://testing-library.com/docs/dom-testing-library/api-queries#bytestid"><code>data-testid</code></a> attribute on the element.</p>
 <p>This works for all baked-in React HTML components, for instance on a <code>&lt;div/&gt;</code>:</p>
-<pre class=" language-jsx"><code class="language-jsx"><span class="token keyword module">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword module">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<pre class="language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
 
-<span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token keyword">function</span> <span class="token function"><span class="token maybe-class-name">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-testid</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>some-test-id<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p><strong>Spec</strong></p>
-<pre class=" language-jsx"><code class="language-jsx"><span class="token keyword module">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword module">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
-<span class="token keyword module">import</span> <span class="token string">'@testing-library/jest-dom/extend-expect'</span><span class="token punctuation">;</span>
-<span class="token keyword module">import</span> <span class="token punctuation">{</span> render <span class="token punctuation">}</span> <span class="token keyword module">from</span> <span class="token string">'@testing-library/react'</span><span class="token punctuation">;</span>
-<span class="token keyword module">import</span> <span class="token maybe-class-name">Component</span> <span class="token keyword module">from</span> <span class="token string">'./Component'</span><span class="token punctuation">;</span>
+<pre class="language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'@testing-library/jest-dom/extend-expect'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> render <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'@testing-library/react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Component <span class="token keyword">from</span> <span class="token string">'./Component'</span><span class="token punctuation">;</span>
 
-<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">'it renders as expected'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=></span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">{</span> getByTestId <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Component</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">'it renders as expected'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> getByTestId <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Component</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">getByTestId</span><span class="token punctuation">(</span><span class="token string">'some-test-id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">getByTestId</span><span class="token punctuation">(</span><span class="token string">'some-test-id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="How-to-do-this-with-custom-components"><a href="#How-to-do-this-with-custom-components" class="headerlink" title="How to do this with custom components?"></a>How to do this with custom components?</h2><p>Due to the <code>-</code> in the name it’s not so easy and you will see other property names for it or just hard-coding the the <em>testId</em> into the component:</p>
-<pre class=" language-jsx"><code class="language-jsx"><span class="token keyword module">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword module">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
-<span class="token keyword module">import</span> <span class="token punctuation">{</span> string <span class="token punctuation">}</span> <span class="token keyword module">from</span> <span class="token string">'prop-types'</span><span class="token punctuation">;</span>
+<pre class="language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> string <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'prop-types'</span><span class="token punctuation">;</span>
 
-<span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token keyword">function</span> <span class="token function"><span class="token maybe-class-name">Component</span></span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> testId <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-testid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>testId<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Component</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">&#123;</span> testId <span class="token punctuation">&#125;</span></span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-testid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>testId<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token maybe-class-name">Component</span><span class="token punctuation">.</span><span class="token property-access">propTypes</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+Component<span class="token punctuation">.</span>propTypes <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
   testId<span class="token operator">:</span> string<span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 
-<span class="token maybe-class-name">Component</span><span class="token punctuation">.</span><span class="token property-access">defaultProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-  testId<span class="token operator">:</span> <span class="token keyword nil">undefined</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+Component<span class="token punctuation">.</span>defaultProps <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  testId<span class="token operator">:</span> <span class="token keyword">undefined</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span></code></pre>
+
 <p><strong>Spec</strong></p>
-<pre class=" language-jsx"><code class="language-jsx"><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">'it renders as expected'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=></span> <span class="token punctuation">{</span>
+<pre class="language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">'it renders as expected'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> testId <span class="token operator">=</span> <span class="token string">'some-test-id'</span><span class="token punctuation">;</span>
 
-  <span class="token keyword">const</span> <span class="token punctuation">{</span> getByTestId <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Component</span></span> <span class="token attr-name">testId</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>testId<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> getByTestId <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Component</span></span> <span class="token attr-name">testId</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>testId<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">getByTestId</span><span class="token punctuation">(</span>testId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">getByTestId</span><span class="token punctuation">(</span>testId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <h2 id="Preferred-approach"><a href="#Preferred-approach" class="headerlink" title="Preferred approach"></a>Preferred approach</h2><p>As i don’t like having two different conventions for specifying the <code>data-testid</code> attribute, i would suggest the following:</p>
-<pre class=" language-jsx"><code class="language-jsx"><span class="token keyword module">import</span> <span class="token maybe-class-name">React</span> <span class="token keyword module">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
-<span class="token keyword module">import</span> <span class="token punctuation">{</span> string <span class="token punctuation">}</span> <span class="token keyword module">from</span> <span class="token string">'prop-types'</span><span class="token punctuation">;</span>
+<pre class="language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> string <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'prop-types'</span><span class="token punctuation">;</span>
 
-<span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token keyword">function</span> <span class="token function"><span class="token maybe-class-name">Component</span></span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token string">'data-testid'</span><span class="token operator">:</span> dataTestId <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-testid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>dataTestId<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> <span class="token string">'data-testid'</span><span class="token operator">:</span> dataTestId <span class="token punctuation">&#125;</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-testid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>dataTestId<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-<span class="token maybe-class-name">Component</span><span class="token punctuation">.</span><span class="token property-access">propTypes</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+Component<span class="token punctuation">.</span>propTypes <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
   <span class="token string">'data-testid'</span><span class="token operator">:</span> string<span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 
-<span class="token maybe-class-name">Component</span><span class="token punctuation">.</span><span class="token property-access">defaultProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-  <span class="token string">'data-testid'</span><span class="token operator">:</span> <span class="token keyword nil">undefined</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+Component<span class="token punctuation">.</span>defaultProps <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token string">'data-testid'</span><span class="token operator">:</span> <span class="token keyword">undefined</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span></code></pre>
+
 <p><strong>Spec</strong></p>
-<pre class=" language-jsx"><code class="language-jsx"><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">'it renders as expected'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token arrow operator">=></span> <span class="token punctuation">{</span>
+<pre class="language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">test</span><span class="token punctuation">(</span><span class="token string">'it renders as expected'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> testId <span class="token operator">=</span> <span class="token string">'some-test-id'</span><span class="token punctuation">;</span>
 
-  <span class="token keyword">const</span> <span class="token punctuation">{</span> getByTestId <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Component</span></span> <span class="token attr-name">data-testid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>testId<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> getByTestId <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Component</span></span> <span class="token attr-name">data-testid</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>testId<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">getByTestId</span><span class="token punctuation">(</span>testId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+  <span class="token function">expect</span><span class="token punctuation">(</span><span class="token function">getByTestId</span><span class="token punctuation">(</span>testId<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeInTheDocument</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <blockquote>
 <p>Now you can use <code>data-testid</code> for baked-in HTML components as well as your custom components.</p>
 </blockquote>
@@ -459,14 +465,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1

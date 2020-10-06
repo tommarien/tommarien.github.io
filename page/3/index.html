@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -80,7 +80,7 @@
   </style>
 </noscript>
 
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -220,36 +220,47 @@
           <p>Almost a decade ago, a company I worked for, started using <em>Subversion</em> which was a great step forward coming from <em>Visual Source Safe</em>.</p>
 <p>Today, the landscape is totally different, but on enterprise level not much has changed. Some of the companies use <em>Team Foundation Server</em> which is great if you like total integration, but it’s source control system is not that great.<br>Others remained with <em>Subversion</em>.</p>
 <p>They might be thinking of going to <em>Git</em>, but most of them are afraid of the learning curve. As with all learning processes, you just have to start somewhere, just dive-in, step by step you’ll start learning Git.</p>
-<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>As a fan of <a href="http://chocolatey.org/" target="_blank" rel="noopener">Chocolatey</a> as machine package manager, just enter at command prompt</p>
-<pre class=" language-shell"><code class="language-shell">cinst <span class="token function">git</span></code></pre>
-<p>Or <a href="http://msysgit.github.io/" target="_blank" rel="noopener">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
+<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>As a fan of <a target="_blank" rel="noopener" href="http://chocolatey.org/">Chocolatey</a> as machine package manager, just enter at command prompt</p>
+<pre class="language-shell" data-language="shell"><code class="language-shell">cinst git</code></pre>
+
+<p>Or <a target="_blank" rel="noopener" href="http://msysgit.github.io/">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
 <h2 id="Checking-out-the-repository"><a href="#Checking-out-the-repository" class="headerlink" title="Checking out the repository"></a>Checking out the repository</h2><p>If your Subversion has the default trunk, branches, tags layout</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn clone -s &lt;repo_url&gt; --prefix svn&#x2F;</code></pre>
+
 <p>The -s switch is a shortcut for</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -T trunk --t tags --b branches <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn clone -T trunk --t tags --b branches &lt;repo_url&gt; --prefix svn&#x2F;</code></pre>
+
 <p>This will checkout the trunk of the repository by default. Now suppose your repository already had a branch called Test:</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
+<pre class="language-shell" data-language="shell"><code class="language-shell">&gt; git branch -a
 * master
-  remotes/svn/Test
-  remotes/svn/trunk</code></pre>
+  remotes&#x2F;svn&#x2F;Test
+  remotes&#x2F;svn&#x2F;trunk</code></pre>
+
 <h2 id="Advanced-Shallow-clone"><a href="#Advanced-Shallow-clone" class="headerlink" title="Advanced: Shallow clone"></a>Advanced: Shallow clone</h2><p>As the default approach above will crawl trough all svn revisions which can be very slow, if you are in an environment where they are using a single Svn repository with a lot of revisions for different projects, you could be looking at a few hours, days or even weeks (+ 150000 revisions). In that particular use case follow this approach:</p>
-<h3 id="Get-first-revision-of-directory-in-gigantic-repository"><a href="#Get-first-revision-of-directory-in-gigantic-repository" class="headerlink" title="Get first revision of directory in gigantic repository"></a>Get first revision of directory in gigantic repository</h3><pre class=" language-shell"><code class="language-shell">svn log <span class="token operator">&lt;</span>repo_url<span class="token operator">></span></code></pre>
+<h3 id="Get-first-revision-of-directory-in-gigantic-repository"><a href="#Get-first-revision-of-directory-in-gigantic-repository" class="headerlink" title="Get first revision of directory in gigantic repository"></a>Get first revision of directory in gigantic repository</h3><pre class="language-shell" data-language="shell"><code class="language-shell">svn log &lt;repo_url&gt;</code></pre>
+
 <p>The lowest/first revision number is what you are looking for, if you want full history in git on the project. If you just wanna checkout you can use the last revision number.</p>
-<h3 id="Checkout-repository"><a href="#Checkout-repository" class="headerlink" title="Checkout repository"></a>Checkout repository</h3><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/ -r <span class="token operator">&lt;</span>first-revision<span class="token operator">></span></code></pre>
+<h3 id="Checkout-repository"><a href="#Checkout-repository" class="headerlink" title="Checkout repository"></a>Checkout repository</h3><pre class="language-shell" data-language="shell"><code class="language-shell">git svn clone -s &lt;repo_url&gt; --prefix svn&#x2F; -r &lt;first-revision&gt;</code></pre>
+
 <p>This will initialize an empty git repository, now get the trunk</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn rebase</code></pre>
+
 <p>If you would look at your branches you would see that the test branch is not there in this case !</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a
+<pre class="language-shell" data-language="shell"><code class="language-shell">&gt; git branch -a
 * master
-  remotes/svn/trunk</code></pre>
+  remotes&#x2F;svn&#x2F;trunk</code></pre>
+
 <p>To get the remote branch to appear you need to</p>
-<pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn fetch</code></pre>
-<h2 id="Updating-your-repository"><a href="#Updating-your-repository" class="headerlink" title="Updating your repository"></a>Updating your repository</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<pre class="language-shell" data-language="shell"><code class="language-shell">git svn fetch</code></pre>
+
+<h2 id="Updating-your-repository"><a href="#Updating-your-repository" class="headerlink" title="Updating your repository"></a>Updating your repository</h2><pre class="language-shell" data-language="shell"><code class="language-shell">git svn rebase</code></pre>
+
 <p>It will fetch latest changes from the trunk and will try to rebase your work on top of it. If any conflicting changes where made, you’ll have to merge them.</p>
-<h2 id="Committing-your-changes"><a href="#Committing-your-changes" class="headerlink" title="Committing your changes"></a>Committing your changes</h2><pre class=" language-shell"><code class="language-shell"><span class="token function">git</span> svn dcommit</code></pre>
+<h2 id="Committing-your-changes"><a href="#Committing-your-changes" class="headerlink" title="Committing your changes"></a>Committing your changes</h2><pre class="language-shell" data-language="shell"><code class="language-shell">git svn dcommit</code></pre>
+
 <h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
-<li><a href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion" target="_blank" rel="noopener">Git and Subversion</a></li>
-<li><a href="http://viget.com/extend/effectively-using-git-with-subversion" target="_blank" rel="noopener">Effectively Using Git With Subversion</a></li>
+<li><a target="_blank" rel="noopener" href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion">Git and Subversion</a></li>
+<li><a target="_blank" rel="noopener" href="http://viget.com/extend/effectively-using-git-with-subversion">Effectively Using Git With Subversion</a></li>
 </ul>
 
       
@@ -338,10 +349,11 @@
 </blockquote>
 <p>This looks like something that could have been taken from an analysis document or could be the description on the post-it on your agile board. Now suppose you are assigned with this task, how would you organize your tests?</p>
 <p>Let’s make it as ‘fugly’ as we can:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IAuthenticationService</span>
-<span class="token punctuation">{</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IAuthenticationService</span>
+<span class="token punctuation">&#123;</span>
   <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">Authenticate</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> user<span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">string</span></span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>If we start with the simplest thing we could go for a test class called AuthenticationServiceTests. But that would quickly become a big ball of mud as we start thinking about the possible tests:</p>
 <ul>
 <li>Authenticating with a user and password returns true if user is known and password matches</li>
@@ -352,24 +364,25 @@
 <li>Authenticating with an unconfirmed registered user throws a business exception</li>
 <li>…</li>
 </ul>
-<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
+<h3 id="How-about-this"><a href="#How-about-this" class="headerlink" title="How about this?"></a>How about this?</h3><pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_user_logs_on_using_username_and_password</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_returns_true</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_resets_failed_logon_attempts</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
 
   <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
   <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_updates_last_logon</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">{</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+  <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>You could debate about not following standard .net naming conventions, but this clearly specifies our requirement. But it also involves code side effects which are necessary but may have a complete different audience (ref tests 2 and 3). This could mean you may need to organize them in that way:</p>
 <ul>
 <li>it_resets_failed_logon_attempts is related to locking out users after 3 attempts</li>
@@ -378,14 +391,15 @@
 </ul>
 <p>Now what happens if we logon with an unknown user, mmm, this seems database oriented, if the record does not exist in the database, the user can not login. But in real life it could mean that the user just did not register on our site or forgot his logon credentials!</p>
 <p>So you might go for this:</p>
-<pre class=" language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
+<pre class="language-csharp" data-language="csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">TestFixture</span></span><span class="token punctuation">]</span>
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">When_an_unknown_or_unregistered_user_logs_on</span>
-<span class="token punctuation">{</span>
+<span class="token punctuation">&#123;</span>
     <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span>
     <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">it_indicates_failure</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span></code></pre>
+    <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></code></pre>
+
 <p>I hope I trickled your mind a bit and that I got the message trough. Expressive <strong>tests are hard work</strong> but can be very useful.</p>
 <p>Just having full code coverage and tests where you need to deep-dive into the code to find out what they are doing may not be the point of your tests.</p>
 <blockquote>
@@ -463,7 +477,7 @@
 
       
           <p>A couple of years ago i published a <a href="/blog/2012/04/16/showdown-mstest-vs-nunit">comparison post on NUnit vs MsTest</a>. One of the main benefits i felt NUnit had in comparison with MsTest was the richness of the assertion library it included.</p>
-<p>Recently i stumbled upon an assertion framework called <a href="http://shouldly.github.io/" target="_blank" rel="noopener">Shouldly</a>. And i must say i am very <strong>impressed</strong> by it. If i would ask myself the question again whether i would prefer NUnit over MsTest, my answer would be:</p>
+<p>Recently i stumbled upon an assertion framework called <a target="_blank" rel="noopener" href="http://shouldly.github.io/">Shouldly</a>. And i must say i am very <strong>impressed</strong> by it. If i would ask myself the question again whether i would prefer NUnit over MsTest, my answer would be:</p>
 <blockquote>
 <p>It doesn’t matter as long as we can include Shouldly as assertion library.</p>
 </blockquote>
@@ -473,7 +487,7 @@
 <li>Due to <strong>clever inspection</strong> of called method or property it even changed the way i named variables in tests, because they could tell part of the story (instead of using var verify all over the place, because it would have made no difference when test failed)</li>
 <li>Mature and helpful maintainer <strong>community</strong> (logged a bug, got response same day)</li>
 </ul>
-<p>The <a href="http://shouldly.github.io/" target="_blank" rel="noopener">Shouldly site</a> contains sufficient info to get started. Give it a try, maybe you like it as much as I do!</p>
+<p>The <a target="_blank" rel="noopener" href="http://shouldly.github.io/">Shouldly site</a> contains sufficient info to get started. Give it a try, maybe you like it as much as I do!</p>
 
       
     </div>
@@ -526,7 +540,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.1k</span>
+              <span>3.9k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -557,7 +571,7 @@
 <li><strong>AutoGrowth</strong>: Default is to grow 1 Mb a time, set this to a percentage or at least 1/10 of the initial size.</li>
 </ul>
 <h2 id="While-running"><a href="#While-running" class="headerlink" title="While running"></a>While running</h2><p>Remember SQLServer is your friend, using Actual Query plan while executing a query can give you hints about the underlying problem. But in general if you don’t know where to start you could use built-in statistics:</p>
-<h3 id="Top-25-Missing-indexes"><a href="#Top-25-Missing-indexes" class="headerlink" title="Top 25 Missing indexes"></a>Top 25 Missing indexes</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+<h3 id="Top-25-Missing-indexes"><a href="#Top-25-Missing-indexes" class="headerlink" title="Top 25 Missing indexes"></a>Top 25 Missing indexes</h3><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
    <span class="token keyword">TOP</span> <span class="token number">25</span> dm_mid<span class="token punctuation">.</span>database_id <span class="token keyword">AS</span> DatabaseID<span class="token punctuation">,</span>
    dm_migs<span class="token punctuation">.</span>avg_user_impact<span class="token operator">*</span><span class="token punctuation">(</span>dm_migs<span class="token punctuation">.</span>user_seeks <span class="token operator">+</span> dm_migs<span class="token punctuation">.</span>user_scans<span class="token punctuation">)</span> Avg_Estimated_Impact<span class="token punctuation">,</span>
    dm_migs<span class="token punctuation">.</span>last_user_seek <span class="token keyword">AS</span> Last_User_Seek<span class="token punctuation">,</span>
@@ -595,11 +609,12 @@
    dm_mid<span class="token punctuation">.</span>database_ID <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
    Avg_Estimated_Impact <span class="token keyword">DESC</span></code></pre>
+
 <blockquote>
 <p>This query will output the top 25 missing indexes ordered by estimated impact, look at indexes where the avg estimated impact is above 100000 and are frequently used (Try to avoid the INCLUDE indexes at first).</p>
 </blockquote>
 <p>If the above query does not help you in any way, it could mean that the indexes exist but have been fragmented too much.</p>
-<h3 id="Index-Fragmentation"><a href="#Index-Fragmentation" class="headerlink" title="Index Fragmentation"></a>Index Fragmentation</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+<h3 id="Index-Fragmentation"><a href="#Index-Fragmentation" class="headerlink" title="Index Fragmentation"></a>Index Fragmentation</h3><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
    dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Schema'</span><span class="token punctuation">,</span>
    dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Table'</span><span class="token punctuation">,</span>
    dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Index'</span><span class="token punctuation">,</span>
@@ -621,17 +636,19 @@
    indexstats<span class="token punctuation">.</span>database_id <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token keyword">ORDER</span> <span class="token keyword">BY</span>
    indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent <span class="token keyword">desc</span></code></pre>
+
 <blockquote>
 <p>Look for indexes that have a fragmentation level higher than 30 % and a high page count (by default on sql server the page size is 8K).</p>
 </blockquote>
-<h3 id="Rebuild-Indexes"><a href="#Rebuild-Indexes" class="headerlink" title="Rebuild Indexes"></a>Rebuild Indexes</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">INDEX</span> PK_TABLE
+<h3 id="Rebuild-Indexes"><a href="#Rebuild-Indexes" class="headerlink" title="Rebuild Indexes"></a>Rebuild Indexes</h3><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">INDEX</span> PK_TABLE
 <span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token keyword">TABLE</span><span class="token punctuation">]</span> REBUILD <span class="token keyword">WITH</span> <span class="token punctuation">(</span><span class="token keyword">FILLFACTOR</span> <span class="token operator">=</span> <span class="token number">90</span> <span class="token punctuation">,</span> STATISTICS_NORECOMPUTE <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">)</span></code></pre>
+
 <h4 id="FILLFACTOR"><a href="#FILLFACTOR" class="headerlink" title="FILLFACTOR?"></a>FILLFACTOR?</h4><p>Usually, the higher the better (max is 100), but it depends on how often the table changes and what the index contains. Two examples:</p>
 <ul>
 <li>PK on a int identity key, use fill factor 100% as new records are always created at the bottom (normally index fragmentation on these should be low, or a lot of records have been deleted)</li>
 <li>PK on a guid key, use fill factor depending on how often new records are added (start by 80% or 90%) and monitor page splits to fine tune (see query below)</li>
 </ul>
-<h3 id="Monitor-Page-Splits"><a href="#Monitor-Page-Splits" class="headerlink" title="Monitor Page Splits"></a>Monitor Page Splits</h3><pre class=" language-sql"><code class="language-sql"><span class="token keyword">SELECT</span>
+<h3 id="Monitor-Page-Splits"><a href="#Monitor-Page-Splits" class="headerlink" title="Monitor Page Splits"></a>Monitor Page Splits</h3><pre class="language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span>
    Operation<span class="token punctuation">,</span>
    AllocUnitName<span class="token punctuation">,</span>
    <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">as</span> NumberofIncidents
@@ -642,9 +659,10 @@
 <span class="token keyword">GROUP</span> <span class="token keyword">BY</span>
    Operation<span class="token punctuation">,</span>
    AllocUnitName</code></pre>
+
 <h2 id="Further-reading"><a href="#Further-reading" class="headerlink" title="Further reading"></a>Further reading</h2><ul>
-<li><a href="https://www.simple-talk.com/sql/learn-sql-server/effective-clustered-indexes" target="_blank" rel="noopener">Effective Clustered Indexes</a></li>
-<li><a href="http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes" target="_blank" rel="noopener">http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.simple-talk.com/sql/learn-sql-server/effective-clustered-indexes">Effective Clustered Indexes</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes">http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes</a></li>
 </ul>
 
       
@@ -698,7 +716,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.4k</span>
+              <span>1.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -718,7 +736,7 @@
 
       
           <p>Usually when doing javascript, you’ll see a lot of script inside a page. For instance when we add a date picker on a text input, you could add a script block to the page and do the necessary initialization there:</p>
-<pre class=" language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Modify your settings<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+<pre class="language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Modify your settings<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
 
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>control-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -735,23 +753,26 @@
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
 
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text/javascript<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
-  <span class="token function">$</span><span class="token punctuation">(</span><span class="token dom variable">document</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#birthDate"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">datepicker</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#birthDate"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">datepicker</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
       dateFormat<span class="token operator">:</span> <span class="token string">"dd-mm-yy"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></code></pre>
+
 <p>Now what if we needed to do this more then just once? Let’s change our html to a more unobtrusive way:</p>
-<pre class=" language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">data-role</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>datepicker<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span></code></pre>
+<pre class="language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">data-role</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>datepicker<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span></code></pre>
+
 <p>Now just add a new javascript file to your website and include it in our html.</p>
-<pre class=" language-js"><code class="language-js"><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">$</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">$</span><span class="token punctuation">(</span><span class="token dom variable">document</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<pre class="language-js" data-language="js"><code class="language-js"><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">$</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
     <span class="token comment">//datepicker convention</span>
-    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">':text[data-role="datepicker"]'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token method function property-access">datepicker</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">':text[data-role="datepicker"]'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">datepicker</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
       dateFormat<span class="token operator">:</span> <span class="token string">"dd-mm-yy"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>jQuery<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">(</span>jQuery<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
 <p>In this file we make sure we alias ‘$’ to jQuery as another plugin we use could have aliased it differently.</p>
 <blockquote>
 <p>If you are worried about performance of the selector used here, you can always use a class in your convention.</p>
@@ -896,14 +917,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">115k</span>
+    <span title="Symbols count total">116k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:44</span>
+    <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
