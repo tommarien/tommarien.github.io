@@ -12,7 +12,7 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:300,300italic,400,400italic,700,700italic,900,900|Montserrat:300,300italic,400,400italic,700,700italic,900,900&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Inter:300,300italic,400,400italic,700,700italic,900,900|Montserrat:300,300italic,400,400italic,700,700italic,900,900&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 <script id="hexo-configurations">
@@ -425,11 +425,10 @@ Badge<span class="token punctuation">.</span>defaultProps <span class="token ope
     <span class="token operator">|</span> <span class="token string">'light'</span>
     <span class="token operator">|</span> <span class="token string">'dark'</span>
     <span class="token operator">|</span> <span class="token string">'link'</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span class="token plain-text">;
+<span class="token punctuation">&#125;</span><span class="token plain-text">;</span></code></pre>
+<pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'btn'</span><span class="token punctuation">;</span>
 
-const BS_ROOT = 'btn';
-
-function Button(props: ButtonProps): JSX.Element </span><span class="token punctuation">&#123;</span>
+<span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> ButtonProps</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span>Element <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> children<span class="token punctuation">,</span> disabled<span class="token punctuation">,</span> onClick<span class="token punctuation">,</span> <span class="token keyword">type</span><span class="token punctuation">,</span> variant <span class="token punctuation">&#125;</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
 
   <span class="token keyword">return</span> <span class="token punctuation">(</span>
@@ -442,9 +441,9 @@ function Button(props: ButtonProps): JSX.Element </span><span class="token punct
       </span><span class="token punctuation">&#123;</span>children<span class="token punctuation">&#125;</span><span class="token plain-text">
     </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
   <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span class="token plain-text">
+<span class="token punctuation">&#125;</span>
 
-export default Button;</span></code></pre>
+<span class="token keyword">export</span> <span class="token keyword">default</span> Button<span class="token punctuation">;</span></code></pre>
 
 <h2 id="Satisfaction"><a href="#Satisfaction" class="headerlink" title="Satisfaction"></a>Satisfaction</h2><p>But what if you wanted a “close” button which just an <code>x</code> inside it as children?</p>
 <pre class="language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>

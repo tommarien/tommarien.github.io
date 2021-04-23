@@ -170,7 +170,7 @@ body {
 body {
   background: var(--body-bg-color);
   color: var(--text-color);
-  font-family: 'Merriweather', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Inter', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 1em;
   line-height: 2;
 }
@@ -186,7 +186,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Montserrat', 'Merriweather', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Montserrat', 'Inter', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-weight: bold;
   line-height: 1.5;
   margin: 20px 0 15px;
@@ -210,7 +210,7 @@ h6 {
   font-size: 1.25em;
 }
 p {
-  margin: 0 0 20px 0;
+  margin: 0 20px 20px 0;
 }
 a,
 span.exturl {
@@ -981,7 +981,7 @@ pre .javascript .function {
 }
 .site-title {
   display: inline-block;
-  font-family: 'Merriweather', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Inter', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 1.375em;
   font-weight: normal;
   line-height: 1.5;
@@ -1231,7 +1231,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #0f7849;
+  background: #38adff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1553,7 +1553,7 @@ pre .javascript .function {
   }
 }
 .post-body {
-  font-family: 'Merriweather', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Inter', "PingFang SC", "Microsoft YaHei", sans-serif;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
@@ -1729,12 +1729,12 @@ pre .javascript .function {
 }
 @media (min-width: 992px) {
   .post-body {
-    text-align: justify;
+    text-align: left;
   }
 }
 @media (max-width: 991px) {
   .post-body {
-    text-align: justify;
+    text-align: left;
   }
 }
 .post-body h1,
@@ -1855,7 +1855,7 @@ pre .javascript .function {
 }
 .posts-expand .post-meta {
   color: #999;
-  font-family: 'Merriweather', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Inter', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 0.75em;
   margin: 3px 0 60px 0;
   text-align: center;
@@ -2312,6 +2312,9 @@ pre[class*=language-] {
 }
 .token.italic {
   font-style: italic;
+}
+:not(pre)>code {
+  font-size: 0.875em;
 }
 hr {
   height: 2px;
