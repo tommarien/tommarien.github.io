@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -825,7 +825,7 @@
 <span class="token punctuation">&#125;</span></code></pre>
 
 <p>So if we have two full name instances, they would be considered equal if they have the same values for both first and last name. Value objects are more groupings of related properties. In persistence terminology, their values would be saved in fields of the Person table. As they are just characteristics of a person.</p>
-<p>Define your value objects as immutable objects (values settable with constructor only) with again a overriden equals and gethashcode method, which take into account the property values and the type. To change the value of an address, one must create a new address object. <a href="%3C!--swig%EF%BF%BC3--%3E/blog/2011/10/30/micro-classes-as-building-blocks">Micro-classes</a> are essentially value objects.</p>
+<p>Define your value objects as immutable objects (values settable with constructor only) with again a overriden equals and gethashcode method, which take into account the property values and the type. To change the value of an address, one must create a new address object. [Micro-classes](/blog/2011/10/30/micro-classes-as-building-blocks) are essentially value objects.</p>
 <h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><h4 id="By-looking-at-the-above-definitions-we-can-conclude-that-Order-is-an-entity-but-what-is-an-Orderline-object"><a href="#By-looking-at-the-above-definitions-we-can-conclude-that-Order-is-an-entity-but-what-is-an-Orderline-object" class="headerlink" title="By looking at the above definitions we can conclude that Order is an entity, but what is an Orderline object?"></a>By looking at the above definitions we can conclude that <strong>Order</strong> is an entity, but what is an <strong>Orderline</strong> object?</h4><p><em>It is an entity because if one user adds an orderline (for instance 2 times product x) and another user adds the same orderline (two times product x), the order would end up with two orderlines of two times product x each. If it was a value object the order would end up with one orderline (two times product x).</em></p>
 <h4 id="What-if-we-want-to-store-address-in-an-Address-table-we-need-to-add-an-identity-value-to-the-object-would-it-make-address-an-entity"><a href="#What-if-we-want-to-store-address-in-an-Address-table-we-need-to-add-an-identity-value-to-the-object-would-it-make-address-an-entity" class="headerlink" title="What if we want to store address in an Address table, we need to add an identity value to the object, would it make address an entity?"></a>What if we want to store <em>address</em> in an Address table, we need to add an identity value to the object, would it make address an entity?</h4><p><em>No it doesn’t, because if we want to use the same address for those customer entities we still need a different instance (albeit with the same values except the id) or clone of address.  Otherwise when we change the address values of one the customers, the other one would move also. The identity of the Address value object is only used to keep our database happy</em></p>
 
@@ -1241,7 +1241,7 @@
 <div class="copyright">
   
   &copy; 2011 – 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -1250,14 +1250,14 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="Symbols count total">116k</span>
+    <span title="Symbols count total">117k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
     <span title="Reading time total">1:46</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.2.0
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v5.4.0
   </div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
