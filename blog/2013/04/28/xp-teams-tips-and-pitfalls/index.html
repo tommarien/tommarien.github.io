@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="XP Teams: Tips and pitfalls | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="XP Teams: Tips and pitfalls | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="XP Teams: Tips and pitfalls | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>XP Teams: Tips and pitfalls | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>XP Teams: Tips and pitfalls</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag opinion" href="/tag/opinion">opinion</a>
+            </div>
+        
+
+        
+            
+              <p class="text-sm italic">Last updated on
+                    <span datetime="Sun Apr 28 2013 02:00:00 GMT+0200 (Central European Summer Time)">December 2, 2015</span>. Created on
+                    <span datetime="Sun Apr 28 2013 02:00:00 GMT+0200 (Central European Summer Time)">April 28, 2013</span>.</p>
+            
+        
+
+        <div class="content post">
+            <h2 id="there-is-an-%E2%80%98i%E2%80%99-in-silence" tabindex="-1">There is an ‘I’ in Silence</h2>
+<p>If all team members seem very occupied and don’t say a word except maybe on your daily stand-up meetings, then you probably <strong>don’t have a team</strong> at all. Teams that are not communicating could be <strong>developing next to each other</strong>. All those different parts of software need to form a whole, also known as your product. Good teams need to <strong>communicate</strong> whenever the need arises, form code-pairs naturally and should be <strong>having fun</strong> while working.</p>
+<h2 id="domain-is-king" tabindex="-1">Domain is king</h2>
+<p>In absence of a domain expert, tackle every new story in pair. The domain of the application is the <strong>most important</strong> and the most <strong>unambiguous</strong> part of the application. Invest some time in it !</p>
+<ul>
+<li>Use a whiteboard (or tool) to draw the basic layout of the domain needed to create.</li>
+<li>Focus on naming and aggregate separation.</li>
+<li>Instead of talking about properties (especially the naked primitive ones) focus on methods, associations and value objects.</li>
+</ul>
+<p><strong>Important</strong>: Domain models contain business logic and not only properties (<a href="http://martinfowler.com/bliki/AnemicDomainModel.html" target="_blank" rel="noopener">Anemic Domain Model</a>), no point in trying to avoid that, your domain model is specific to the project it was created for.</p>
+<h2 id="stop-the-future-developing-train" tabindex="-1">Stop the future developing train</h2>
+<p>Except maybe fortune tellers, no one is able to predict the future. But as it comes to developers, it seems that most of them think they are talented fortune tellers. While developing a user story, they create pieces of code they think are reusable, micro frameworks, but in reality are rarely reused. Every time you as developer start thinking: Hey I should refactor and try to make it reusable, <strong>stop it right there, wait until the need arises</strong>. (<a href="http://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it" target="_blank" rel="noopener">YAGNI</a>)</p>
+<h2 id="the-misconception-of-dry" tabindex="-1">The misconception of DRY</h2>
+<blockquote>
+<p>“Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.&quot;</p>
+</blockquote>
+<p>The <a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself" target="_blank" rel="noopener">DRY</a> principle is so much abused in software development. It is abused to mold two pieces of non-related code into one, just to reuse code. Copying code once does not form a problem, because you cannot predict if two objects just seem to behave similar or have truly shared behavior. Copying the same piece, a third time should ring an alarm bell.</p>
+<h2 id="the-chase-of-code-coverage" tabindex="-1">The chase of code coverage</h2>
+<p>Every unit test should exist to prove a functional requirement, not just to cover a piece of code perfectly. Non meaningful tests are a drag and can complicate future refactoring’s more than having only 65% of your code covered. (<a href="http://adiws.blogspot.it/2012/04/code-coverage-considered-harmful.html" target="_blank" rel="noopener">see Code coverage considered harmful</a>)</p>
+<p>A way to avoid this is to write your tests first (<a href="http://en.wikipedia.org/wiki/Test-driven_development%22" target="_blank" rel="noopener">TDD</a>), but please <strong>stop finding excuses to not write tests</strong> !</p>
+<h2 id="every-rectangle-is-a-square" tabindex="-1">Every rectangle is a square</h2>
+<p>When working in an object-oriented language, always be careful with inheritance. Use it wisely and scarce. <strong>Favor composition over inheritance</strong>. For me personally inheriting from another object means that the subtype is the base type. Never use inheritance just because objects share the same properties, it’s all about behavior not about data.
+A clear example: Even though an eagle and an ostrich are both birds, only 1 of them can fly.</p>
+<h2 id="the-hidden-perfectionist" tabindex="-1">The hidden perfectionist</h2>
+<p>When working together on a project, there will exist different opinions on how “quality” code should look like. Sometimes there may be a need to have code reviews. The entire idea behind code reviews is that <strong>both the reviewer as the author</strong> can <strong>learn</strong> something new. If you act as the reviewer always work in pair with the author of the code. Never, and I mean never refactor the code without communication. Remember the intention is to <strong>discuss</strong> about the code not to play a game of ping-pong.</p>
+<p>Being right or wrong is just a matter of who is the beholder.</p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2013/05/05/currying-your-monolithic-code-with-some-ddd-principles/">Currying your monolithic code with basic DDD principles</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2013/04/26/castle-windsor-avoiding-runtime-errors-due-to-misconfigured-components/">Castle Windsor: Avoiding runtime errors due to misconfigured components</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

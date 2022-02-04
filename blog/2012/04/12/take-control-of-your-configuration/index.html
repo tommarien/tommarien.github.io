@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Take control of your configuration | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Take control of your configuration | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Take control of your configuration | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Take control of your configuration | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Take control of your configuration</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Thu Apr 12 2012 02:00:00 GMT+0200 (Central European Summer Time)">April 12, 2012</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>Using configuration values can sometimes be hard to get a SUT thoroughly tested. Especially when you have behavior tied to those configuration values.</p>
+<p>Consider this simple scenario where we have a component that will throw errors depending on an appsetting value, if the value is false it will silently ignore those errors. Either way you will have code in your component like this:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SomeComponent</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">AMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">try</span><br>    <span class="token punctuation">{</span><br>      <span class="token comment">// Some magical moment</span><br>    <span class="token punctuation">}</span><br>    <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token class-name"><span class="token keyword">bool</span></span> throwErrors <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span><br>      <span class="token class-name"><span class="token keyword">bool</span></span> parsed<span class="token punctuation">;</span><br><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">bool</span><span class="token punctuation">.</span><span class="token function">TryParse</span><span class="token punctuation">(</span>ConfigurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">[</span><span class="token string">"ThrowErrors"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">out</span> parsed<span class="token punctuation">)</span><span class="token punctuation">)</span> throwErrors <span class="token operator">=</span> parsed<span class="token punctuation">;</span><br><br>      logger<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span>throwErrors<span class="token punctuation">)</span> <span class="token keyword">throw</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>How would you handle this in your unit tests, adding a real configuration file to your testing assembly will not cover all scenario’s as you could only provide one value for your ‘ThrowErrors’ key, probably you could think of a nice solution to test more scenario’s, but still you need to maintain the extra configuration file for your testing assembly.</p>
+<h2 id="adapter-pattern-to-the-rescue" tabindex="-1">Adapter pattern to the rescue</h2>
+<p>What if we could solve this nasty static dependency to ConfigurationManager. Let’s start by creating a simple abstraction</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Specialized</span><span class="token punctuation">;</span><br><span class="token keyword">namespace</span> <span class="token namespace">Redux<span class="token punctuation">.</span>Configuration</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">ConfigurationManagerBase</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token return-type class-name">NameValueCollection</span> AppSettings <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br>    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">ConnectionString</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token return-type class-name">T</span> <span class="token generic-method"><span class="token function">GetSection</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> sectionName<span class="token punctuation">)</span> <span class="token keyword">where</span> <span class="token class-name">T</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token keyword">class</span></span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>This will give us a nice, clean and mockable abstraction for all your configuration needs. Now add an adapter for the static ConfigurationManager that inherits this abstraction:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Collections<span class="token punctuation">.</span>Specialized</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token namespace">System<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span><br><span class="token keyword">namespace</span> <span class="token namespace">Redux<span class="token punctuation">.</span>Configuration</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ConfigurationManagerAdapter</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ConfigurationManagerBase</span></span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name">NameValueCollection</span> AppSettings<br>    <span class="token punctuation">{</span><br>      <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> ConfigurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">;</span> <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> <span class="token function">ConnectionString</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> name<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token class-name"><span class="token keyword">var</span></span> connectionString <span class="token operator">=</span> ConfigurationManager<span class="token punctuation">.</span>ConnectionStrings<span class="token punctuation">[</span>name<span class="token punctuation">]</span><span class="token punctuation">;</span><br>      <span class="token keyword">return</span> connectionString <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token punctuation">?</span> connectionString<span class="token punctuation">.</span>ConnectionString <span class="token punctuation">:</span> <span class="token keyword">null</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token return-type class-name">T</span> <span class="token generic-method"><span class="token function">GetSection</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>T<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">string</span></span> sectionName<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token class-name"><span class="token keyword">var</span></span> section <span class="token operator">=</span> ConfigurationManager<span class="token punctuation">.</span><span class="token function">GetSection</span><span class="token punctuation">(</span>sectionName<span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token keyword">return</span> section <span class="token keyword">as</span> <span class="token class-name">T</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Add tests for this adapter so that we have every possible scenario covered. This takes us closer to the real implementation of ‘SomeComponent’ as we now have a mockable dependency to take in. We could stub the AppSettings property to return a NameValueCollection so we can cover every possible scenario. But still this would not clean up the code for our magical method on our component.</p>
+<p>Let’s add a string extension to take all that parsing stuff out of the real method.</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">namespace</span> <span class="token namespace">Redux<span class="token punctuation">.</span>Extensions</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">StringExtensions</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">TryParseAsBoolean</span><span class="token punctuation">(</span><span class="token keyword">this</span> <span class="token class-name"><span class="token keyword">string</span></span> <span class="token keyword">value</span><span class="token punctuation">,</span> <span class="token class-name"><span class="token keyword">bool</span></span> defaultValue <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token class-name"><span class="token keyword">bool</span></span> parsed<span class="token punctuation">;</span><br>      <span class="token keyword">return</span> <span class="token keyword">bool</span><span class="token punctuation">.</span>TryParse<span class="token class-name"><span class="token punctuation">(</span><span class="token keyword">value</span><span class="token punctuation">,</span> <span class="token keyword">out</span> parsed<span class="token punctuation">)</span> <span class="token punctuation">?</span></span> parsed <span class="token punctuation">:</span> defaultValue<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>And finally create a type-safe appsettings class with a dependency to our abstraction</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Redux<span class="token punctuation">.</span>Extensions</span><span class="token punctuation">;</span><br><span class="token keyword">namespace</span> <span class="token namespace">Redux<span class="token punctuation">.</span>Configuration</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AppSettings</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">public</span> <span class="token function">AppSettings</span><span class="token punctuation">(</span><span class="token class-name">ConfigurationManagerBase</span> configurationManager<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      ThrowErrors <span class="token operator">=</span> configurationManager<span class="token punctuation">.</span>AppSettings<span class="token punctuation">[</span><span class="token string">"ThrowErrors"</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">TryParseAsBoolean</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token keyword">virtual</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> ThrowErrors <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Let’s look at the final solution for our component</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token namespace">Redux<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span><br><span class="token keyword">namespace</span> <span class="token namespace">Redux</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SomeComponent</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">AppSettings</span> appSettings<span class="token punctuation">;</span><br><br>    <span class="token keyword">public</span> <span class="token function">SomeComponent</span><span class="token punctuation">(</span><span class="token class-name">AppSettings</span> appSettings<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">this</span><span class="token punctuation">.</span>appSettings <span class="token operator">=</span> appSettings<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">AMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">try</span><br>      <span class="token punctuation">{</span><br>        <span class="token comment">// Some magical moment</span><br>      <span class="token punctuation">}</span><br>      <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>        Logger<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token keyword">if</span> <span class="token punctuation">(</span>appSettings<span class="token punctuation">.</span>ThrowErrors<span class="token punctuation">)</span> <span class="token keyword">throw</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Sometimes creating simple infrastructure classes can cleanup existing code and improve it’s readability. But the biggest surplus is we created a way to mock configuration values.</p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2012/04/16/showdown-mstest-vs-nunit/">Showdown: MsTest Vs NUnit</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2012/01/30/deadlock-heaven-serializable-isolationlevel/">Deadlock heaven: Serializable IsolationLevel</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

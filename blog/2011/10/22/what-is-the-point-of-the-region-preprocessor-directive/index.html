@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="What Is the Point of the #region Preprocessor Directive? | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="What Is the Point of the #region Preprocessor Directive? | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="What Is the Point of the #region Preprocessor Directive? | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>What Is the Point of the #region Preprocessor Directive? | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>What Is the Point of the #region Preprocessor Directive?</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a><a class="tag code quality" href="/tag/code quality">code quality</a><a class="tag opinion" href="/tag/opinion">opinion</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Sat Oct 22 2011 02:00:00 GMT+0200 (Central European Summer Time)">October 22, 2011</span>.</p>
+            
+        
+
+        <div class="content post">
+            <h3 id="definition-taken-from-msdn" tabindex="-1">Definition taken from MSDN</h3>
+<blockquote>
+<p><strong>#region</strong> lets you specify a block of code that you can expand or collapse when using the outlining feature of the Visual Studio Code Editor. In longer code files, it is convenient to be able to collapse or hide one or more regions so that you can focus on the part of the file that you are currently working on.</p>
+</blockquote>
+<h3 id="mind-blowing-example" tabindex="-1">Mind-blowing example</h3>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PieceTheResistence</span><br><span class="token punctuation">{</span><br>   <span class="token preprocessor property">#<span class="token directive keyword">region</span> SomeNameShamelesslyPointingAtTheIntendOfTheWrappedCode</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MethodOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Piece of Art code</span><br>      <span class="token punctuation">}</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MethodTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Another Piece of Art</span><br>      <span class="token punctuation">}</span><br>   <span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span><br><br>   <span class="token preprocessor property">#<span class="token directive keyword">region</span> SomeOtherNameShamelesslyPointingAtTheIntendOfTheWrappedCode</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SecondMethodOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Piece of Art code</span><br>      <span class="token punctuation">}</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SecondMethodTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Another Piece of Art</span><br>      <span class="token punctuation">}</span><br>   <span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span><br><span class="token punctuation">}</span></code></pre>
+<p>Ah, i see, i can collapse the region i am not working on, which will keep me focused on the code i am working on.</p>
+<h3 id="why-am-i-having-problems-with-keeping-me-focused-on-the-code-i-need-to-work-on-%3F" tabindex="-1">Why am i having problems with keeping me focused on the code i need to work on ?</h3>
+<p>Could be that i kept up all night, writing some blog posts or playing on my XBOX, PS3. Being deprived of sleep can have negative effects on concentration.</p>
+<p>But a much more common scenario is that the class simply has <strong>too much code</strong>, in other words the class has <strong>too many responsibilities</strong>.</p>
+<p>Create classes from the regions, so you’ll end up with classes with names revealing their intend. IMHO you don’t need regions if you design classes following the <strong>Single responsibility principle (SRP)</strong></p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2011/10/26/wcf-the-one-size-fits-them-all-service-layer-anti-pattern/">WCF, the one size fits them all Service Layer anti-pattern</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2011/10/21/why-oh-why-didnt-i-take-the-blue-pill/">Why didn&#39;t i take the blue pill?</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

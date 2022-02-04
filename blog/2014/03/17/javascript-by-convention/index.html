@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Javascript by convention | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Javascript by convention | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Javascript by convention | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Javascript by convention | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Javascript by convention</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag javascript" href="/tag/javascript">javascript</a><a class="tag code quality" href="/tag/code quality">code quality</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Mon Mar 17 2014 01:00:00 GMT+0100 (Central European Standard Time)">March 17, 2014</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>Usually when doing javascript, you’ll see a lot of script inside a page. For instance when we add a date picker on a text input, you could add a script block to the page and do the necessary initialization there:</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Modify your settings<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><br><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>control-group<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>control-label<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Birthdate<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>controls<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>input-append<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>add-on<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>i</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>icon-calendar<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>i</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><br>      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br>  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span></code></pre>
+<pre class="language-js"><code class="language-js"><span class="token operator">&lt;</span>script type<span class="token operator">=</span><span class="token string">"text/javascript"</span><span class="token operator">></span><br>  <span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#birthDate'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">datepicker</span><span class="token punctuation">(</span><span class="token punctuation">{</span><br>      <span class="token literal-property property">dateFormat</span><span class="token operator">:</span> <span class="token string">'dd-mm-yy'</span><span class="token punctuation">,</span><br>    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span></code></pre>
+<p>Now what if we needed to do this more then just once? Let’s change our html to a more unobtrusive way:</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>birthDate<span class="token punctuation">"</span></span> <span class="token attr-name">data-role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>datepicker<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span></code></pre>
+<p>Now just add a new javascript file to your website and include it in our html.</p>
+<pre class="language-js"><code class="language-js"><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">$</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>  <span class="token function">$</span><span class="token punctuation">(</span>document<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ready</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token comment">//datepicker convention</span><br>    <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">':text[data-role="datepicker"]'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">datepicker</span><span class="token punctuation">(</span><span class="token punctuation">{</span><br>      <span class="token literal-property property">dateFormat</span><span class="token operator">:</span> <span class="token string">'dd-mm-yy'</span><span class="token punctuation">,</span><br>    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>jQuery<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>In this file we make sure we alias ‘$’ to jQuery as another plugin we use could have aliased it differently.</p>
+<blockquote>
+<p>If you are worried about performance of the selector used here, you can always use a class in your convention.</p>
+</blockquote>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2014/05/19/hitchhikers-guide-to-sql-server/">Hitchhiker&#39;s guide to Sql Server</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2013/06/04/who-manages-the-transaction/">Who manages the transaction?</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

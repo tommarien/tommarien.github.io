@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Don&#39;t mock yourself | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Don&#39;t mock yourself | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Don&#39;t mock yourself | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Don&#39;t mock yourself | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Don&#39;t mock yourself</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Sat Apr 11 2015 02:00:00 GMT+0200 (Central European Summer Time)">April 11, 2015</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p><img src="/images/0001_scissorglue_billjunk.jpg" alt=""></p>
+<p>We use mocks, stubs or fakes when writing tests, mostly using a mocking framework of choice (<a href="https://github.com/Moq/moq4" target="_blank" rel="noopener">Moq</a>, <a href="http://hibernatingrhinos.com/oss/rhino-mocks" target="_blank" rel="noopener">RhinoMocks</a>, <a href="http://nsubstitute.github.io" target="_blank" rel="noopener">NSubstitute</a>).</p>
+<p>The <strong>reason</strong> why we do this is to isolate our <em>System under test (SUT)</em> from it’s dependencies.</p>
+<p>We want to <strong>avoid repeating</strong> ourselves and test the same logical code block (method, property, class, condition, …) multiple times.</p>
+<h2 id="what%E2%80%99s-wrong-with-it%3F" tabindex="-1">What’s wrong with it?</h2>
+<p>In fact there is nothing wrong with it, apart from a <strong>misunderstanding</strong> of <em>‘System under test’</em>.</p>
+<blockquote>
+<p>Do you really feel that the class you are testing is a system on it’s own?</p>
+</blockquote>
+<p>Unless you are developing a framework, the answer in most cases should be no.</p>
+<h2 id="what-do-we-need-to-make-mocking-possible%3F" tabindex="-1">What do we need to make mocking possible?</h2>
+<p>Most of the mocking frameworks need a way to intercept calls, either by marking the method (or property) as virtual or by introducing an interface.</p>
+<p>As virtual method’s (or properties) tend to be a bit on the annoying side, we just <strong>introduce interfaces everywhere</strong>. Named equally to it’s implementation class, prefixed with ‘I’ as good convention abiding citizens do.</p>
+<p>By doing this we just <strong>ignore the reason of existence</strong> of an interface. An interface should exist if there are more implementations available or you want to open it up for extension!</p>
+<blockquote>
+<p>A good practice before introducing an interface is to find a meaningful name for it without the ‘I’ prefix. If the best you can come up with is the classname itself you might not need it.</p>
+</blockquote>
+<h2 id="does-it-hurt%3F" tabindex="-1">Does it hurt?</h2>
+<p>If abused, it can block you from making changes to the code base. Which is in direct contrast with the reason you added them in the first place.</p>
+<p>It can <strong>‘glue’</strong> your classes together in a way that refactoring parts of the system can only result in changing a lot of tests or even worse, throwing them out of the window. Even if the outcome of the SUT is the same as before.</p>
+<blockquote>
+<p>Tests are supposed to help you, not work against you!</p>
+</blockquote>
+<h2 id="ideal-justifications-for-adapting-a-test%3F" tabindex="-1">Ideal justifications for adapting a test?</h2>
+<h4 id="good" tabindex="-1">Good</h4>
+<ol>
+<li>You made the wrong assumption in the first place</li>
+<li>The requirement changed</li>
+</ol>
+<h4 id="bad" tabindex="-1">Bad</h4>
+<ul>
+<li>Object composition changes</li>
+<li>Refactoring</li>
+</ul>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2015/06/20/how-to-embed-an-image-into-an-epl-label/">How to embed an image into an EPL label</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2014/10/19/zenini-not-just-any-vegetable/">Zenini not just any vegetable</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Showdown: MsTest Vs NUnit | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Showdown: MsTest Vs NUnit | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Showdown: MsTest Vs NUnit | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Showdown: MsTest Vs NUnit | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Showdown: MsTest Vs NUnit</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Mon Apr 16 2012 02:00:00 GMT+0200 (Central European Summer Time)">April 16, 2012</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>More and more <strong>businesses</strong> these days seem to understand the <strong>value</strong> of <strong>unit-tests</strong>. They want a safety net to protect their software investment.</p>
+<p>But do they know that <strong>choosing a test framework</strong> is a choice that sticks for the entire project lifetime? As no one is going to rewrite all the tests for a specific project, just because the testing framework changed. The cost of doing that would be too high. So choosing a testing framework is really important at the startup of a project.</p>
+<p>By the time Team Foundation Server was marketed and integration for MsTest came out of the box, more and more companies thought MsTest is/was the best choice. But is it?</p>
+<p>I’ve been using NUnit for the largest part of my career, but the last two years I’ve been seeing more and more businesses having MsTest as test framework.</p>
+<p>The test framework choice might come up again with the launch of the new TFS version as <strong>test framework openness</strong> is one of the features.</p>
+<p>More and more people i know seem to think that MsTest is equivalent to NUnit or even better. But is it?</p>
+<h3 id="startup" tabindex="-1">Startup</h3>
+<h4 id="mstest" tabindex="-1">MsTest</h4>
+<p>Needs a specific project type, ‘Test Project’, which means you will automatic have the right reference and the correct project type guid.</p>
+<h4 id="nunit" tabindex="-1">NUnit</h4>
+<p>Does not require any specific project type, but most of the time people will add a class library to separate their code from their unittests. You need to reference the nunit.framework.dll yourself. But if you use nuget this will be done for you automatic while installing NUnit.</p>
+<p><strong>Conclusion</strong>: If you go for out of the box experience i would say MsTest wins this section, otherwise i would say a draw between MsTest and NUnit.</p>
+<h3 id="attributing-classes-and-methods" tabindex="-1">Attributing classes and methods</h3>
+<p>Both frameworks separate the apples from the pears trough attributes.</p>
+<h4 id="mstest-1" tabindex="-1">MsTest</h4>
+<ul>
+<li>AssemblyInitialize, AssemblyCleanup are two special attributes that can be used to bootstrap or teardown your test assembly</li>
+<li>TestClass with ClassInitialize -&gt; TestInitialize -&gt; TestMethod -&gt; TestCleanup -&gt; ClassCleanup</li>
+</ul>
+<h4 id="nunit-1" tabindex="-1">NUnit</h4>
+<ul>
+<li>TestFixture with TestFixtureSetup -&gt; Setup -&gt; Test -&gt; TearDown -&gt; TestFixtureTearDown</li>
+</ul>
+<p><strong>Conclusion</strong>: Apart for the missing AssemblyInitialize and Cleanup both frameworks are on par with each other, i must admit MsTest wins this section also, but i would like to point out the fact that having to bootstrap or teardown your test assembly is probably a smell that you are doing something wrong.</p>
+<h3 id="categorize%2C-ignore%2C-%E2%80%A6" tabindex="-1">Categorize, Ignore, …</h3>
+<h4 id="mstest-2" tabindex="-1">MsTest</h4>
+<ul>
+<li>TestCategory</li>
+<li>Ignore</li>
+<li>Timeout</li>
+<li>ExpectedException</li>
+</ul>
+<h4 id="nunit-2" tabindex="-1">NUnit</h4>
+<ul>
+<li>Category</li>
+<li>Ignore</li>
+<li>Timeout</li>
+<li>ExpectedException : Although this attribute has been deprecated and replaced by Assert.Throws it has more options than the MsTest version</li>
+</ul>
+<p><strong>Conclusion</strong>: I think both frameworks are on par with each other if you look at the basic attributes, but NUnit still has some gems, like Explicit, which will make the test run only when explicitly told so, but there are many more like SetCulture and SetUiCulture. In terms of language completeness i think NUnit wins this section.</p>
+<h3 id="assert" tabindex="-1">Assert</h3>
+<h4 id="mstest-3" tabindex="-1">MsTest</h4>
+<ul>
+<li>Assert, StringAssert and CollectionAssert</li>
+</ul>
+<h4 id="nunit-3" tabindex="-1">NUnit</h4>
+<ul>
+<li>Assert, StringAssert and CollectionAssert, Exception Asserts ( Assert.Throws, Assert.Catch etc), File Asserts, Directory Asserts</li>
+</ul>
+<p><strong>Conclusion</strong>: Again the basics are present in both frameworks but the language richness of NUnit makes it to win this section.</p>
+<h3 id="extensibility" tabindex="-1">Extensibility</h3>
+<p>Clearly NUnit wins this section see &lt;a href=“<a href="http://www.nunit.org/index.php?p=extensibility&amp;r=2.5.10" target="_blank" rel="noopener">http://www.nunit.org/index.php?p=extensibility&amp;r=2.5.10</a>”&gt;<a href="http://www.nunit.org/index.php?p=extensibility&amp;r=2.5.10" target="_blank" rel="noopener">http://www.nunit.org/index.php?p=extensibility&amp;r=2.5.10</a>&lt;/a&gt;</p>
+<h3 id="data-driven-tests" tabindex="-1">Data driven tests</h3>
+<h4 id="mstest-4" tabindex="-1">MsTest</h4>
+<ul>
+<li>Takes a file based approach with DataSource to provide testing values, which is nice but you will always have to need to add csv, excel or xml data file</li>
+</ul>
+<h4 id="nunit-4" tabindex="-1">NUnit</h4>
+<ul>
+<li>Does not have a build in support for filebased datasources but it does have many attributes that can be used to provide values in your test code directly like TestCase and TestCaseSource</li>
+</ul>
+<p><strong>Conclusion</strong>: This section depends on personal preference. For me i prefer the easy way of NUnit because i see no real point in using a file based approach</p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2012/04/21/castle-windsor-avoid-memory-leaks-by-learning-the-underlying-mechanics/">Castle Windsor: Avoid memory leaks by learning the underlying mechanics</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2012/04/12/take-control-of-your-configuration/">Take control of your configuration</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

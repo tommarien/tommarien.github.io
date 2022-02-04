@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Castle Windsor: Avoiding runtime errors due to misconfigured components | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Castle Windsor: Avoiding runtime errors due to misconfigured components | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Castle Windsor: Avoiding runtime errors due to misconfigured components | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Castle Windsor: Avoiding runtime errors due to misconfigured components | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Castle Windsor: Avoiding runtime errors due to misconfigured components</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a><a class="tag castle-windsor" href="/tag/castle-windsor">castle-windsor</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Fri Apr 26 2013 02:00:00 GMT+0200 (Central European Summer Time)">April 26, 2013</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>Components that have missing dependencies can lead to pesky runtime exceptions:</p>
+<blockquote>
+<p><strong>HandlerException was unhandled</strong></p>
+<p>Can’t create component ‘ConsoleApplication1.ComponentA’ as it has dependencies to be satisfied.
+‘ConsoleApplication1.ComponentA’ is waiting for the following dependencies:</p>
+<ul>
+<li>Service ‘ConsoleApplication1.IDependency’ which was not registered.</li>
+</ul>
+</blockquote>
+<p>In debug mode the container helps you discovering your issue while hovering over your container instance it will show you all the information you need under <strong>Potentially misconfigured items</strong>.</p>
+<p>Let’s try to improve this, first we need to make our component registrations reusable:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Boot</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token return-type class-name">IWindsorContainer</span> <span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    container<span class="token punctuation">.</span><span class="token function">Install</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">SomeInstaller</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">return</span> container<span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>We can use this class for instance in our global.asax to instantiate our container. Now lets write a test that verifies that everything is well configured</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WindsorRegistrationFixture</span><br><span class="token punctuation">{</span><br>  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">Test</span></span><span class="token punctuation">]</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">ShouldNotHaveAnyMisconfiguredComponents</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    <span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> Boot<span class="token punctuation">.</span><span class="token function">Container</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token class-name"><span class="token keyword">var</span></span> diagnostic <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">PotentiallyMisconfiguredComponentsDiagnostic</span><span class="token punctuation">(</span>container<span class="token punctuation">.</span>Kernel<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token class-name">IHandler<span class="token punctuation">[</span><span class="token punctuation">]</span></span> handlers <span class="token operator">=</span> diagnostic<span class="token punctuation">.</span><span class="token function">Inspect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token keyword">if</span> <span class="token punctuation">(</span>handlers <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">&amp;&amp;</span> handlers<span class="token punctuation">.</span><span class="token function">Any</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token class-name"><span class="token keyword">var</span></span> builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      builder<span class="token punctuation">.</span><span class="token function">AppendFormat</span><span class="token punctuation">(</span><span class="token string">"Misconfigured components ({0})\r\n"</span><span class="token punctuation">,</span> handlers<span class="token punctuation">.</span><span class="token function">Count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token class-name">IHandler</span> handler <span class="token keyword">in</span> handlers<span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>        <span class="token class-name"><span class="token keyword">var</span></span> info <span class="token operator">=</span> <span class="token punctuation">(</span>IExposeDependencyInfo<span class="token punctuation">)</span> handler<span class="token punctuation">;</span><br>        <span class="token class-name"><span class="token keyword">var</span></span> inspector <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">DependencyInspector</span><span class="token punctuation">(</span>builder<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        info<span class="token punctuation">.</span><span class="token function">ObtainDependencyDetails</span><span class="token punctuation">(</span>inspector<span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>      Assert<span class="token punctuation">.</span><span class="token function">Fail</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Which will output this :</p>
+<blockquote>
+<p>Misconfigured components (1)
+‘ConsoleApplication1.ComponentA’ is waiting for the following dependencies:</p>
+</blockquote>
+<ul>
+<li>Service <code>ConsoleApplication1.IDependency</code> which was not registered.</li>
+</ul>
+<p>So now every time this test runs (either locally or on your CI build), you know that if this test was green, you will not get any Runtime exceptions caused by misconfigured components.</p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2013/04/28/xp-teams-tips-and-pitfalls/">XP Teams: Tips and pitfalls</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2012/10/18/welcome-to-the-agilean-era/">Welcome to the Agilean Era</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

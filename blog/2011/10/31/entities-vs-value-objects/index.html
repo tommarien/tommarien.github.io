@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Entities vs Value objects | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Entities vs Value objects | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Entities vs Value objects | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Entities vs Value objects | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Entities vs Value objects</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Mon Oct 31 2011 01:00:00 GMT+0100 (Central European Standard Time)">October 31, 2011</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>I know this is a very popular topic in “Domain Driven Design” forums, but still most of the definitions still remain vague. As these are the two corner stones of a domain model, i thought they deserved some attention.</p>
+<h3 id="entities" tabindex="-1">Entities</h3>
+<blockquote>
+<p>Many objects are not fundamentally defined by their attributes, but rather by a thread of continuity and identity. [Eric Evans]</p>
+</blockquote>
+<p>I’ll try to make this one a little more clear by giving an example:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Person</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token function">Person</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">int</span></span> Id <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Name <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>So the question we are answering is the following:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token class-name">Person</span> billy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>Name <span class="token operator">=</span> <span class="token string">"Billy"</span><span class="token punctuation">}</span><span class="token punctuation">;</span><br><span class="token class-name">Person</span> billy2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">Person</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> Name <span class="token operator">=</span> <span class="token string">"Billy"</span><span class="token punctuation">}</span><span class="token punctuation">;</span><br><span class="token class-name"><span class="token keyword">var</span></span> equal <span class="token operator">=</span> billy <span class="token operator">==</span> billy2<span class="token punctuation">;</span></code></pre>
+<p>So suppose the first “billy” came from Belgium and the second one came from England. Would they be the same billy?</p>
+<p>So an entity is not defined by the value of its properties, they are defined by their reference (most ORM’s cover this) or in database terms both entities would be the same if they share the same identity value (albeit int, guid, long, string, …).</p>
+<blockquote>
+<p>Be careful with this, because it’s not because an object has an identity value, that makes it an entity, if the identity is only there for persistence reasons it’s not entity.</p>
+</blockquote>
+<p>Model your entities accordingly, overriding <code>equals</code> and <code>getHashCode</code> to take the identity value into account. For an example of this see <a href="https://github.com/sharparchitecture/Sharp-Architecture/blob/master/Solutions/SharpArch.Domain/DomainModel/EntityWithTypedId.cs" title="EntityWithTypedId" target="_blank" rel="noopener">Sharp-Architecture</a>.</p>
+<h3 id="value-objects" tabindex="-1">Value objects</h3>
+<blockquote>
+<p>Many objects have no conceptual identity.  These objects describe characteristics of a thing. [Eric Evans]
+Consider following object</p>
+</blockquote>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FullName</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Firstname <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">string</span></span> Lastname <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>So if we have two full name instances, they would be considered equal if they have the same values for both first and last name. Value objects are more groupings of related properties. In persistence terminology, their values would be saved in fields of the Person table. As they are just characteristics of a person.</p>
+<p>Define your value objects as immutable objects (values settable with constructor only) with again a overriden equals and gethashcode method, which take into account the property values and the type. To change the value of an address, one must create a new address object. <a href="/blog/2011/10/30/micro-classes-as-building-blocks" target="_blank" rel="noopener">Micro-classes</a> are essentially value objects.</p>
+<h3 id="conclusion" tabindex="-1">Conclusion</h3>
+<h4 id="by-looking-at-the-above-definitions-we-can-conclude-that-order-is-an-entity%2C-but-what-is-an-orderline-object%3F" tabindex="-1">By looking at the above definitions we can conclude that <strong>Order</strong> is an entity, but what is an <strong>Orderline</strong> object?</h4>
+<p><em>It is an entity because if one user adds an orderline (for instance 2 times product x) and another user adds the same orderline (two times product x), the order would end up with two orderlines of two times product x each. If it was a value object the order would end up with one orderline (two times product x).</em></p>
+<h4 id="what-if-we-want-to-store-address-in-an-address-table%2C-we-need-to-add-an-identity-value-to-the-object%2C-would-it-make-address-an-entity%3F" tabindex="-1">What if we want to store <em>address</em> in an Address table, we need to add an identity value to the object, would it make address an entity?</h4>
+<p><em>No it doesn’t, because if we want to use the same address for those customer entities we still need a different instance (albeit with the same values except the id) or clone of address.  Otherwise when we change the address values of one the customers, the other one would move also. The identity of the Address value object is only used to keep our database happy</em></p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2011/11/05/datetime-now-the-test-driven-paradox/">DateTime.Now, the test-driven paradox</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2011/10/30/micro-classes-as-building-blocks/">Micro-classes as building blocks</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

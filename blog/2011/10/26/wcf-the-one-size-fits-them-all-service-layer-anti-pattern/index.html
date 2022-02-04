@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="WCF, the one size fits them all Service Layer anti-pattern | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="WCF, the one size fits them all Service Layer anti-pattern | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="WCF, the one size fits them all Service Layer anti-pattern | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>WCF, the one size fits them all Service Layer anti-pattern | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>WCF, the one size fits them all Service Layer anti-pattern</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Wed Oct 26 2011 02:00:00 GMT+0200 (Central European Summer Time)">October 26, 2011</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>When you talk with fellow developers and you mention <strong>Service Layer</strong> people automatically hear <strong>WCF Services</strong>. Did i miss a book or some guidance document from Microsoft, stating that WCF stands for service layer?</p>
+<p>For those who have been around for a while, back in the dark ages of .NET (pre WCF Era) there where amongst others the following communication options:</p>
+<ul>
+<li>Web services (XML)</li>
+<li>.NET Remoting (XML or Binary)</li>
+<li>Communication using the Socket/SocketPool classes</li>
+</ul>
+<p>Each with their specific configuration, setup and usage.</p>
+<p>With the release of .Net Framework 3.0/3.5, Microsoft created (or bought) a way to unify all of those options into 1 product that makes it easy, well almost easy, to switch from one option to another. And they named it Windows Communication Foundation.</p>
+<h2 id="what-is-a-service-layer-and-when-should-we-implement-one%3F" tabindex="-1">What is a Service Layer and when should we implement one?</h2>
+<blockquote>
+<p>A Service Layer defines an application’s boundary and its set of available operations from the perspective of interfacing client layers. It encapsulates the application’s business logic, controlling transactions and coordinating responses in the implementation of its operations. <a href="http://martinfowler.com/eaaCatalog/serviceLayer.html" target="_blank" rel="noopener">[Martin Fowler]</a></p>
+</blockquote>
+<p>You typically introduce a Service Layer when you have complex use cases, which possibly will be reused by different UI’s, like for instance between a <a href="http://ASP.NET" target="_blank" rel="noopener">ASP.NET</a> MVC application, a Windows Service or a Console application and you want to avoid code duplication.  Or you want to separate your use cases from your UI Flow for better testability.</p>
+<h2 id="how-should-we-use-wcf%3F" tabindex="-1">How should we use WCF?</h2>
+<p>It should be an abstraction layer, you simplify the underlying relational/domain complexity into understandable ServiceContracts with their respective model (data contracts).</p>
+<p>And if we do need WCF, it’s because we really need it <a href="https://en.wikipedia.org/wiki/You_aren't_gonna_need_it" title="You aren't gonna need it" target="_blank" rel="noopener">YAGNI</a>:</p>
+<ul>
+<li>We have a need for distributed computing</li>
+<li>We need to be able to communicate across the web or across the enterprise</li>
+<li>…</li>
+</ul>
+<p>And yes, using WCF, introduces complexity but you really needed it.</p>
+<h3 id="how-are-we-using-it%3F" tabindex="-1">How are we using it?</h3>
+<p>Most of us are using it as a gateway into our data retrieval and crud methods, sending entire domainobject-graphs (anemic) with all their complexity over the wire.<br>
+About 90% of the time, these objects are serialized to SOAP.<br>
+Just so we can use these WCF services, hosted on a IIS Server in our web application, hosted on the same IIS server.</p>
+<h3 id="reason-why-we-keep-on-doing-this%3A" tabindex="-1">Reason why we keep on doing this:</h3>
+<p>About 70% of the time the answer is: It’s so easy when we need to make our WCF publicly available. (other possible answer is Simply because we can)</p>
+<p>Please consider following scenario and hopefully you will rethink your answer:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span><br><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Product</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token function">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataMember</span></span><span class="token punctuation">]</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Which off course is nicely used in following WCF Service:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span><br><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IProductService</span><br><span class="token punctuation">{</span><br>  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OperationContract</span></span><span class="token punctuation">]</span><br>  <span class="token return-type class-name">Product</span> <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<p>Conversation:</p>
+<ul>
+<li><em>Armand (Architect):</em> John, Lisa has made a screw up in code, you need to rename the property Prise to Price in our product model.</li>
+<li><em>John ( Senior Developer):</em> Can’t do Armand!</li>
+<li><em>Armand (Architect):</em> Why not, John?</li>
+<li><em>John (Senior Developer) :</em> [Hesitates] Well … erm … because we have to call all of our customers and tell them we have a breaking API change.</li>
+</ul>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2011/10/30/micro-classes-as-building-blocks/">Micro-classes as building blocks</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2011/10/22/what-is-the-point-of-the-region-preprocessor-directive/">What Is the Point of the #region Preprocessor Directive?</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

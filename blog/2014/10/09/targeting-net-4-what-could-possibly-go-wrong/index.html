@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Targeting .NET 4.0, what could possibly go wrong? | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Targeting .NET 4.0, what could possibly go wrong? | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Targeting .NET 4.0, what could possibly go wrong? | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Targeting .NET 4.0, what could possibly go wrong? | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Targeting .NET 4.0, what could possibly go wrong?</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Thu Oct 09 2014 02:00:00 GMT+0200 (Central European Summer Time)">October 9, 2014</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>While .NET framework is a highly compatible, in-place update to the Microsoft .NET Framework 4, there are some rough edges that you need to be aware of.</p>
+<p>We needed to target .NET 4.0 for a brand new application at a client. We had everything perfectly worked out, continuous integration build set up from day 1. Next day, a release build with an <a href="http://www.jrsoftware.org/isinfo.php" target="_blank" rel="noopener">Inno Setup</a> installer.</p>
+<p>Later on, when our PO asked us for some screen shots, we showed him the release build on <a href="http://www.jetbrains.com/teamcity/" target="_blank" rel="noopener">TeamCity</a>, where he could just download the artifact and install the application.</p>
+<p>He did what we asked him to do, he clicked next-next-finish on the installer and the application was supposed to open for the very first time on his machine, instead he got the following issue:</p>
+<blockquote>
+<p>Could not load type ‘System.Runtime.CompilerServices.ExtensionAttribute’ from assembly ‘mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089’.</p>
+</blockquote>
+<p>At first a bit puzzled by the problem, the google-reflex took over and we started our investigation. Which quickly lead to a very helpfull article on <a href="http://stackoverflow.com/questions/13748055/could-not-load-type-system-runtime-compilerservices-extensionattribute-from-as" target="_blank" rel="noopener">StackOverflow</a> and a deep dive <a href="http://www.hurryupandwait.io/blog/what-you-should-know-about-running-ilmerge-on-net-4-5-assemblies-targeting-net-4-0" target="_blank" rel="noopener">blog post</a> of Matt Wrock about il-merging.</p>
+<p>Apparantly in .NET 4.5, Microsoft decided it was time to move/refactor a couple attributes from System.Core assembly to mscorlib. The types still exist in System.Core but with a <a href="http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.typeforwardedtoattribute.aspx" target="_blank" rel="noopener">TypeForwardedToAttribute</a> to their new home in mscorlib.</p>
+<p>I wanted to know how this was possible and how we could have missed it.</p>
+<p>Looking at the CI build, a build warning indicated the issue:</p>
+<blockquote>
+<p>warning MSB3644: The reference assemblies for framework “.NETFramework,Version=v4.0” were not found. To resolve this, install the SDK or Targeting Pack for this framework version or re-target your application to a version of the framework for which you have the SDK or Targeting Pack installed. Note that assemblies will be resolved from the Global Assembly Cache (GAC) and will be used in place of reference assemblies. Therefore your assembly may not be correctly targeted for the framework you intend.</p>
+</blockquote>
+<p><strong>Resolution</strong>: Either install .NET SDK (windows 7 sdk) or make sure your build server has the reference assemblies for .NET 4, which are located in:</p>
+<blockquote>
+<p>“\Program Files (x86)\Reference Assemblies\Microsoft\Framework.NETFramework\v4.0”.</p>
+</blockquote>
+<p>To verify you can quickly open the assembly with ildasm and look at it’s manifest:</p>
+<h6 id="missing-reference-assemblies" tabindex="-1">Missing reference assemblies</h6>
+<pre><code>  .custom instance void [mscorlib]System.Runtime.CompilerServices.ExtensionAttribute::.ctor() = ( 01 00 00 00 )
+</code></pre>
+<h6 id="correct-reference-assemblies" tabindex="-1">Correct reference assemblies</h6>
+<pre><code>  .custom instance void [System.Core]System.Runtime.CompilerServices.ExtensionAttribute::.ctor() = ( 01 00 00 00 )
+</code></pre>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2014/10/19/zenini-not-just-any-vegetable/">Zenini not just any vegetable</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2014/08/27/using-git-as-subversion-client/">Using git as subversion client</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

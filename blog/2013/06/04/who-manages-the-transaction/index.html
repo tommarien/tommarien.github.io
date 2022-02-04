@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Who manages the transaction? | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Who manages the transaction? | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Who manages the transaction? | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Who manages the transaction? | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Who manages the transaction?</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a><a class="tag castle-windsor" href="/tag/castle-windsor">castle-windsor</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Tue Jun 04 2013 02:00:00 GMT+0200 (Central European Summer Time)">June 4, 2013</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>In my last <a href="/blog/2013/05/24/use-your-container-to-manage-session-lifetime" target="_blank" rel="noopener">post</a> we talked about letting our container manage our ISession lifetime. Immediately after publishing this post, i’ve got a lot of reactions considering the management of transactions, more specifically about issuing a rollback when an exception has been thrown.</p>
+<p>A simplistic approach would be to do this in every commandhandler:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MoveCustomerCommandHandler</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">ICommandHandler<span class="token punctuation">&lt;</span>MoveCustomerCommand<span class="token punctuation">></span></span></span><br><span class="token punctuation">{</span><br>  <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">ISession</span> session<span class="token punctuation">;</span><br><br>  <span class="token keyword">public</span> <span class="token function">MoveCustomerCommandHandler</span><span class="token punctuation">(</span><span class="token class-name">ISession</span> session<span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">this</span><span class="token punctuation">.</span>session <span class="token operator">=</span> session<span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Handle</span><span class="token punctuation">(</span><span class="token class-name">MoveCustomerCommand</span> command<span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> transaction <span class="token operator">=</span> session<span class="token punctuation">.</span><span class="token function">BeginTransaction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token comment">// Handling code ...</span><br>      transaction<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>But this approach seems rather <strong>cumbersome</strong> and <strong>not very flexible</strong>. What if we could automate this repeated code pattern more or less like what behaviors are doing in a WCF context ? We need some sort of AOP approach.</p>
+<h2 id="meet-autotx-interceptor" tabindex="-1">Meet AutoTx interceptor</h2>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">System</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>DynamicProxy</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token namespace">NHibernate</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token class-name">IInterceptor</span> <span class="token operator">=</span> <span class="token class-name">Castle<span class="token punctuation">.</span>DynamicProxy<span class="token punctuation">.</span>IInterceptor</span><span class="token punctuation">;</span><br><br><span class="token keyword">namespace</span> <span class="token namespace">Nebula<span class="token punctuation">.</span>Bootstrapper<span class="token punctuation">.</span>Interceptors</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AutoTxInterceptor</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IInterceptor</span></span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name">Lazy<span class="token punctuation">&lt;</span>ISession<span class="token punctuation">></span></span> session<span class="token punctuation">;</span><br><br>    <span class="token keyword">public</span> <span class="token function">AutoTxInterceptor</span><span class="token punctuation">(</span><span class="token class-name">Lazy<span class="token punctuation">&lt;</span>ISession<span class="token punctuation">></span></span> session<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">this</span><span class="token punctuation">.</span>session <span class="token operator">=</span> session<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">private</span> <span class="token return-type class-name">IInvocation</span> Owner <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br><br>    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Intercept</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token function">BeginTransactionIfNeeded</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>      <span class="token keyword">try</span><br>      <span class="token punctuation">{</span><br>        invocation<span class="token punctuation">.</span><span class="token function">Proceed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token function">CommitTransactionIfNeeded</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>      <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>        <span class="token function">RollBackTransactionIfNeeded</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">;</span><br>        <span class="token keyword">throw</span><span class="token punctuation">;</span><br>      <span class="token punctuation">}</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">bool</span></span> <span class="token function">IsTransactionOwner</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">return</span> <span class="token punctuation">(</span>Owner <span class="token operator">==</span> invocation<span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">BeginTransactionIfNeeded</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span>session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span>Transaction<span class="token punctuation">.</span>IsActive<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span><br>      session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span><span class="token function">BeginTransaction</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      Owner <span class="token operator">=</span> invocation<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">CommitTransactionIfNeeded</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">IsTransactionOwner</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span><br>      session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span>Transaction<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      Owner <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><br>    <span class="token keyword">private</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">RollBackTransactionIfNeeded</span><span class="token punctuation">(</span><span class="token class-name">IInvocation</span> invocation<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">IsTransactionOwner</span><span class="token punctuation">(</span>invocation<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span><br>      session<span class="token punctuation">.</span>Value<span class="token punctuation">.</span>Transaction<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>      Owner <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>Basically this code takes the entire transaction idiom from our hands, it starts a transaction if not already started and if the interceptor started the transaction it will commit/rollback (depending on exceptions thrown) the transaction.</p>
+<h2 id="the-registration" tabindex="-1">The registration</h2>
+<p>Nothing really special going on, just not forget to <a href="/blog/2012/05/01/castle-windsor-facilities-and-specialized-resolving" title="Castle Windsor: Facilities and specialized resolving" target="_blank" rel="noopener">opt-in for Lazy</a> resolving and register the interceptor as transient, so that it’s lifetime gets bound to whom it is intercepting.</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br><br><span class="token comment">// opt-in for Lazy</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>ILazyComponentLoader<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                            <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>LazyOfTComponentLoader<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Necessary session registration</span><br><span class="token comment">// ...</span><br><br><span class="token comment">// Bind lifestyle of to whom it is intercepting</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>AutoTxInterceptor<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                            <span class="token punctuation">.</span><span class="token function">LifestyleTransient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// register all commandhandlers</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Classes<span class="token punctuation">.</span><span class="token function">FromAssemblyContaining</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">NHibernateConfigurationBuilder</span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>                          <span class="token punctuation">.</span><span class="token function">BasedOn</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">ICommandHandler<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>                          <span class="token punctuation">.</span>WithService<span class="token punctuation">.</span><span class="token function">Base</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                          <span class="token punctuation">.</span><span class="token function">Configure</span><span class="token punctuation">(</span>c <span class="token operator">=></span> <span class="token punctuation">{</span> c<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">Interceptors</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>AutoTxInterceptor<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><br>                          <span class="token punctuation">.</span><span class="token function">LifestyleTransient</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2014/03/17/javascript-by-convention/">Javascript by convention</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2013/05/24/use-your-container-to-manage-session-lifetime/">Use your container to manage Session lifetime</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

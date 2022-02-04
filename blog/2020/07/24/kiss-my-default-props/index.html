@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Kiss my default props | Hooked.io">
+    <meta itemprop="description" content="So what if you want to type defaultProps in TS?">
+
+    
+    <meta name="twitter:title" content="Kiss my default props | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="So what if you want to type defaultProps in TS?">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Kiss my default props | Hooked.io">
+    <meta name="og:description" content="So what if you want to type defaultProps in TS?">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Kiss my default props | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Kiss my default props</h2>
+
+        
+            <p class="excerpt">So what if you want to type defaultProps in TS?</p>
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag typescript" href="/tag/typescript">typescript</a><a class="tag react" href="/tag/react">react</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Fri Jul 24 2020 02:00:00 GMT+0200 (Central European Summer Time)">July 24, 2020</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>We’ll use the <a href="https://getbootstrap.com/docs/4.0/components/badge/" target="_blank" rel="noopener">Bootstrap Badge</a> component as an example. According to the <a href="https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/default_props" target="_blank" rel="noopener">Typescript React cheatsheet</a>, when we use Typescript &gt; 3.0, we have to use type inference:</p>
+<pre class="language-tsx"><code class="language-tsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> ReactNode <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span><br><span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span><br><span class="token keyword">import</span> <span class="token punctuation">{</span> Variant <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./Bootstrap'</span><span class="token punctuation">;</span><br><br><span class="token keyword">const</span> defaultProps <span class="token operator">=</span> <span class="token punctuation">{</span><br>  pill<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span><br><br><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span><br>  children<span class="token operator">:</span> ReactNode<span class="token punctuation">;</span><br>  variant<span class="token operator">:</span> Variant<span class="token punctuation">;</span><br><span class="token punctuation">}</span> <span class="token operator">&amp;</span> <span class="token keyword">typeof</span> defaultProps<span class="token punctuation">;</span><br><br><span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'badge'</span><span class="token punctuation">;</span><br><br><span class="token keyword">function</span> <span class="token function">Badge</span><span class="token punctuation">(</span><span class="token punctuation">{</span> children<span class="token punctuation">,</span> variant<span class="token punctuation">,</span> pill <span class="token punctuation">}</span><span class="token operator">:</span> BadgeProps<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span>Element <span class="token punctuation">{</span><br>  <span class="token keyword">return</span> <span class="token punctuation">(</span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><br>      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span><br>        <span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-pill</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span><span class="token operator">:</span> pill<span class="token punctuation">,</span><br>      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><br>    <span class="token punctuation">></span></span><span class="token plain-text"><br>      </span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token plain-text"><br>    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><br>  <span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br>Badge<span class="token punctuation">.</span>defaultProps <span class="token operator">=</span> defaultProps<span class="token punctuation">;</span><br><br><span class="token keyword">export</span> <span class="token keyword">default</span> Badge<span class="token punctuation">;</span></code></pre>
+<p>But imho, this looses the clear distinction between your component’s required and optional props! I would rather have the following BadgeProps type:</p>
+<pre class="language-ts"><code class="language-ts"><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span><br>  children<span class="token operator">:</span> ReactNode<span class="token punctuation">;</span><br>  variant<span class="token operator">:</span> Variant<span class="token punctuation">;</span><br>  pill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
+<h4 id="an-alternative-approach" tabindex="-1">An alternative approach</h4>
+<p>What if we would just use object default values?</p>
+<pre class="language-tsx"><code class="language-tsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> ReactNode <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span><br><span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span><span class="token punctuation">;</span><br><span class="token keyword">import</span> <span class="token punctuation">{</span> Variant <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./Bootstrap'</span><span class="token punctuation">;</span><br><br><span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">BadgeProps</span> <span class="token operator">=</span> <span class="token punctuation">{</span><br>  children<span class="token operator">:</span> ReactNode<span class="token punctuation">;</span><br>  variant<span class="token operator">:</span> Variant<span class="token punctuation">;</span><br>  pill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span><br><br><span class="token keyword">const</span> <span class="token constant">BS_ROOT</span> <span class="token operator">=</span> <span class="token string">'badge'</span><span class="token punctuation">;</span><br><br><span class="token keyword">function</span> <span class="token function">Badge</span><span class="token punctuation">(</span><span class="token punctuation">{</span> children<span class="token punctuation">,</span> variant<span class="token punctuation">,</span> pill <span class="token operator">=</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token operator">:</span> BadgeProps<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">JSX</span><span class="token punctuation">.</span>Element <span class="token punctuation">{</span><br>  <span class="token keyword">return</span> <span class="token punctuation">(</span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><br>      <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span><span class="token constant">BS_ROOT</span><span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>variant<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span> <span class="token punctuation">{</span><br>        <span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">BS_ROOT</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">-pill</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span><span class="token operator">:</span> pill<span class="token punctuation">,</span><br>      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><br>    <span class="token punctuation">></span></span><span class="token plain-text"><br>      </span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token plain-text"><br>    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><br>  <span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token keyword">export</span> <span class="token keyword">default</span> Badge<span class="token punctuation">;</span></code></pre>
+<p>See easier and simpler (<a href="https://en.wikipedia.org/wiki/KISS_principle" target="_blank" rel="noopener">KISS</a>) and not only that according to a <a href="https://twitter.com/dan_abramov/status/1133878326358171650" target="_blank" rel="noopener">tweet</a> of Dan Abramov, defaultProps will be eventually deprecated for functional components.</p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2020/05/15/push-me/">Push me</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

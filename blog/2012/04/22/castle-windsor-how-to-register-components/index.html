@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Castle Windsor: How to register components | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Castle Windsor: How to register components | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Castle Windsor: How to register components | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Castle Windsor: How to register components | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Castle Windsor: How to register components</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag csharp" href="/tag/csharp">csharp</a><a class="tag castle-windsor" href="/tag/castle-windsor">castle-windsor</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Sun Apr 22 2012 02:00:00 GMT+0200 (Central European Summer Time)">April 22, 2012</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>You can register your components in the following ways:</p>
+<ul>
+<li><a href="https://github.com/castleproject/Windsor/blob/master/docs/registering-components-one-by-one.md" target="_blank" rel="noopener">Registering components one-by-one</a></li>
+<li><a href="https://github.com/castleproject/Windsor/blob/master/docs/registering-components-by-conventions.md" target="_blank" rel="noopener">Registering components by conventions</a></li>
+<li><a href="https://github.com/castleproject/Windsor/blob/master/docs/xml-registration-reference.md" target="_blank" rel="noopener">Registering components using Xml configuration, which can be combined with the code options</a></li>
+</ul>
+<h2 id="registering-components-one-by-one" tabindex="-1">Registering components one-by-one</h2>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register your component with the desired lifestyle</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IComponent<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Component<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">LifestylePerThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="what-about-open-generic-types%3F" tabindex="-1">What about open generic types?</h3>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register your component for instance with the default lifestyle = Singleton</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token function">For</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">IRepository<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">ImplementedBy</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">Repository<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="how-to-replace-an-allready-registered-component%3F" tabindex="-1">How to replace an allready registered component?</h3>
+<p>In Windsor you can simple register it again, the last registered component will be the one used</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register your component for instance with a lifestyle</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token function">For</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">IRepository<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">ImplementedBy</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> <span class="token punctuation">(</span><span class="token type-expression class-name">Repository<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register a specialized CustomerRepository</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IRepository<span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span><span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>CustomerRepository<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="how-to-make-one-class-resolvable-by-two-interface-but-have-them-share-the-same-instance%3F" tabindex="-1">How to make one class resolvable by two interface but have them share the same instance?</h3>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register your component</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span><span class="token generic-method"><span class="token function">For</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>IRepository<span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span><span class="token punctuation">,</span> ICustomerRepository<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>CustomerRepository<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="how-can-i-use-the-decorator-pattern%3F" tabindex="-1">How can i use the decorator pattern?</h3>
+<p>First let’s create a logging decorator</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LoggingCustomerRepository</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IRepository<span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span></span></span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name">ILogger</span> Logger <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">;</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name">IRepository<span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span></span> Repository <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">private</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br><br>  <span class="token keyword">public</span> <span class="token function">LoggingCustomerRepository</span><span class="token punctuation">(</span><span class="token class-name">IRepository<span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span></span> repository<span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">this</span><span class="token punctuation">.</span>Repository <span class="token operator">=</span> repository<span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token keyword">public</span> <span class="token return-type class-name">Customer</span> <span class="token keyword">this</span><span class="token punctuation">[</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">]</span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">get</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> Repository<span class="token punctuation">[</span>id<span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Add</span><span class="token punctuation">(</span><span class="token class-name">Customer</span> instance<span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>    logger<span class="token punctuation">.</span><span class="token function">Debug</span><span class="token punctuation">(</span><span class="token string">"Adding customer"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    Repository<span class="token punctuation">.</span><span class="token function">Add</span><span class="token punctuation">(</span>instance<span class="token punctuation">)</span><span class="token punctuation">;</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>With Castle Windsor the order of the registrations enables this behavior, so the first implementation will be injected into the decorator.</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register the default implementation</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span>For<span class="token operator">&lt;</span><span class="token generic-method"><span class="token function">IRepository</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>CustomerRepository<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Now register the decorator</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Component<span class="token punctuation">.</span>For<span class="token operator">&lt;</span><span class="token generic-method"><span class="token function">IRepository</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>Customer<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token generic-method"><span class="token function">ImplementedBy</span><span class="token generic class-name"><span class="token punctuation">&lt;</span>LoggingCustomerRepository<span class="token punctuation">></span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">LifestylePerWebRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h2 id="registering-components-by-conventions" tabindex="-1">Registering components by conventions</h2>
+<p>To do exactly the same but with conventions syntax</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Register all non abstract class inheriting from IRepository with all interfaces</span><br><span class="token comment">// as service, so resolvable by all interfaces</span><br>container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Classes<span class="token punctuation">.</span><span class="token function">FromThisAssembly</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">BasedOn</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span><span class="token type-expression class-name">IRepository<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>                       <span class="token punctuation">.</span><span class="token function">WithServiceAllInterfaces</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p><strong>WithServiceAllInterfaces</strong>: Means windsor will register the component bound to all it’s interfaces, so if for instance your CustomerRepository implements IRepository&lt;Customer&gt; but also ICustomerRepository, when you resolve an instance, it will be shared across both contracts for the specified lifetime ( transient means no sharing )</p>
+<h2 id="using-installers" tabindex="-1">Using installers</h2>
+<p>Installers provide you a way to group related registrations into one class, to create an installer simply create a class and implement IWindsorInstaller, like this:</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel<span class="token punctuation">.</span>Registration</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>MicroKernel<span class="token punctuation">.</span>SubSystems<span class="token punctuation">.</span>Configuration</span><span class="token punctuation">;</span><br><span class="token keyword">using</span> <span class="token namespace">Castle<span class="token punctuation">.</span>Windsor</span><span class="token punctuation">;</span><br><br><span class="token keyword">namespace</span> <span class="token namespace">Windsor<span class="token punctuation">.</span>Tests<span class="token punctuation">.</span>Generics</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RepositoryInstaller</span> <span class="token punctuation">:</span> <span class="token type-list"><span class="token class-name">IWindsorInstaller</span></span><br>  <span class="token punctuation">{</span><br>    <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">Install</span><span class="token punctuation">(</span><span class="token class-name">IWindsorContainer</span> container<span class="token punctuation">,</span> <span class="token class-name">IConfigurationStore</span> store<span class="token punctuation">)</span><br>    <span class="token punctuation">{</span><br>      container<span class="token punctuation">.</span><span class="token function">Register</span><span class="token punctuation">(</span>Classes<span class="token punctuation">.</span><span class="token function">FromThisAssembly</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>                            <span class="token punctuation">.</span><span class="token function">BasedOn</span><span class="token punctuation">(</span><span class="token keyword">typeof</span><span class="token punctuation">(</span><span class="token type-expression class-name">IRepository<span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">)</span><span class="token punctuation">)</span><br>                            <span class="token punctuation">.</span><span class="token function">WithServiceAllInterfaces</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br>  <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<p>To use this installer simple install it on your container instance</p>
+<pre class="language-csharp"><code class="language-csharp"><span class="token comment">// Initialize the container</span><br><span class="token class-name"><span class="token keyword">var</span></span> container <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">WindsorContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// Install the installer(s)</span><br>container<span class="token punctuation">.</span><span class="token function">Install</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">RepositoryInstaller</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2012/05/01/castle-windsor-facilities-and-specialized-resolving/">Castle Windsor: Facilities and specialized resolving</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2012/04/21/castle-windsor-avoid-memory-leaks-by-learning-the-underlying-mechanics/">Castle Windsor: Avoid memory leaks by learning the underlying mechanics</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Hitchhiker&#39;s guide to Sql Server | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Hitchhiker&#39;s guide to Sql Server | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Hitchhiker&#39;s guide to Sql Server | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Hitchhiker&#39;s guide to Sql Server | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Hitchhiker&#39;s guide to Sql Server</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag database" href="/tag/database">database</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Mon May 19 2014 02:00:00 GMT+0200 (Central European Summer Time)">May 19, 2014</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>More and more people are taking the <strong>‘There is no database’</strong> statement to it’s limit, i think it’s time to share some insights into how we could let SQLServer help us when investigating performance issues.</p>
+<h2 id="initial-setup" tabindex="-1">Initial Setup</h2>
+<p>When it comes to performance on SQLServer these are the two most important factors that have a direct impact on system performance:</p>
+<ul>
+<li>Memory</li>
+<li>IO</li>
+</ul>
+<p>As we are running on a filesystem where disk fragmentation is costly and unavoidable, there are some settings to think about when creating a new database:</p>
+<ul>
+<li><strong>Initial Size (MB)</strong>: set this both for data and log to a reasonable size. Don’t start with the defaults of 3 Mb data and 1 Mb log, but instead with about 100 Mb for data and 50 Mb on logs (depending on the recovery model), as increasing the size will impact performance and has a major impact to fragmentation on your hard drive.</li>
+<li><strong>AutoGrowth</strong>: Default is to grow 1 Mb a time, set this to a percentage or at least 1/10 of the initial size.</li>
+</ul>
+<h2 id="while-running" tabindex="-1">While running</h2>
+<p>Remember SQLServer is your friend, using Actual Query plan while executing a query can give you hints about the underlying problem. But in general if you don’t know where to start you could use built-in statistics:</p>
+<h3 id="top-25-missing-indexes" tabindex="-1">Top 25 Missing indexes</h3>
+<pre class="language-sql"><code class="language-sql"><span class="token keyword">SELECT</span><br>   <span class="token keyword">TOP</span> <span class="token number">25</span> dm_mid<span class="token punctuation">.</span>database_id <span class="token keyword">AS</span> DatabaseID<span class="token punctuation">,</span><br>   dm_migs<span class="token punctuation">.</span>avg_user_impact<span class="token operator">*</span><span class="token punctuation">(</span>dm_migs<span class="token punctuation">.</span>user_seeks <span class="token operator">+</span> dm_migs<span class="token punctuation">.</span>user_scans<span class="token punctuation">)</span> Avg_Estimated_Impact<span class="token punctuation">,</span><br>   dm_migs<span class="token punctuation">.</span>last_user_seek <span class="token keyword">AS</span> Last_User_Seek<span class="token punctuation">,</span><br>   OBJECT_NAME<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>OBJECT_ID<span class="token punctuation">,</span> dm_mid<span class="token punctuation">.</span>database_id<span class="token punctuation">)</span> <span class="token keyword">AS</span> <span class="token punctuation">[</span>TableName<span class="token punctuation">]</span><span class="token punctuation">,</span><br>   <span class="token string">'CREATE INDEX [IX_'</span> <span class="token operator">+</span> OBJECT_NAME<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>OBJECT_ID<span class="token punctuation">,</span> dm_mid<span class="token punctuation">.</span>database_id<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'_'</span> <span class="token operator">+</span> <span class="token keyword">REPLACE</span><span class="token punctuation">(</span><span class="token keyword">REPLACE</span><span class="token punctuation">(</span><span class="token keyword">REPLACE</span><span class="token punctuation">(</span>ISNULL<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">', '</span><span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span><br>   <span class="token keyword">CASE</span><br>      <span class="token keyword">WHEN</span><br>         dm_mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><br>         <span class="token operator">AND</span> dm_mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><br>      <span class="token keyword">THEN</span><br>         <span class="token string">'_'</span><br>      <span class="token keyword">ELSE</span><br>         <span class="token string">''</span><br>   <span class="token keyword">END</span><br>   <span class="token operator">+</span> <span class="token keyword">REPLACE</span><span class="token punctuation">(</span><span class="token keyword">REPLACE</span><span class="token punctuation">(</span><span class="token keyword">REPLACE</span><span class="token punctuation">(</span>ISNULL<span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">', '</span><span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">']'</span> <span class="token operator">+</span> <span class="token string">' ON '</span> <span class="token operator">+</span> dm_mid<span class="token punctuation">.</span>statement <span class="token operator">+</span> <span class="token string">' ('</span> <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>equality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span><br>   <span class="token keyword">CASE</span><br>      <span class="token keyword">WHEN</span><br>         dm_mid<span class="token punctuation">.</span>equality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><br>         <span class="token operator">AND</span> dm_mid<span class="token punctuation">.</span>inequality_columns <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><br>      <span class="token keyword">THEN</span><br>         <span class="token string">','</span><br>      <span class="token keyword">ELSE</span><br>         <span class="token string">''</span><br>   <span class="token keyword">END</span><br>   <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span>dm_mid<span class="token punctuation">.</span>inequality_columns<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">')'</span> <span class="token operator">+</span> ISNULL <span class="token punctuation">(</span><span class="token string">' INCLUDE ('</span> <span class="token operator">+</span> dm_mid<span class="token punctuation">.</span>included_columns <span class="token operator">+</span> <span class="token string">')'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> Create_Statement<br><span class="token keyword">FROM</span><br>   sys<span class="token punctuation">.</span>dm_db_missing_index_groups dm_mig<br>   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span><br>      sys<span class="token punctuation">.</span>dm_db_missing_index_group_stats dm_migs<br>      <span class="token keyword">ON</span> dm_migs<span class="token punctuation">.</span>group_handle <span class="token operator">=</span> dm_mig<span class="token punctuation">.</span>index_group_handle<br>   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span><br>      sys<span class="token punctuation">.</span>dm_db_missing_index_details dm_mid<br>      <span class="token keyword">ON</span> dm_mig<span class="token punctuation">.</span>index_handle <span class="token operator">=</span> dm_mid<span class="token punctuation">.</span>index_handle<br><span class="token keyword">WHERE</span><br>   dm_mid<span class="token punctuation">.</span>database_ID <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><br><span class="token keyword">ORDER</span> <span class="token keyword">BY</span><br>   Avg_Estimated_Impact <span class="token keyword">DESC</span></code></pre>
+<blockquote>
+<p>This query will output the top 25 missing indexes ordered by estimated impact, look at indexes where the avg estimated impact is above 100000 and are frequently used (Try to avoid the INCLUDE indexes at first).</p>
+</blockquote>
+<p>If the above query does not help you in any way, it could mean that the indexes exist but have been fragmented too much.</p>
+<h3 id="index-fragmentation" tabindex="-1">Index Fragmentation</h3>
+<pre class="language-sql"><code class="language-sql"><span class="token keyword">SELECT</span><br>   dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Schema'</span><span class="token punctuation">,</span><br>   dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Table'</span><span class="token punctuation">,</span><br>   dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token string">'Index'</span><span class="token punctuation">,</span><br>   indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent<span class="token punctuation">,</span><br>   indexstats<span class="token punctuation">.</span>page_count<br><span class="token keyword">FROM</span><br>   sys<span class="token punctuation">.</span>dm_db_index_physical_stats <span class="token punctuation">(</span>DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">NULL</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> indexstats<br>   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span><br>      sys<span class="token punctuation">.</span><span class="token keyword">tables</span> dbtables<br>      <span class="token keyword">on</span> dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span> <span class="token operator">=</span> indexstats<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span><br>   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span><br>      sys<span class="token punctuation">.</span>schemas dbschemas<br>      <span class="token keyword">on</span> dbtables<span class="token punctuation">.</span><span class="token punctuation">[</span>schema_id<span class="token punctuation">]</span> <span class="token operator">=</span> dbschemas<span class="token punctuation">.</span><span class="token punctuation">[</span>schema_id<span class="token punctuation">]</span><br>   <span class="token keyword">INNER</span> <span class="token keyword">JOIN</span><br>      sys<span class="token punctuation">.</span>indexes <span class="token keyword">AS</span> dbindexes<br>      <span class="token keyword">ON</span> dbindexes<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span> <span class="token operator">=</span> indexstats<span class="token punctuation">.</span><span class="token punctuation">[</span>object_id<span class="token punctuation">]</span><br>      <span class="token operator">AND</span> indexstats<span class="token punctuation">.</span>index_id <span class="token operator">=</span> dbindexes<span class="token punctuation">.</span>index_id<br><span class="token keyword">WHERE</span><br>   indexstats<span class="token punctuation">.</span>database_id <span class="token operator">=</span> DB_ID<span class="token punctuation">(</span><span class="token punctuation">)</span><br><span class="token keyword">ORDER</span> <span class="token keyword">BY</span><br>   indexstats<span class="token punctuation">.</span>avg_fragmentation_in_percent <span class="token keyword">desc</span></code></pre>
+<blockquote>
+<p>Look for indexes that have a fragmentation level higher than 30 % and a high page count (by default on sql server the page size is 8K).</p>
+</blockquote>
+<h3 id="rebuild-indexes" tabindex="-1">Rebuild Indexes</h3>
+<pre class="language-sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">INDEX</span> PK_TABLE<br><span class="token keyword">ON</span> <span class="token punctuation">[</span>dbo<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token keyword">TABLE</span><span class="token punctuation">]</span> REBUILD <span class="token keyword">WITH</span> <span class="token punctuation">(</span><span class="token keyword">FILLFACTOR</span> <span class="token operator">=</span> <span class="token number">90</span> <span class="token punctuation">,</span> STATISTICS_NORECOMPUTE <span class="token operator">=</span> <span class="token keyword">OFF</span><span class="token punctuation">)</span></code></pre>
+<h4 id="fillfactor%3F" tabindex="-1">FILLFACTOR?</h4>
+<p>Usually, the higher the better (max is 100), but it depends on how often the table changes and what the index contains. Two examples:</p>
+<ul>
+<li>PK on a int identity key, use fill factor 100% as new records are always created at the bottom (normally index fragmentation on these should be low, or a lot of records have been deleted)</li>
+<li>PK on a guid key, use fill factor depending on how often new records are added (start by 80% or 90%) and monitor page splits to fine tune (see query below)</li>
+</ul>
+<h3 id="monitor-page-splits" tabindex="-1">Monitor Page Splits</h3>
+<pre class="language-sql"><code class="language-sql"><span class="token keyword">SELECT</span><br>   Operation<span class="token punctuation">,</span><br>   AllocUnitName<span class="token punctuation">,</span><br>   <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">as</span> NumberofIncidents<br><span class="token keyword">FROM</span><br>   ::fn_dblog<span class="token punctuation">(</span><span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">)</span><br><span class="token keyword">WHERE</span><br>   Operation <span class="token operator">=</span> N<span class="token string">'LOP_DELETE_SPLIT'</span><br><span class="token keyword">GROUP</span> <span class="token keyword">BY</span><br>   Operation<span class="token punctuation">,</span><br>   AllocUnitName</code></pre>
+<h2 id="further-reading" tabindex="-1">Further reading</h2>
+<ul>
+<li><a href="https://www.simple-talk.com/sql/learn-sql-server/effective-clustered-indexes" target="_blank" rel="noopener">Effective Clustered Indexes</a></li>
+<li><a href="http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes" target="_blank" rel="noopener">http://www.mssqltips.com/sqlservertip/1642/finding-a-better-candidate-for-your-sql-server-clustered-indexes</a></li>
+</ul>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2014/07/12/shouldly-how-assertions-should-have-been/">Shouldly: how assertions should have been all along</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2014/03/17/javascript-by-convention/">Javascript by convention</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>

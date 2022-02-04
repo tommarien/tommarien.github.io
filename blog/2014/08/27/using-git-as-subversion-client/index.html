@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="Using git as subversion client | Hooked.io">
+    <meta itemprop="description" content="Life of a pragmatic developer">
+
+    
+    <meta name="twitter:title" content="Using git as subversion client | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="Life of a pragmatic developer">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="Using git as subversion client | Hooked.io">
+    <meta name="og:description" content="Life of a pragmatic developer">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>Using git as subversion client | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>Using git as subversion client</h2>
+
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag scm" href="/tag/scm">scm</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Wed Aug 27 2014 02:00:00 GMT+0200 (Central European Summer Time)">August 27, 2014</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>Almost a decade ago, a company I worked for, started using <em>Subversion</em> which was a great step forward coming from <em>Visual Source Safe</em>.</p>
+<p>Today, the landscape is totally different, but on enterprise level not much has changed. Some of the companies use <em>Team Foundation Server</em> which is great if you like total integration, but it’s source control system is not that great.
+Others remained with <em>Subversion</em>.</p>
+<p>They might be thinking of going to <em>Git</em>, but most of them are afraid of the learning curve. As with all learning processes, you just have to start somewhere, just dive-in, step by step you’ll start learning Git.</p>
+<h2 id="getting-started" tabindex="-1">Getting Started</h2>
+<p>As a fan of <a href="http://chocolatey.org" target="_blank" rel="noopener">Chocolatey</a> as machine package manager, just enter at command prompt</p>
+<pre class="language-shell"><code class="language-shell">cinst <span class="token function">git</span></code></pre>
+<p>Or <a href="http://msysgit.github.io" target="_blank" rel="noopener">download</a> the installer for git (at the moment it’s version 1.9.4).</p>
+<h2 id="checking-out-the-repository" tabindex="-1">Checking out the repository</h2>
+<p>If your Subversion has the default trunk, branches, tags layout</p>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<p>The -s switch is a shortcut for</p>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -T trunk --t tags --b branches <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/</code></pre>
+<p>This will checkout the trunk of the repository by default. Now suppose your repository already had a branch called Test:</p>
+<pre class="language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a<br>* master<br>  remotes/svn/Test<br>  remotes/svn/trunk</code></pre>
+<h2 id="advanced%3A-shallow-clone" tabindex="-1">Advanced: Shallow clone</h2>
+<p>As the default approach above will crawl trough all svn revisions which can be very slow, if you are in an environment where they are using a single Svn repository with a lot of revisions for different projects, you could be looking at a few hours, days or even weeks (+ 150000 revisions). In that particular use case follow this approach:</p>
+<h3 id="get-first-revision-of-directory-in-gigantic-repository" tabindex="-1">Get first revision of directory in gigantic repository</h3>
+<pre class="language-shell"><code class="language-shell">svn log <span class="token operator">&lt;</span>repo_url<span class="token operator">></span></code></pre>
+<p>The lowest/first revision number is what you are looking for, if you want full history in git on the project. If you just wanna checkout you can use the last revision number.</p>
+<h3 id="checkout-repository" tabindex="-1">Checkout repository</h3>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn clone -s <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> --prefix svn/ -r <span class="token operator">&lt;</span>first-revision<span class="token operator">></span></code></pre>
+<p>This will initialize an empty git repository, now get the trunk</p>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<p>If you would look at your branches you would see that the test branch is not there in this case !</p>
+<pre class="language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch -a<br>* master<br>  remotes/svn/trunk</code></pre>
+<p>To get the remote branch to appear you need to</p>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn fetch</code></pre>
+<h2 id="updating-your-repository" tabindex="-1">Updating your repository</h2>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
+<p>It will fetch latest changes from the trunk and will try to rebase your work on top of it. If any conflicting changes where made, you’ll have to merge them.</p>
+<h2 id="committing-your-changes" tabindex="-1">Committing your changes</h2>
+<pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn dcommit</code></pre>
+<h2 id="further-reading" tabindex="-1">Further reading</h2>
+<ul>
+<li><a href="http://git-scm.com/book/en/Git-and-Other-Systems-Git-and-Subversion" target="_blank" rel="noopener">Git and Subversion</a></li>
+<li><a href="http://viget.com/extend/effectively-using-git-with-subversion" target="_blank" rel="noopener">Effectively Using Git With Subversion</a></li>
+</ul>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Next</p>
+            <p class="font-bold mb-2">
+                <a href="/blog/2014/10/09/targeting-net-4-what-could-possibly-go-wrong/">Targeting .NET 4.0, what could possibly go wrong?</a>
+            </p>
+        
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2014/08/04/who-is-reading-your-tests/">Who is reading your tests?</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="bg-gray-800 pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>
