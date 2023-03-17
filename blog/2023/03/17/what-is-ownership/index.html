@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    
+    <meta itemprop="name" content="What is ownership? | Hooked.io">
+    <meta itemprop="description" content="A key concept in Rust&#39;s memory management">
+
+    
+    <meta name="twitter:title" content="What is ownership? | Hooked.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:description" content="A key concept in Rust&#39;s memory management">
+    <meta name="twitter:site" content="@tom_marien">
+    <meta name="twitter:creator" content="@tom_marien">
+
+    
+    <meta name="og:title" content="What is ownership? | Hooked.io">
+    <meta name="og:description" content="A key concept in Rust&#39;s memory management">
+    <meta name="og:url" content="https://tommarien.github.io/">
+    <meta name="og:site_name" content="Hooked.io">
+    <meta name="og:locale" content="en_GB">
+    <meta name="og:type" content="website">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <title>What is ownership? | Hooked.io</title>
+
+    <!-- Global site tag (gtag.js) - Google Ads: CONVERSION_ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50637133-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config','UA-50637133-1');
+    </script>
+
+    <link rel="stylesheet" href="/assets/main.bundle.css">
+
+    
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <header>
+  <nav class="container mx-auto max-w-3xl px-8 pt-2 flex flex-wrap justify-between">
+    <div>
+      <h1 class="flex justify-between">
+        <img src="/ghost-192x192.png" width="48"/>
+        <a href="/" class="pl-5">Hooked.io</a>
+      </h1>
+      <p class="italic site-description">Life of a pragmatic developer</p>
+    </div>
+
+    <ul class="flex flex-wrap sm:w-32 w-full mt-6 md:justify-between justify-evenly">
+      <li>
+        <a href="/feed/feed.xml">Rss</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+    <main class="container mx-auto max-w-3xl p-8 pt-2 grow">
+      
+    <p></p>
+    <div>
+        <h2>What is ownership?</h2>
+
+        
+            <p class="excerpt">A key concept in Rust&#39;s memory management</p>
+        
+
+        
+            <div class="mb-2 mt-2">
+                <a class="tag rust" href="/tag/rust">rust</a>
+            </div>
+        
+
+        
+            
+                <p class="text-sm italic">Created on
+                    <span datetime="Fri Mar 17 2023 00:00:00 GMT+0000 (Coordinated Universal Time)">March 17, 2023</span>.</p>
+            
+        
+
+        <div class="content post">
+            <p>Rust does not manage it’s memory using <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)" target="_blank" rel="noopener">Garbage collection</a> or trough explicit (de-)allocation but uses a concept <strong>ownership</strong> based on explicit rules.</p>
+<p>In this post we will focus on values with an unknown size at compile time in other words values that are stored on the <a href="https://www.geeksforgeeks.org/stack-vs-heap-memory-allocation/" target="_blank" rel="noopener">“Heap”</a>.</p>
+<h3 id="1.-each-value-has-an-owner" tabindex="-1">1. Each value has an owner</h3>
+<pre class="language-rust"><code class="language-rust"><span class="token comment">// The variable owner, owns the String "Book"</span><br><span class="token keyword">let</span> owner <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Book"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h4 id="memory-layout" tabindex="-1">Memory layout</h4>
+<p><img src="/images/20230317_string_memory_layout.svg" alt=""></p>
+<p>A string’s data is dynamic so it lives on the heap, the pointer, the length and capacity (the preallocated/reserved space before new memory needs to be allocated) lives on the stack.</p>
+<h3 id="2.-there-can-only-be-one-owner-at-a-time" tabindex="-1">2. There can only be one owner at a time</h3>
+<pre class="language-rust"><code class="language-rust"><span class="token keyword">let</span> owner <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Book"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token comment">// The variable new_owner now becomes the owner of the String,</span><br><span class="token comment">// in rust this is called a move.</span><br><span class="token keyword">let</span> new_owner <span class="token operator">=</span> owner<span class="token punctuation">;</span><br><br><span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"{0}"</span><span class="token punctuation">,</span> owner<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 💥 Compilation Error 💥</span></code></pre>
+<h4 id="the-compiler%E2%80%99s-output-is-just-amazing-%E2%9D%A4%EF%B8%8F" tabindex="-1">The compiler’s output is just amazing ❤️</h4>
+<pre class="language-bash"><code class="language-bash">▶ <span class="token function">cargo</span> run<br>   Compiling package v0.1.0 <span class="token punctuation">(</span>/path<span class="token punctuation">)</span><br>error<span class="token punctuation">[</span>E0382<span class="token punctuation">]</span>: borrow of moved value: <span class="token variable"><span class="token variable">`</span>owner<span class="token variable">`</span></span><br>  --<span class="token operator">></span> src/main.rs:10:21<br>   <span class="token operator">|</span><br><span class="token number">4</span>  <span class="token operator">|</span>     <span class="token builtin class-name">let</span> owner <span class="token operator">=</span> String::from<span class="token punctuation">(</span><span class="token string">"Book"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>   <span class="token operator">|</span>         ----- move occurs because <span class="token variable"><span class="token variable">`</span>owner<span class="token variable">`</span></span> has <span class="token builtin class-name">type</span> <span class="token variable"><span class="token variable">`</span>String<span class="token variable">`</span></span>,<br>                   <span class="token function">which</span> does not implement the <span class="token variable"><span class="token variable">`</span>Copy<span class="token variable">`</span></span> trait<br><span class="token punctuation">..</span>.<br><span class="token number">8</span>  <span class="token operator">|</span>     <span class="token builtin class-name">let</span> new_owner <span class="token operator">=</span> owner<span class="token punctuation">;</span><br>   <span class="token operator">|</span>                     ----- value moved here<br><span class="token number">9</span>  <span class="token operator">|</span><br><span class="token number">10</span> <span class="token operator">|</span>     println<span class="token operator">!</span><span class="token punctuation">(</span><span class="token string">"{0}"</span>, owner<span class="token punctuation">)</span><span class="token punctuation">;</span> // 💥 Compilation Error 💥<br>   <span class="token operator">|</span>                     ^^^^^ value borrowed here after move<br>   <span class="token operator">|</span></code></pre>
+<h4 id="memory-layout-1" tabindex="-1">Memory layout</h4>
+<p><img src="/images/20230317_string_memory_move_layout.svg" alt=""></p>
+<p>The moment <code>new_owner</code> receives ownership of the value, the stack based pointer (incl len + capacity) gets removed from memory.</p>
+<h4 id="a-move-also-occurs-when-we-pass-a-variable-to-a-function" tabindex="-1">A move also occurs when we pass a variable to a function</h4>
+<pre class="language-rust"><code class="language-rust"><span class="token keyword">fn</span> <span class="token function-definition function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">let</span> book <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Refactoring"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>    <span class="token function">give</span><span class="token punctuation">(</span>book<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// Gives away ownership</span><br><br>    <span class="token comment">// 💥 Compilation Error 💥</span><br>    <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"book no longer owns the book: {}"</span><span class="token punctuation">,</span> book<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><br><br><span class="token keyword">fn</span> <span class="token function-definition function">give</span><span class="token punctuation">(</span>book<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"i received ownership of the book: {}"</span><span class="token punctuation">,</span> book<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<h4 id="returning-a-value-from-a-function-passes-ownership-to-caller-%F0%9F%92%AA" tabindex="-1">Returning a value from a function passes ownership to caller 💪</h4>
+<pre class="language-rust"><code class="language-rust"><span class="token keyword">let</span> owner <span class="token operator">=</span> <span class="token function">receive_book</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br><span class="token keyword">fn</span> <span class="token function-definition function">receive_book</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">String</span> <span class="token punctuation">{</span><br>    <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"The Clean Coder"</span><span class="token punctuation">)</span><br><span class="token punctuation">}</span></code></pre>
+<h3 id="3.-when-the-owner-goes-out-of-scope%2C-the-value-gets-dropped" tabindex="-1">3. When the owner goes out of scope, the value gets dropped</h3>
+<pre class="language-rust"><code class="language-rust"><span class="token keyword">fn</span> <span class="token function-definition function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>    <span class="token keyword">let</span> book <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"The Clean Coder"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// book exists</span><br><br>    <span class="token punctuation">{</span> <span class="token comment">// another scope starts</span><br><br>        <span class="token comment">// scoped_book exits</span><br>        <span class="token keyword">let</span> scoped_book <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Cast away"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>        <span class="token comment">// can access both here</span><br>        <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"{book} &amp; {scoped_book}"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br><br>    <span class="token punctuation">}</span> <span class="token comment">// scoped_book goes out of scope (aka drop)</span><br><br>    <span class="token comment">// here only book exits, scoped_book has been dropped!</span><br>    <span class="token macro property">println!</span><span class="token punctuation">(</span><span class="token string">"{}"</span><span class="token punctuation">,</span> book<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span> <span class="token comment">// book gets dropped</span></code></pre>
+<p>The moment the owner goes out of scope, memory gets deallocated immediately! The scope created by <code>{}</code> is actually a technique to have even more control over how long a value should exist.</p>
+
+        </div>
+            <p class="uppercase text-xs mt-6">Previous</p>
+
+            <p class="font-bold">
+                <a href="/blog/2020/07/24/kiss-my-default-props/">Kiss my default props</a>
+            </p>
+        
+    </div>
+
+    </main>
+    <footer class="pb-0">
+  <p class="block text-center text-sm mb-6">
+    Personal Blog by <a href="https://twitter.com/Tom_Marien">Tom Marien</a>
+  </p>
+
+</footer>
+
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="/assets/main.bundle.js"></script>
+  </body>
+</html>
