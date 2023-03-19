@@ -88,10 +88,10 @@
         
 
         <div class="content post">
-            <p>Rust does not manage it’s memory using <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)" target="_blank" rel="noopener">Garbage collection</a> or trough explicit (de-)allocation but uses a concept <strong>ownership</strong> based on explicit rules.</p>
+            <p>Rust does not manage it’s memory using <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)" target="_blank" rel="noopener">Garbage collection</a> or trough explicit (de-)allocation but uses a concept called <strong>“ownership”</strong> based on explicit rules.</p>
 <p>In this post we will focus on values with an unknown size at compile time in other words values that are stored on the <a href="https://www.geeksforgeeks.org/stack-vs-heap-memory-allocation/" target="_blank" rel="noopener">“Heap”</a>.</p>
 <h3 id="1.-each-value-has-an-owner" tabindex="-1">1. Each value has an owner</h3>
-<pre class="language-rust"><code class="language-rust"><span class="token comment">// The variable owner, owns the String "Book"</span><br><span class="token keyword">let</span> owner <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Book"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class="language-rust"><code class="language-rust"><span class="token comment">// The variable 'owner' owns the String "Book"</span><br><span class="token keyword">let</span> owner <span class="token operator">=</span> <span class="token class-name">String</span><span class="token punctuation">::</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token string">"Book"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <h4 id="memory-layout" tabindex="-1">Memory layout</h4>
 <p><img src="/images/20230317_string_memory_layout.svg" alt=""></p>
 <p>A string’s data is dynamic so it lives on the heap, the pointer, the length and capacity (the preallocated/reserved space before new memory needs to be allocated) lives on the stack.</p>
