@@ -102,7 +102,10 @@ Others remained with <em>Subversion</em>.</p>
 <p>The -s switch is a shortcut for</p>
 <pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn clone <span class="token parameter variable">-T</span> trunk <span class="token parameter variable">--t</span> tags <span class="token parameter variable">--b</span> branches <span class="token operator">&lt;</span>repo_url<span class="token operator">></span> <span class="token parameter variable">--prefix</span> svn/</code></pre>
 <p>This will checkout the trunk of the repository by default. Now suppose your repository already had a branch called Test:</p>
-<pre class="language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch <span class="token parameter variable">-a</span><br>* master<br>  remotes/svn/Test<br>  remotes/svn/trunk</code></pre>
+<pre class="language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch <span class="token parameter variable">-a</span>
+* master
+  remotes/svn/Test
+  remotes/svn/trunk</code></pre>
 <h2 id="advanced%3A-shallow-clone" tabindex="-1">Advanced: Shallow clone</h2>
 <p>As the default approach above will crawl trough all svn revisions which can be very slow, if you are in an environment where they are using a single Svn repository with a lot of revisions for different projects, you could be looking at a few hours, days or even weeks (+ 150000 revisions). In that particular use case follow this approach:</p>
 <h3 id="get-first-revision-of-directory-in-gigantic-repository" tabindex="-1">Get first revision of directory in gigantic repository</h3>
@@ -113,7 +116,9 @@ Others remained with <em>Subversion</em>.</p>
 <p>This will initialize an empty git repository, now get the trunk</p>
 <pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn rebase</code></pre>
 <p>If you would look at your branches you would see that the test branch is not there in this case !</p>
-<pre class="language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch <span class="token parameter variable">-a</span><br>* master<br>  remotes/svn/trunk</code></pre>
+<pre class="language-shell"><code class="language-shell"><span class="token operator">></span> <span class="token function">git</span> branch <span class="token parameter variable">-a</span>
+* master
+  remotes/svn/trunk</code></pre>
 <p>To get the remote branch to appear you need to</p>
 <pre class="language-shell"><code class="language-shell"><span class="token function">git</span> svn fetch</code></pre>
 <h2 id="updating-your-repository" tabindex="-1">Updating your repository</h2>

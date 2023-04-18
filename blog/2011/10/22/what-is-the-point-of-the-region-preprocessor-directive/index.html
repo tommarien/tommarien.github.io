@@ -93,7 +93,30 @@
 <p><strong>#region</strong> lets you specify a block of code that you can expand or collapse when using the outlining feature of the Visual Studio Code Editor. In longer code files, it is convenient to be able to collapse or hide one or more regions so that you can focus on the part of the file that you are currently working on.</p>
 </blockquote>
 <h3 id="mind-blowing-example" tabindex="-1">Mind-blowing example</h3>
-<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PieceTheResistence</span><br><span class="token punctuation">{</span><br>   <span class="token preprocessor property">#<span class="token directive keyword">region</span> SomeNameShamelesslyPointingAtTheIntendOfTheWrappedCode</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MethodOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Piece of Art code</span><br>      <span class="token punctuation">}</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MethodTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Another Piece of Art</span><br>      <span class="token punctuation">}</span><br>   <span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span><br><br>   <span class="token preprocessor property">#<span class="token directive keyword">region</span> SomeOtherNameShamelesslyPointingAtTheIntendOfTheWrappedCode</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SecondMethodOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Piece of Art code</span><br>      <span class="token punctuation">}</span><br>      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SecondMethodTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>      <span class="token punctuation">{</span><br>         <span class="token comment">// Another Piece of Art</span><br>      <span class="token punctuation">}</span><br>   <span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span><br><span class="token punctuation">}</span></code></pre>
+<pre class="language-csharp"><code class="language-csharp"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PieceTheResistence</span>
+<span class="token punctuation">{</span>
+   <span class="token preprocessor property">#<span class="token directive keyword">region</span> SomeNameShamelesslyPointingAtTheIntendOfTheWrappedCode</span>
+      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MethodOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">{</span>
+         <span class="token comment">// Piece of Art code</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">MethodTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">{</span>
+         <span class="token comment">// Another Piece of Art</span>
+      <span class="token punctuation">}</span>
+   <span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span>
+
+   <span class="token preprocessor property">#<span class="token directive keyword">region</span> SomeOtherNameShamelesslyPointingAtTheIntendOfTheWrappedCode</span>
+      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SecondMethodOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">{</span>
+         <span class="token comment">// Piece of Art code</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">void</span></span> <span class="token function">SecondMethodTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">{</span>
+         <span class="token comment">// Another Piece of Art</span>
+      <span class="token punctuation">}</span>
+   <span class="token preprocessor property">#<span class="token directive keyword">endregion</span></span>
+<span class="token punctuation">}</span></code></pre>
 <p>Ah, i see, i can collapse the region i am not working on, which will keep me focused on the code i am working on.</p>
 <h3 id="why-am-i-having-problems-with-keeping-me-focused-on-the-code-i-need-to-work-on-%3F" tabindex="-1">Why am i having problems with keeping me focused on the code i need to work on ?</h3>
 <p>Could be that i kept up all night, writing some blog posts or playing on my XBOX, PS3. Being deprived of sleep can have negative effects on concentration.</p>

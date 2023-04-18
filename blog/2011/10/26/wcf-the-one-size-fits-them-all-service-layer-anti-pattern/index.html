@@ -118,9 +118,23 @@ Just so we can use these WCF services, hosted on a IIS Server in our web applica
 <h3 id="reason-why-we-keep-on-doing-this%3A" tabindex="-1">Reason why we keep on doing this:</h3>
 <p>About 70% of the time the answer is: It’s so easy when we need to make our WCF publicly available. (other possible answer is Simply because we can)</p>
 <p>Please consider following scenario and hopefully you will rethink your answer:</p>
-<pre class="language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span><br><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Product</span><br><span class="token punctuation">{</span><br>  <span class="token keyword">public</span> <span class="token function">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span><br>  <span class="token punctuation">{</span><br>  <span class="token punctuation">}</span><br><br>  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataMember</span></span><span class="token punctuation">]</span><br>  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><br><span class="token punctuation">}</span></code></pre>
+<pre class="language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataContract</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Product</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">public</span> <span class="token function">Product</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">{</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">DataMember</span></span><span class="token punctuation">]</span>
+  <span class="token keyword">public</span> <span class="token return-type class-name"><span class="token keyword">double</span></span> Prise <span class="token punctuation">{</span> <span class="token keyword">get</span><span class="token punctuation">;</span> <span class="token keyword">set</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
 <p>Which off course is nicely used in following WCF Service:</p>
-<pre class="language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span><br><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IProductService</span><br><span class="token punctuation">{</span><br>  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OperationContract</span></span><span class="token punctuation">]</span><br>  <span class="token return-type class-name">Product</span> <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span></code></pre>
+<pre class="language-csharp"><code class="language-csharp"><span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">ServiceContract</span></span><span class="token punctuation">]</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IProductService</span>
+<span class="token punctuation">{</span>
+  <span class="token punctuation">[</span><span class="token attribute"><span class="token class-name">OperationContract</span></span><span class="token punctuation">]</span>
+  <span class="token return-type class-name">Product</span> <span class="token function">GetProductById</span><span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">int</span></span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
 <p>Conversation:</p>
 <ul>
 <li><em>Armand (Architect):</em> John, Lisa has made a screw up in code, you need to rename the property Prise to Price in our product model.</li>
