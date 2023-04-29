@@ -5,11 +5,121 @@
 	
 	<link href="https://tommarien.github.io/feed/feed.xml" rel="self"/>
 	<link href="https://tommarien.github.io"/>
-	<updated>2023-03-17T00:00:00Z</updated>
+	<updated>2023-04-29T00:00:00Z</updated>
 	<id>https://tommarien.github.io/</id>
 	<author> 
 		<name>Tom Marien</name>
 	</author>
+	
+	<entry>
+		<title>Who moved my value?</title>
+		<link href="https://tommarien.github.io/blog/2023/04/27/who-moved-my-value/"/>
+		<updated>2023-04-29T00:00:00Z</updated>
+		<id>https://tommarien.github.io/blog/2023/04/27/who-moved-my-value/</id>
+		<content type="html">&lt;p&gt;When we talked about &lt;a href=&quot;https://tommarien.github.io/blog/2023/03/17/what-is-ownership&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;ownership&lt;/a&gt; in Rust, we’ve excluded values who’s size are known at compile time, but what happens to a value that is stored on the &lt;code&gt;Stack&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&quot;language-rust&quot;&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;mut&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;// Here the value is copied&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; copy_of_a&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+a &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;// 🖨️ Amount copied: 2 🖨️&lt;/span&gt;
+&lt;span class=&quot;token macro property&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;Amount copied: {}&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; copy_of_a&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The 32-bits integer (8 bytes) is copied when we assign it to the variable &lt;code&gt;copy_of_a&lt;/code&gt;. The same would have happened if we passed it to a function as a parameter.&lt;/p&gt;
+&lt;h4 id=&quot;memory-layout&quot; tabindex=&quot;-1&quot;&gt;Memory layout&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://tommarien.github.io/images/20230423-i32-memory-layout.svg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is basically the reason why &lt;a href=&quot;https://react.dev/reference/react/useEffect#useeffect&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;code&gt;useEffect&lt;/code&gt;&lt;/a&gt; in React has a dependency array, the function is memoized and the value is enclosed/copied inside the scope!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;point-struct&quot; tabindex=&quot;-1&quot;&gt;Point struct&lt;/h3&gt;
+&lt;p&gt;What if we wanted to create a &lt;code&gt;Point&lt;/code&gt; type that behaves like a value?&lt;/p&gt;
+&lt;pre class=&quot;language-rust&quot;&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;token type-definition class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;token function-definition function&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;mut&lt;/span&gt; point &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// Here the ownership will be transferred, aka a move&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; point_is_moved &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; point&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    point&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;x &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token comment&quot;&gt;// 💥 Compilation Error 💥&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id=&quot;compiler%E2%80%99s-output&quot; tabindex=&quot;-1&quot;&gt;Compiler’s output&lt;/h4&gt;
+&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;✦ ▶ &lt;span class=&quot;token function&quot;&gt;cargo&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-q&lt;/span&gt; run
+error&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;E0382&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;: assign to part of moved value: &lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;point&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;&lt;/span&gt;
+ --&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; src/main.rs:9:5
+  &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;     &lt;span class=&quot;token builtin class-name&quot;&gt;let&lt;/span&gt; mut point &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Point &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; x: &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;, y: &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;         --------- move occurs because &lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;point&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;&lt;/span&gt; has &lt;span class=&quot;token builtin class-name&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;Point&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;&lt;/span&gt;,
+                      &lt;span class=&quot;token function&quot;&gt;which&lt;/span&gt; does not implement the &lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;Copy&lt;span class=&quot;token variable&quot;&gt;`&lt;/span&gt;&lt;/span&gt; trait
+&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;.
+&lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;     &lt;span class=&quot;token builtin class-name&quot;&gt;let&lt;/span&gt; point_is_moved &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; point&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;                          ----- value moved here
+&lt;span class=&quot;token number&quot;&gt;8&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;     point.x &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;     ^^^^^^^^^^^ value partially assigned here after move&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;clone&quot; tabindex=&quot;-1&quot;&gt;&lt;a href=&quot;https://doc.rust-lang.org/std/clone/trait.Clone.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Clone&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;If we look at other types in rust we’ll notice that some of them have a &lt;code&gt;Clone&lt;/code&gt; method (&lt;a href=&quot;https://doc.rust-lang.org/std/string/struct.String.html#impl-Clone-for-String&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;String&lt;/a&gt;), we could implement that for our type:&lt;/p&gt;
+&lt;pre class=&quot;language-rust&quot;&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;token function-definition function&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;mut&lt;/span&gt; point &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// we clone the value&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; point_is_moved &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; point&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;clone&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    point&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;x &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// 🖨️ Point copied: { x: 0, y: 0 } 🖨️&lt;/span&gt;
+    &lt;span class=&quot;token macro property&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;Point copied: {:?}&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; point_is_moved&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token attribute attr-name&quot;&gt;#[derive(Debug)]&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;token type-definition class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;impl&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Clone&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;token function-definition function&quot;&gt;clone&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;-&gt;&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;Self&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;token class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+            x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+            y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;y&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Implementing the &lt;code&gt;Clone&lt;/code&gt; trait is a very explicit way of create a copy, which may or may not be expensive.&lt;/p&gt;
+&lt;p&gt;We can also derive from the &lt;code&gt;Clone&lt;/code&gt; trait 💪:&lt;/p&gt;
+&lt;pre class=&quot;language-rust&quot;&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;token attribute attr-name&quot;&gt;#[derive(Debug, Clone)]&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;token type-definition class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;copy&quot; tabindex=&quot;-1&quot;&gt;&lt;a href=&quot;https://doc.rust-lang.org/std/marker/trait.Copy.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Copy&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;But what we said we really wanted to mimic the copy behavior of for instance &lt;code&gt;i32&lt;/code&gt;? That is the beauty of the Rust language ❤️, there is actually a supertrait of &lt;code&gt;Clone&lt;/code&gt; which can be derived from :&lt;/p&gt;
+&lt;pre class=&quot;language-rust&quot;&gt;&lt;code class=&quot;language-rust&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;token function-definition function&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;mut&lt;/span&gt; point &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// we copy the value like `i32`&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; point_is_moved &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; point&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    point&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;x &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;// 🖨️ Point copied: { x: 0, y: 0 } 🖨️&lt;/span&gt;
+    &lt;span class=&quot;token macro property&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;Point copied: {:?}&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; point_is_moved&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;token attribute attr-name&quot;&gt;#[derive(Debug, Copy, Clone)]&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;token type-definition class-name&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; x&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;pub&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;i32&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To be able to derive from the &lt;code&gt;Copy&lt;/code&gt; trait, all of the underlying values must implement &lt;code&gt;Copy&lt;/code&gt;! This is the main difference with &lt;code&gt;Clone&lt;/code&gt;, Copy is inexpensive.&lt;/p&gt;
+</content>
+	</entry>
 	
 	<entry>
 		<title>What is ownership?</title>
